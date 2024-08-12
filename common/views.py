@@ -73,5 +73,4 @@ def enteruserinfo(request):
 
     return render(request, 'enteruserinfo.html')
 
-#def enter_user_info(request):
-#    return render(request, "enteruserinfo.html")
+

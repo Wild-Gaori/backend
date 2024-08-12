@@ -75,23 +75,14 @@ WSGI_APPLICATION = 'myproject.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/5.1/ref/settings/#databases
 
-#DATABASES = {
-#    'default': {
-#        'ENGINE': 'django.db.backends.sqlite3',
-#        'NAME': BASE_DIR / 'db.sqlite3',
-#    }
-#}
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': 'qnartdb',#db명
-        'USER': 'wildgaory', #db user 이름
-        'PASSWORD': 'wildgaory', #db password
-        'HOST': 'qnartdb.chkweamwumqs.ap-northeast-2.rds.amazonaws.com', #나중에 aws로 연결
-        'PORT': '3306', #mysql 포트번호
+        'NAME': BASE_DIR / 'db.sqlite3',
     }
 }
-#AUTH_USER_MODEL = 'common.User'
+
+
 
 # Password validation
 # https://docs.djangoproject.com/en/5.1/ref/settings/#auth-password-validators
@@ -111,6 +102,7 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 #AUTH_USER_MODEL = 'qnart.User'
+#AUTH_USER_MODEL = 'common.User'
 
 # Internationalization
 # https://docs.djangoproject.com/en/5.1/topics/i18n/
