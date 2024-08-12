@@ -1,0 +1,31 @@
+<a href="{% url 'login'%}" method = 'POST' > 뒤로가기</a>    <h1>QnArt </h1>
+
+<form action="{% url 'signup' %}" method="POST" >
+<!-- Django에서 post 할 때 보안을 위해 사용 -->
+{% csrf_token %}
+<!-- 오류 메시지 표시 -->
+{% if error %}
+<p style="color:rgb(0, 119, 255);">{{ error }}</p>
+{% endif %}
+    아이디:
+    <br>
+    <input name='username' type='text' value=''> 
+    <br>
+    <br>
+    비밀번호:
+    <br>
+    <input name='password1' type="password" value=''> 
+    <br>
+    비밀번호 확인:
+    <br>
+    <input name='password2' type="password" value=''> 
+    <br>
+    <br>
+    이메일:
+    <br>
+    <input name='email' type="email" value=''>
+    <br>
+    <br>
+    <input class='btn btn-primary' type="submit" value="회원가입">
+</form>
+
