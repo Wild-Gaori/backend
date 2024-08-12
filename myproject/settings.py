@@ -87,7 +87,7 @@ DATABASES = {
         'NAME': 'qnartdb',#db명
         'USER': 'wildgaory', #db user 이름
         'PASSWORD': 'wildgaory', #db password
-        'HOST': 'qnartdb.chkweamwumqs.ap-northeast-2.rds.amazonaws.com', #나중에 aws로 연결
+        'HOST': '', #나중에 aws로 연결
         'PORT': '3306', #mysql 포트번호
     }
 }
