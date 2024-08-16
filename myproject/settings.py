@@ -25,7 +25,7 @@ SECRET_KEY = 'django-insecure-eiyxuikuw%4x^6095nn+o9o*$axfq)k%jg6ygnlw#bz9jep63$
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['*']
 
 
 # Application definition
@@ -85,8 +85,8 @@ DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
         'NAME': 'qnartdb',#db명
-        'USER': '', #와가
-        'PASSWORD': '', #와가
+        'USER': 'wildgaory', #와가
+        'PASSWORD': 'wildgaory', #와가
         'HOST': 'qnartdb.chkweamwumqs.ap-northeast-2.rds.amazonaws.com', #나중에 aws로 연결
         'PORT': '3306', #mysql 포트번호
     }
@@ -130,6 +130,7 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/5.1/howto/static-files/
 
 STATIC_URL = 'static/'
+#STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.1/ref/settings/#default-auto-field
