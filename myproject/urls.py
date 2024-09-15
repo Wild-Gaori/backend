@@ -21,4 +21,5 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('qnart/', include('qnart.urls')),
     path('', include('common.urls')),
+    path('imagegen/', include('imagegen.urls')), # 이미지 생성 앱 
 ]
