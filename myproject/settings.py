@@ -11,12 +11,14 @@ https://docs.djangoproject.com/en/5.1/ref/settings/
 """
 import os
 from dotenv import load_dotenv
+from openai import OpenAI 
 
 # .env 파일 로드
 load_dotenv()
 
-# OpenAI API Key 설정
-OPENAI_API_KEY = os.getenv('OPENAI_API_KEY')
+# 환경 변수에서 API 키 가져오기
+client = OpenAI(api_key=os.getenv('OPENAI_API_KEY'))
+
 from pathlib import Path
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -48,6 +50,7 @@ INSTALLED_APPS = [
     'common',
     'imagegen',
     'rest_framework',
+    'masterpiece',
 ]
 
 MIDDLEWARE = [
@@ -94,8 +97,8 @@ DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
         'NAME': 'qnartdb',#db명
-        'USER': '', #와가
-        'PASSWORD': '', #와가
+        'USER': 'wildgaory', #와가
+        'PASSWORD': 'wildgaory', #와가
         'HOST': 'qnartdb.chkweamwumqs.ap-northeast-2.rds.amazonaws.com', #나중에 aws로 연결
         'PORT': '3306', #mysql 포트번호
     }
