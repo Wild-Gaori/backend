@@ -19321,3 +19321,27 @@ django.utils.datastructures.MultiValueDictKeyError: 'username'
 Not Found: /Core/Skin/Login.aspx
 [pid: 63882|app: 0|req: 7147/7147] 101.32.218.31 () {42 vars in 783 bytes} [Thu Sep 19 17:47:26 2024] HEAD /Core/Skin/Login.aspx => generated 3923 bytes in 5 msecs (HTTP/1.1 404) 6 headers in 215 bytes (1 switches on core 0)
 [pid: 63882|app: 0|req: 7148/7148] 222.110.177.70 () {32 vars in 362 bytes} [Thu Sep 19 17:51:01 2024] GET / => generated 475 bytes in 1 msecs (HTTP/1.1 200) 8 headers in 357 bytes (1 switches on core 0)
+Internal Server Error: /
+Traceback (most recent call last):
+  File "/home/ubuntu/backend/myproject/qnart/lib/python3.12/site-packages/django/utils/datastructures.py", line 84, in __getitem__
+    list_ = super().__getitem__(key)
+            ^^^^^^^^^^^^^^^^^^^^^^^^
+KeyError: 'username'
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/home/ubuntu/backend/myproject/qnart/lib/python3.12/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+               ^^^^^^^^^^^^^^^^^^^^^
+  File "/home/ubuntu/backend/myproject/qnart/lib/python3.12/site-packages/django/core/handlers/base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/ubuntu/backend/common/views.py", line 35, in login
+    username = request.POST['username']
+               ~~~~~~~~~~~~^^^^^^^^^^^^
+  File "/home/ubuntu/backend/myproject/qnart/lib/python3.12/site-packages/django/utils/datastructures.py", line 86, in __getitem__
+    raise MultiValueDictKeyError(key)
+django.utils.datastructures.MultiValueDictKeyError: 'username'
+[pid: 63882|app: 0|req: 7149/7149] 222.110.177.70 () {40 vars in 582 bytes} [Thu Sep 19 17:56:08 2024] POST / => generated 62245 bytes in 22 msecs (HTTP/1.1 500) 7 headers in 242 bytes (1 switches on core 0)
+[pid: 63882|app: 0|req: 7150/7150] 178.211.139.188 () {42 vars in 749 bytes} [Thu Sep 19 17:56:37 2024] GET / => generated 475 bytes in 1 msecs (HTTP/1.1 200) 8 headers in 357 bytes (1 switches on core 0)
