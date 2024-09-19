@@ -18768,3 +18768,556 @@ Forbidden (CSRF cookie not set.): /
 Not Found: /Core/Skin/Login.aspx
 [pid: 63882|app: 0|req: 6982/6982] 101.32.218.31 () {42 vars in 783 bytes} [Thu Sep 19 10:58:43 2024] HEAD /Core/Skin/Login.aspx => generated 3923 bytes in 5 msecs (HTTP/1.1 404) 6 headers in 215 bytes (1 switches on core 0)
 [pid: 63882|app: 0|req: 6983/6983] 172.202.178.66 () {34 vars in 383 bytes} [Thu Sep 19 11:01:15 2024] GET / => generated 475 bytes in 1 msecs (HTTP/1.1 200) 8 headers in 357 bytes (1 switches on core 0)
+Not Found: /.env
+[pid: 63882|app: 0|req: 6984/6984] 135.125.244.48 () {36 vars in 513 bytes} [Thu Sep 19 12:03:27 2024] GET /.env => generated 3871 bytes in 5 msecs (HTTP/1.1 404) 6 headers in 215 bytes (1 switches on core 0)
+Forbidden (CSRF cookie not set.): /
+[pid: 63882|app: 0|req: 6985/6985] 135.125.244.48 () {40 vars in 620 bytes} [Thu Sep 19 12:03:27 2024] POST / => generated 2985 bytes in 2 msecs (HTTP/1.1 403) 6 headers in 215 bytes (1 switches on core 0)
+Not Found: /images/logo.blu.png
+[pid: 63882|app: 0|req: 6986/6986] 45.156.129.46 () {34 vars in 514 bytes} [Thu Sep 19 12:07:42 2024] GET /images/logo.blu.png => generated 3916 bytes in 5 msecs (HTTP/1.1 404) 6 headers in 215 bytes (1 switches on core 0)
+Invalid HTTP_HOST header: '_'. The domain name provided is not valid according to RFC 1034/1035.
+Traceback (most recent call last):
+  File "/home/ubuntu/backend/myproject/qnart/lib/python3.12/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+               ^^^^^^^^^^^^^^^^^^^^^
+  File "/home/ubuntu/backend/myproject/qnart/lib/python3.12/site-packages/django/utils/deprecation.py", line 128, in __call__
+    response = self.process_request(request)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/ubuntu/backend/myproject/qnart/lib/python3.12/site-packages/django/middleware/common.py", line 48, in process_request
+    host = request.get_host()
+           ^^^^^^^^^^^^^^^^^^
+  File "/home/ubuntu/backend/myproject/qnart/lib/python3.12/site-packages/django/http/request.py", line 151, in get_host
+    raise DisallowedHost(msg)
+django.core.exceptions.DisallowedHost: Invalid HTTP_HOST header: '_'. The domain name provided is not valid according to RFC 1034/1035.
+Bad Request: /
+[pid: 63882|app: 0|req: 6987/6987] 93.174.93.12 () {30 vars in 426 bytes} [Thu Sep 19 12:17:16 2024] GET / => generated 57519 bytes in 21 msecs (HTTP/1.0 400) 4 headers in 172 bytes (1 switches on core 0)
+[pid: 63882|app: 0|req: 6988/6988] 34.64.82.76 () {42 vars in 866 bytes} [Thu Sep 19 12:17:57 2024] GET /?redirectURI=login => generated 475 bytes in 1 msecs (HTTP/1.1 200) 8 headers in 357 bytes (1 switches on core 0)
+Not Found: /Core/Skin/Login.aspx
+[pid: 63882|app: 0|req: 6989/6989] 101.32.218.31 () {42 vars in 783 bytes} [Thu Sep 19 12:40:28 2024] HEAD /Core/Skin/Login.aspx => generated 3923 bytes in 5 msecs (HTTP/1.1 404) 6 headers in 215 bytes (1 switches on core 0)
+Not Found: /.git/config
+[pid: 63882|app: 0|req: 6990/6990] 5.188.87.49 () {32 vars in 384 bytes} [Thu Sep 19 14:11:13 2024] GET /.git/config => generated 3895 bytes in 5 msecs (HTTP/1.1 404) 6 headers in 215 bytes (1 switches on core 0)
+Not Found: /.env
+[pid: 63882|app: 0|req: 6991/6991] 5.188.87.40 () {32 vars in 370 bytes} [Thu Sep 19 14:11:35 2024] GET /.env => generated 3874 bytes in 5 msecs (HTTP/1.1 404) 6 headers in 215 bytes (1 switches on core 0)
+Not Found: /.env
+[pid: 63882|app: 0|req: 6992/6992] 135.125.244.48 () {36 vars in 513 bytes} [Thu Sep 19 14:21:26 2024] GET /.env => generated 3871 bytes in 5 msecs (HTTP/1.1 404) 6 headers in 215 bytes (1 switches on core 0)
+Forbidden (CSRF cookie not set.): /
+[pid: 63882|app: 0|req: 6993/6993] 135.125.244.48 () {40 vars in 620 bytes} [Thu Sep 19 14:21:27 2024] POST / => generated 2985 bytes in 2 msecs (HTTP/1.1 403) 6 headers in 215 bytes (1 switches on core 0)
+Not Found: /Core/Skin/Login.aspx
+[pid: 63882|app: 0|req: 6994/6994] 101.32.218.31 () {42 vars in 783 bytes} [Thu Sep 19 14:22:50 2024] HEAD /Core/Skin/Login.aspx => generated 3923 bytes in 5 msecs (HTTP/1.1 404) 6 headers in 215 bytes (1 switches on core 0)
+Invalid HTTP_HOST header: '_'. The domain name provided is not valid according to RFC 1034/1035.
+Traceback (most recent call last):
+  File "/home/ubuntu/backend/myproject/qnart/lib/python3.12/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+               ^^^^^^^^^^^^^^^^^^^^^
+  File "/home/ubuntu/backend/myproject/qnart/lib/python3.12/site-packages/django/utils/deprecation.py", line 128, in __call__
+    response = self.process_request(request)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/ubuntu/backend/myproject/qnart/lib/python3.12/site-packages/django/middleware/common.py", line 48, in process_request
+    host = request.get_host()
+           ^^^^^^^^^^^^^^^^^^
+  File "/home/ubuntu/backend/myproject/qnart/lib/python3.12/site-packages/django/http/request.py", line 151, in get_host
+    raise DisallowedHost(msg)
+django.core.exceptions.DisallowedHost: Invalid HTTP_HOST header: '_'. The domain name provided is not valid according to RFC 1034/1035.
+Bad Request: /
+[pid: 63882|app: 0|req: 6995/6995] 185.224.128.47 () {30 vars in 361 bytes} [Thu Sep 19 14:24:08 2024] GET / => generated 57355 bytes in 21 msecs (HTTP/1.0 400) 4 headers in 172 bytes (1 switches on core 0)
+[pid: 63882|app: 0|req: 6996/6996] 34.77.13.200 () {42 vars in 552 bytes} [Thu Sep 19 14:27:12 2024] GET / => generated 475 bytes in 1 msecs (HTTP/1.1 200) 8 headers in 357 bytes (1 switches on core 0)
+Not Found: /.env
+[pid: 63882|app: 0|req: 6997/6997] 135.125.244.48 () {36 vars in 513 bytes} [Thu Sep 19 15:18:10 2024] GET /.env => generated 3871 bytes in 5 msecs (HTTP/1.1 404) 6 headers in 215 bytes (1 switches on core 0)
+Forbidden (CSRF cookie not set.): /
+[pid: 63882|app: 0|req: 6998/6998] 135.125.244.48 () {40 vars in 620 bytes} [Thu Sep 19 15:18:10 2024] POST / => generated 2985 bytes in 2 msecs (HTTP/1.1 403) 6 headers in 215 bytes (1 switches on core 0)
+[pid: 63882|app: 0|req: 6999/6999] 222.110.177.70 () {42 vars in 815 bytes} [Thu Sep 19 15:35:48 2024] GET / => generated 475 bytes in 1 msecs (HTTP/1.1 200) 8 headers in 357 bytes (1 switches on core 0)
+Not Found: /favicon.ico
+[pid: 63882|app: 0|req: 7000/7000] 222.110.177.70 () {42 vars in 769 bytes} [Thu Sep 19 15:35:49 2024] GET /favicon.ico => generated 3892 bytes in 5 msecs (HTTP/1.1 404) 6 headers in 215 bytes (1 switches on core 0)
+[pid: 63882|app: 0|req: 7001/7001] 222.110.177.70 () {42 vars in 827 bytes} [Thu Sep 19 15:36:01 2024] GET /admin/ => generated 0 bytes in 1 msecs (HTTP/1.1 302) 10 headers in 372 bytes (1 switches on core 0)
+[pid: 63882|app: 0|req: 7002/7002] 222.110.177.70 () {42 vars in 864 bytes} [Thu Sep 19 15:36:01 2024] GET /admin/login/?next=/admin/ => generated 4196 bytes in 5 msecs (HTTP/1.1 200) 10 headers in 470 bytes (1 switches on core 0)
+[pid: 63882|app: 0|req: 7003/7003] 222.110.177.70 () {42 vars in 863 bytes} [Thu Sep 19 16:04:07 2024] GET /admin/login/?next=/admin/ => generated 4196 bytes in 5 msecs (HTTP/1.1 200) 10 headers in 470 bytes (1 switches on core 0)
+Not Found: /Core/Skin/Login.aspx
+[pid: 63882|app: 0|req: 7004/7004] 101.32.218.31 () {42 vars in 783 bytes} [Thu Sep 19 16:05:14 2024] HEAD /Core/Skin/Login.aspx => generated 3923 bytes in 5 msecs (HTTP/1.1 404) 6 headers in 215 bytes (1 switches on core 0)
+Invalid HTTP_HOST header: '_'. The domain name provided is not valid according to RFC 1034/1035.
+Traceback (most recent call last):
+  File "/home/ubuntu/backend/myproject/qnart/lib/python3.12/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+               ^^^^^^^^^^^^^^^^^^^^^
+  File "/home/ubuntu/backend/myproject/qnart/lib/python3.12/site-packages/django/utils/deprecation.py", line 128, in __call__
+    response = self.process_request(request)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/ubuntu/backend/myproject/qnart/lib/python3.12/site-packages/django/middleware/common.py", line 48, in process_request
+    host = request.get_host()
+           ^^^^^^^^^^^^^^^^^^
+  File "/home/ubuntu/backend/myproject/qnart/lib/python3.12/site-packages/django/http/request.py", line 151, in get_host
+    raise DisallowedHost(msg)
+django.core.exceptions.DisallowedHost: Invalid HTTP_HOST header: '_'. The domain name provided is not valid according to RFC 1034/1035.
+Bad Request: /boaform/admin/formLogin
+[pid: 63882|app: 0|req: 7005/7005] 158.255.83.207 () {26 vars in 361 bytes} [Thu Sep 19 16:09:49 2024] GET /boaform/admin/formLogin?username=user&psd=user => generated 57829 bytes in 22 msecs (HTTP/1.0 400) 4 headers in 172 bytes (1 switches on core 0)
+Forbidden (CSRF cookie not set.): /
+[pid: 63882|app: 0|req: 7006/7006] 222.110.177.70 () {36 vars in 473 bytes} [Thu Sep 19 16:13:16 2024] POST / => generated 2985 bytes in 2 msecs (HTTP/1.1 403) 6 headers in 215 bytes (1 switches on core 0)
+Not Found: /.env
+[pid: 63882|app: 0|req: 7007/7007] 135.125.244.48 () {36 vars in 513 bytes} [Thu Sep 19 16:22:00 2024] GET /.env => generated 3871 bytes in 5 msecs (HTTP/1.1 404) 6 headers in 215 bytes (1 switches on core 0)
+Forbidden (CSRF cookie not set.): /
+[pid: 63882|app: 0|req: 7008/7008] 135.125.244.48 () {40 vars in 620 bytes} [Thu Sep 19 16:22:01 2024] POST / => generated 2985 bytes in 2 msecs (HTTP/1.1 403) 6 headers in 215 bytes (1 switches on core 0)
+Forbidden (CSRF cookie not set.): /
+[pid: 63882|app: 0|req: 7009/7009] 222.110.177.70 () {36 vars in 473 bytes} [Thu Sep 19 16:30:55 2024] POST / => generated 2985 bytes in 2 msecs (HTTP/1.1 403) 6 headers in 215 bytes (1 switches on core 0)
+[pid: 63882|app: 0|req: 7010/7010] 46.250.229.125 () {36 vars in 505 bytes} [Thu Sep 19 16:43:40 2024] GET / => generated 475 bytes in 2 msecs (HTTP/1.1 200) 8 headers in 357 bytes (1 switches on core 0)
+Not Found: /config/php.ini
+[pid: 63882|app: 0|req: 7011/7011] 46.250.229.125 () {36 vars in 533 bytes} [Thu Sep 19 16:43:40 2024] GET /config/php.ini => generated 3901 bytes in 5 msecs (HTTP/1.1 404) 6 headers in 215 bytes (1 switches on core 0)
+[pid: 63882|app: 0|req: 7012/7012] 46.250.229.125 () {36 vars in 529 bytes} [Thu Sep 19 16:43:41 2024] GET /admin/config => generated 0 bytes in 1 msecs (HTTP/1.1 302) 10 headers in 378 bytes (1 switches on core 0)
+Not Found: /index.html
+[pid: 63882|app: 0|req: 7013/7013] 46.250.229.125 () {36 vars in 525 bytes} [Thu Sep 19 16:43:41 2024] GET /index.html => generated 3889 bytes in 5 msecs (HTTP/1.1 404) 6 headers in 215 bytes (1 switches on core 0)
+Not Found: /phpinfo.php
+[pid: 63882|app: 0|req: 7014/7014] 46.250.229.125 () {36 vars in 527 bytes} [Thu Sep 19 16:43:41 2024] GET /phpinfo.php => generated 3892 bytes in 5 msecs (HTTP/1.1 404) 6 headers in 215 bytes (1 switches on core 0)
+Not Found: /test.php
+[pid: 63882|app: 0|req: 7015/7015] 46.250.229.125 () {36 vars in 521 bytes} [Thu Sep 19 16:43:41 2024] GET /test.php => generated 3883 bytes in 5 msecs (HTTP/1.1 404) 6 headers in 215 bytes (1 switches on core 0)
+Not Found: /config.properties
+[pid: 63882|app: 0|req: 7016/7016] 46.250.229.125 () {36 vars in 539 bytes} [Thu Sep 19 16:43:41 2024] GET /config.properties => generated 3910 bytes in 5 msecs (HTTP/1.1 404) 6 headers in 215 bytes (1 switches on core 0)
+Not Found: /config
+[pid: 63882|app: 0|req: 7017/7017] 46.250.229.125 () {36 vars in 517 bytes} [Thu Sep 19 16:43:42 2024] GET /config => generated 3877 bytes in 5 msecs (HTTP/1.1 404) 6 headers in 215 bytes (1 switches on core 0)
+Not Found: /main.js
+[pid: 63882|app: 0|req: 7018/7018] 46.250.229.125 () {36 vars in 519 bytes} [Thu Sep 19 16:43:42 2024] GET /main.js => generated 3880 bytes in 5 msecs (HTTP/1.1 404) 6 headers in 215 bytes (1 switches on core 0)
+Not Found: /phpinfo
+[pid: 63882|app: 0|req: 7019/7019] 46.250.229.125 () {36 vars in 519 bytes} [Thu Sep 19 16:43:42 2024] GET /phpinfo => generated 3880 bytes in 5 msecs (HTTP/1.1 404) 6 headers in 215 bytes (1 switches on core 0)
+Not Found: /test
+[pid: 63882|app: 0|req: 7020/7020] 46.250.229.125 () {36 vars in 513 bytes} [Thu Sep 19 16:43:42 2024] GET /test => generated 3871 bytes in 5 msecs (HTTP/1.1 404) 6 headers in 215 bytes (1 switches on core 0)
+Not Found: /.aws/credentials
+[pid: 63882|app: 0|req: 7021/7021] 46.250.229.125 () {36 vars in 537 bytes} [Thu Sep 19 16:43:42 2024] GET /.aws/credentials => generated 3907 bytes in 5 msecs (HTTP/1.1 404) 6 headers in 215 bytes (1 switches on core 0)
+Not Found: /app_dev.php/_profiler/phpinfo
+[pid: 63882|app: 0|req: 7022/7022] 46.250.229.125 () {36 vars in 563 bytes} [Thu Sep 19 16:43:42 2024] GET /app_dev.php/_profiler/phpinfo => generated 3946 bytes in 5 msecs (HTTP/1.1 404) 6 headers in 215 bytes (1 switches on core 0)
+Not Found: /app/etc/env.php
+[pid: 63882|app: 0|req: 7023/7023] 46.250.229.125 () {36 vars in 535 bytes} [Thu Sep 19 16:43:43 2024] GET /app/etc/env.php => generated 3904 bytes in 5 msecs (HTTP/1.1 404) 6 headers in 215 bytes (1 switches on core 0)
+Not Found: /index.php
+[pid: 63882|app: 0|req: 7024/7024] 46.250.229.125 () {36 vars in 523 bytes} [Thu Sep 19 16:43:43 2024] GET /index.php => generated 3886 bytes in 5 msecs (HTTP/1.1 404) 6 headers in 215 bytes (1 switches on core 0)
+Not Found: /config/constants.js
+[pid: 63882|app: 0|req: 7025/7025] 46.250.229.125 () {36 vars in 543 bytes} [Thu Sep 19 16:43:43 2024] GET /config/constants.js => generated 3916 bytes in 5 msecs (HTTP/1.1 404) 6 headers in 215 bytes (1 switches on core 0)
+Not Found: /secured/phpinfo.php
+[pid: 63882|app: 0|req: 7026/7026] 46.250.229.125 () {36 vars in 543 bytes} [Thu Sep 19 16:43:43 2024] GET /secured/phpinfo.php => generated 3916 bytes in 5 msecs (HTTP/1.1 404) 6 headers in 215 bytes (1 switches on core 0)
+Not Found: /application.properties
+[pid: 63882|app: 0|req: 7027/7027] 46.250.229.125 () {36 vars in 549 bytes} [Thu Sep 19 16:43:43 2024] GET /application.properties => generated 3925 bytes in 5 msecs (HTTP/1.1 404) 6 headers in 215 bytes (1 switches on core 0)
+Not Found: /config.ini
+[pid: 63882|app: 0|req: 7028/7028] 46.250.229.125 () {36 vars in 525 bytes} [Thu Sep 19 16:43:44 2024] GET /config.ini => generated 3889 bytes in 5 msecs (HTTP/1.1 404) 6 headers in 215 bytes (1 switches on core 0)
+Not Found: /config/config.php
+[pid: 63882|app: 0|req: 7029/7029] 46.250.229.125 () {36 vars in 539 bytes} [Thu Sep 19 16:43:44 2024] GET /config/config.php => generated 3910 bytes in 6 msecs (HTTP/1.1 404) 6 headers in 215 bytes (1 switches on core 0)
+Not Found: /index.php/phpinfo
+[pid: 63882|app: 0|req: 7030/7030] 46.250.229.125 () {36 vars in 539 bytes} [Thu Sep 19 16:43:44 2024] GET /index.php/phpinfo => generated 3910 bytes in 5 msecs (HTTP/1.1 404) 6 headers in 215 bytes (1 switches on core 0)
+Not Found: /.profile
+[pid: 63882|app: 0|req: 7031/7031] 46.250.229.125 () {36 vars in 521 bytes} [Thu Sep 19 16:43:44 2024] GET /.profile => generated 3883 bytes in 5 msecs (HTTP/1.1 404) 6 headers in 215 bytes (1 switches on core 0)
+Not Found: /appsettings.json
+[pid: 63882|app: 0|req: 7032/7032] 46.250.229.125 () {36 vars in 537 bytes} [Thu Sep 19 16:43:44 2024] GET /appsettings.json => generated 3907 bytes in 5 msecs (HTTP/1.1 404) 6 headers in 215 bytes (1 switches on core 0)
+Not Found: /config/index.js
+[pid: 63882|app: 0|req: 7033/7033] 46.250.229.125 () {36 vars in 535 bytes} [Thu Sep 19 16:43:45 2024] GET /config/index.js => generated 3904 bytes in 5 msecs (HTTP/1.1 404) 6 headers in 215 bytes (1 switches on core 0)
+Not Found: /public/js/main.js
+[pid: 63882|app: 0|req: 7034/7034] 46.250.229.125 () {36 vars in 539 bytes} [Thu Sep 19 16:43:45 2024] GET /public/js/main.js => generated 3910 bytes in 5 msecs (HTTP/1.1 404) 6 headers in 215 bytes (1 switches on core 0)
+Not Found: /info.php
+[pid: 63882|app: 0|req: 7035/7035] 46.250.229.125 () {36 vars in 521 bytes} [Thu Sep 19 16:43:45 2024] GET /info.php => generated 3883 bytes in 5 msecs (HTTP/1.1 404) 6 headers in 215 bytes (1 switches on core 0)
+Not Found: /config/config.js
+[pid: 63882|app: 0|req: 7036/7036] 46.250.229.125 () {36 vars in 537 bytes} [Thu Sep 19 16:43:45 2024] GET /config/config.js => generated 3907 bytes in 5 msecs (HTTP/1.1 404) 6 headers in 215 bytes (1 switches on core 0)
+Not Found: /config.js
+[pid: 63882|app: 0|req: 7037/7037] 46.250.229.125 () {36 vars in 523 bytes} [Thu Sep 19 16:43:45 2024] GET /config.js => generated 3886 bytes in 5 msecs (HTTP/1.1 404) 6 headers in 215 bytes (1 switches on core 0)
+Not Found: /gulpfile.js
+[pid: 63882|app: 0|req: 7038/7038] 46.250.229.125 () {36 vars in 527 bytes} [Thu Sep 19 16:43:46 2024] GET /gulpfile.js => generated 3892 bytes in 5 msecs (HTTP/1.1 404) 6 headers in 215 bytes (1 switches on core 0)
+Not Found: /application-dev.properties
+[pid: 63882|app: 0|req: 7039/7039] 46.250.229.125 () {36 vars in 557 bytes} [Thu Sep 19 16:43:46 2024] GET /application-dev.properties => generated 3937 bytes in 5 msecs (HTTP/1.1 404) 6 headers in 215 bytes (1 switches on core 0)
+Not Found: /config/default.json
+[pid: 63882|app: 0|req: 7040/7040] 46.250.229.125 () {36 vars in 543 bytes} [Thu Sep 19 16:43:46 2024] GET /config/default.json => generated 3916 bytes in 5 msecs (HTTP/1.1 404) 6 headers in 215 bytes (1 switches on core 0)
+Not Found: /README.md
+[pid: 63882|app: 0|req: 7041/7041] 46.250.229.125 () {36 vars in 523 bytes} [Thu Sep 19 16:43:46 2024] GET /README.md => generated 3886 bytes in 5 msecs (HTTP/1.1 404) 6 headers in 215 bytes (1 switches on core 0)
+Not Found: /info
+[pid: 63882|app: 0|req: 7042/7042] 46.250.229.125 () {36 vars in 513 bytes} [Thu Sep 19 16:43:46 2024] GET /info => generated 3871 bytes in 5 msecs (HTTP/1.1 404) 6 headers in 215 bytes (1 switches on core 0)
+Not Found: /app.js
+[pid: 63882|app: 0|req: 7043/7043] 46.250.229.125 () {36 vars in 517 bytes} [Thu Sep 19 16:43:47 2024] GET /app.js => generated 3877 bytes in 5 msecs (HTTP/1.1 404) 6 headers in 215 bytes (1 switches on core 0)
+Not Found: /env.json
+[pid: 63882|app: 0|req: 7044/7044] 46.250.229.125 () {36 vars in 521 bytes} [Thu Sep 19 16:43:47 2024] GET /env.json => generated 3883 bytes in 5 msecs (HTTP/1.1 404) 6 headers in 215 bytes (1 switches on core 0)
+Not Found: /config/config.ini
+[pid: 63882|app: 0|req: 7045/7045] 46.250.229.125 () {36 vars in 539 bytes} [Thu Sep 19 16:43:47 2024] GET /config/config.ini => generated 3910 bytes in 5 msecs (HTTP/1.1 404) 6 headers in 215 bytes (1 switches on core 0)
+Not Found: /config/environments/production.rb
+[pid: 63882|app: 0|req: 7046/7046] 46.250.229.125 () {36 vars in 571 bytes} [Thu Sep 19 16:43:47 2024] GET /config/environments/production.rb => generated 3958 bytes in 5 msecs (HTTP/1.1 404) 6 headers in 215 bytes (1 switches on core 0)
+Not Found: /environment.ts
+[pid: 63882|app: 0|req: 7047/7047] 46.250.229.125 () {36 vars in 533 bytes} [Thu Sep 19 16:43:47 2024] GET /environment.ts => generated 3901 bytes in 5 msecs (HTTP/1.1 404) 6 headers in 215 bytes (1 switches on core 0)
+Not Found: /resources/application.conf
+[pid: 63882|app: 0|req: 7048/7048] 46.250.229.125 () {36 vars in 557 bytes} [Thu Sep 19 16:43:48 2024] GET /resources/application.conf => generated 3937 bytes in 5 msecs (HTTP/1.1 404) 6 headers in 215 bytes (1 switches on core 0)
+Not Found: /config/aws.json
+[pid: 63882|app: 0|req: 7049/7049] 46.250.229.125 () {36 vars in 535 bytes} [Thu Sep 19 16:43:48 2024] GET /config/aws.json => generated 3904 bytes in 5 msecs (HTTP/1.1 404) 6 headers in 215 bytes (1 switches on core 0)
+Not Found: /app.py
+[pid: 63882|app: 0|req: 7050/7050] 46.250.229.125 () {36 vars in 517 bytes} [Thu Sep 19 16:43:48 2024] GET /app.py => generated 3877 bytes in 5 msecs (HTTP/1.1 404) 6 headers in 215 bytes (1 switches on core 0)
+Not Found: /application/config/constants.php/
+[pid: 63882|app: 0|req: 7051/7051] 46.250.229.125 () {36 vars in 571 bytes} [Thu Sep 19 16:43:48 2024] GET /application/config/constants.php/ => generated 3958 bytes in 6 msecs (HTTP/1.1 404) 6 headers in 215 bytes (1 switches on core 0)
+Not Found: /debug/default
+[pid: 63882|app: 0|req: 7052/7052] 46.250.229.125 () {36 vars in 531 bytes} [Thu Sep 19 16:43:48 2024] GET /debug/default => generated 3898 bytes in 5 msecs (HTTP/1.1 404) 6 headers in 215 bytes (1 switches on core 0)
+Not Found: /src/config.js
+[pid: 63882|app: 0|req: 7053/7053] 46.250.229.125 () {36 vars in 531 bytes} [Thu Sep 19 16:43:48 2024] GET /src/config.js => generated 3898 bytes in 5 msecs (HTTP/1.1 404) 6 headers in 215 bytes (1 switches on core 0)
+Not Found: /config/application.yml
+[pid: 63882|app: 0|req: 7054/7054] 46.250.229.125 () {36 vars in 549 bytes} [Thu Sep 19 16:43:49 2024] GET /config/application.yml => generated 3925 bytes in 5 msecs (HTTP/1.1 404) 6 headers in 215 bytes (1 switches on core 0)
+Not Found: /config/services.yaml
+[pid: 63882|app: 0|req: 7055/7055] 46.250.229.125 () {36 vars in 545 bytes} [Thu Sep 19 16:43:49 2024] GET /config/services.yaml => generated 3919 bytes in 5 msecs (HTTP/1.1 404) 6 headers in 215 bytes (1 switches on core 0)
+Not Found: /dev/phpinfo.php
+[pid: 63882|app: 0|req: 7056/7056] 46.250.229.125 () {36 vars in 535 bytes} [Thu Sep 19 16:43:49 2024] GET /dev/phpinfo.php => generated 3904 bytes in 5 msecs (HTTP/1.1 404) 6 headers in 215 bytes (1 switches on core 0)
+Not Found: /api/config/tsconfig.json
+[pid: 63882|app: 0|req: 7057/7057] 46.250.229.125 () {36 vars in 553 bytes} [Thu Sep 19 16:43:49 2024] GET /api/config/tsconfig.json => generated 3931 bytes in 5 msecs (HTTP/1.1 404) 6 headers in 215 bytes (1 switches on core 0)
+Not Found: /php_info.php
+[pid: 63882|app: 0|req: 7058/7058] 46.250.229.125 () {36 vars in 529 bytes} [Thu Sep 19 16:43:50 2024] GET /php_info.php => generated 3895 bytes in 5 msecs (HTTP/1.1 404) 6 headers in 215 bytes (1 switches on core 0)
+Not Found: /server.js
+[pid: 63882|app: 0|req: 7059/7059] 46.250.229.125 () {36 vars in 523 bytes} [Thu Sep 19 16:43:50 2024] GET /server.js => generated 3886 bytes in 5 msecs (HTTP/1.1 404) 6 headers in 215 bytes (1 switches on core 0)
+Not Found: /config/development.json
+[pid: 63882|app: 0|req: 7060/7060] 46.250.229.125 () {36 vars in 551 bytes} [Thu Sep 19 16:43:50 2024] GET /config/development.json => generated 3928 bytes in 5 msecs (HTTP/1.1 404) 6 headers in 215 bytes (1 switches on core 0)
+Not Found: /test2.php
+[pid: 63882|app: 0|req: 7061/7061] 46.250.229.125 () {36 vars in 523 bytes} [Thu Sep 19 16:43:50 2024] GET /test2.php => generated 3886 bytes in 5 msecs (HTTP/1.1 404) 6 headers in 215 bytes (1 switches on core 0)
+[pid: 63882|app: 0|req: 7062/7062] 46.250.229.125 () {36 vars in 524 bytes} [Thu Sep 19 16:43:50 2024] GET /?phpinfo=1 => generated 475 bytes in 1 msecs (HTTP/1.1 200) 8 headers in 357 bytes (1 switches on core 0)
+Not Found: /test1.php
+[pid: 63882|app: 0|req: 7063/7063] 46.250.229.125 () {36 vars in 523 bytes} [Thu Sep 19 16:43:51 2024] GET /test1.php => generated 3886 bytes in 5 msecs (HTTP/1.1 404) 6 headers in 215 bytes (1 switches on core 0)
+Not Found: /wp-config.php
+[pid: 63882|app: 0|req: 7064/7064] 46.250.229.125 () {36 vars in 531 bytes} [Thu Sep 19 16:43:51 2024] GET /wp-config.php => generated 3898 bytes in 5 msecs (HTTP/1.1 404) 6 headers in 215 bytes (1 switches on core 0)
+Not Found: /config/config.json
+[pid: 63882|app: 0|req: 7065/7065] 46.250.229.125 () {36 vars in 541 bytes} [Thu Sep 19 16:43:51 2024] GET /config/config.json => generated 3913 bytes in 5 msecs (HTTP/1.1 404) 6 headers in 215 bytes (1 switches on core 0)
+Not Found: /frontend_dev.php/$
+[pid: 63882|app: 0|req: 7066/7066] 46.250.229.125 () {36 vars in 541 bytes} [Thu Sep 19 16:43:51 2024] GET /frontend_dev.php/$ => generated 3913 bytes in 5 msecs (HTTP/1.1 404) 6 headers in 215 bytes (1 switches on core 0)
+Not Found: /staticfiles
+[pid: 63882|app: 0|req: 7067/7067] 46.250.229.125 () {36 vars in 527 bytes} [Thu Sep 19 16:43:51 2024] GET /staticfiles => generated 3892 bytes in 5 msecs (HTTP/1.1 404) 6 headers in 215 bytes (1 switches on core 0)
+Not Found: /_profiler/phpinfo
+[pid: 63882|app: 0|req: 7068/7068] 46.250.229.125 () {36 vars in 539 bytes} [Thu Sep 19 16:43:52 2024] GET /_profiler/phpinfo => generated 3910 bytes in 5 msecs (HTTP/1.1 404) 6 headers in 215 bytes (1 switches on core 0)
+Not Found: /storage/logs/laravel.log
+[pid: 63882|app: 0|req: 7069/7069] 46.250.229.125 () {36 vars in 553 bytes} [Thu Sep 19 16:43:52 2024] GET /storage/logs/laravel.log => generated 3931 bytes in 5 msecs (HTTP/1.1 404) 6 headers in 215 bytes (1 switches on core 0)
+Not Found: /phpversion.php
+[pid: 63882|app: 0|req: 7070/7070] 46.250.229.125 () {36 vars in 533 bytes} [Thu Sep 19 16:43:52 2024] GET /phpversion.php => generated 3901 bytes in 5 msecs (HTTP/1.1 404) 6 headers in 215 bytes (1 switches on core 0)
+Not Found: /Dockerfile
+[pid: 63882|app: 0|req: 7071/7071] 46.250.229.125 () {36 vars in 525 bytes} [Thu Sep 19 16:43:52 2024] GET /Dockerfile => generated 3889 bytes in 11 msecs (HTTP/1.1 404) 6 headers in 215 bytes (1 switches on core 0)
+Not Found: /settings.json
+[pid: 63882|app: 0|req: 7072/7072] 46.250.229.125 () {36 vars in 531 bytes} [Thu Sep 19 16:43:52 2024] GET /settings.json => generated 3898 bytes in 7 msecs (HTTP/1.1 404) 6 headers in 215 bytes (1 switches on core 0)
+Not Found: /src/main/resources/appsettings.yml
+[pid: 63882|app: 0|req: 7073/7073] 46.250.229.125 () {36 vars in 573 bytes} [Thu Sep 19 16:43:53 2024] GET /src/main/resources/appsettings.yml => generated 3961 bytes in 7 msecs (HTTP/1.1 404) 6 headers in 215 bytes (1 switches on core 0)
+Not Found: /configs/application.ini
+[pid: 63882|app: 0|req: 7074/7074] 46.250.229.125 () {36 vars in 551 bytes} [Thu Sep 19 16:43:53 2024] GET /configs/application.ini => generated 3928 bytes in 6 msecs (HTTP/1.1 404) 6 headers in 215 bytes (1 switches on core 0)
+Not Found: /js/config.js
+[pid: 63882|app: 0|req: 7075/7075] 46.250.229.125 () {36 vars in 529 bytes} [Thu Sep 19 16:43:53 2024] GET /js/config.js => generated 3895 bytes in 9 msecs (HTTP/1.1 404) 6 headers in 215 bytes (1 switches on core 0)
+Not Found: /login/index.php
+[pid: 63882|app: 0|req: 7076/7076] 46.250.229.125 () {36 vars in 535 bytes} [Thu Sep 19 16:43:53 2024] GET /login/index.php => generated 3904 bytes in 11 msecs (HTTP/1.1 404) 6 headers in 215 bytes (1 switches on core 0)
+Not Found: /src/main/resources/application.properties
+[pid: 63882|app: 0|req: 7077/7077] 46.250.229.125 () {36 vars in 587 bytes} [Thu Sep 19 16:43:53 2024] GET /src/main/resources/application.properties => generated 3982 bytes in 11 msecs (HTTP/1.1 404) 6 headers in 215 bytes (1 switches on core 0)
+Not Found: /install/index.php
+[pid: 63882|app: 0|req: 7078/7078] 46.250.229.125 () {36 vars in 539 bytes} [Thu Sep 19 16:43:54 2024] GET /install/index.php => generated 3910 bytes in 5 msecs (HTTP/1.1 404) 6 headers in 215 bytes (1 switches on core 0)
+Not Found: /config.php
+[pid: 63882|app: 0|req: 7079/7079] 46.250.229.125 () {36 vars in 525 bytes} [Thu Sep 19 16:43:54 2024] GET /config.php => generated 3889 bytes in 5 msecs (HTTP/1.1 404) 6 headers in 215 bytes (1 switches on core 0)
+Not Found: /products/.gitlab-ci.yml
+[pid: 63882|app: 0|req: 7080/7080] 46.250.229.125 () {36 vars in 551 bytes} [Thu Sep 19 16:43:54 2024] GET /products/.gitlab-ci.yml => generated 3928 bytes in 5 msecs (HTTP/1.1 404) 6 headers in 215 bytes (1 switches on core 0)
+Not Found: /manifest.json
+[pid: 63882|app: 0|req: 7081/7081] 46.250.229.125 () {36 vars in 531 bytes} [Thu Sep 19 16:43:54 2024] GET /manifest.json => generated 3898 bytes in 5 msecs (HTTP/1.1 404) 6 headers in 215 bytes (1 switches on core 0)
+Not Found: /ecosystem.config.js
+[pid: 63882|app: 0|req: 7082/7082] 46.250.229.125 () {36 vars in 543 bytes} [Thu Sep 19 16:43:54 2024] GET /ecosystem.config.js => generated 3916 bytes in 5 msecs (HTTP/1.1 404) 6 headers in 215 bytes (1 switches on core 0)
+Not Found: /device/device.js
+[pid: 63882|app: 0|req: 7083/7083] 46.250.229.125 () {36 vars in 537 bytes} [Thu Sep 19 16:43:55 2024] GET /device/device.js => generated 3907 bytes in 5 msecs (HTTP/1.1 404) 6 headers in 215 bytes (1 switches on core 0)
+Not Found: /php-info.php
+[pid: 63882|app: 0|req: 7084/7084] 46.250.229.125 () {36 vars in 529 bytes} [Thu Sep 19 16:43:55 2024] GET /php-info.php => generated 3895 bytes in 5 msecs (HTTP/1.1 404) 6 headers in 215 bytes (1 switches on core 0)
+Not Found: /config.json
+[pid: 63882|app: 0|req: 7085/7085] 46.250.229.125 () {36 vars in 527 bytes} [Thu Sep 19 16:43:55 2024] GET /config.json => generated 3892 bytes in 5 msecs (HTTP/1.1 404) 6 headers in 215 bytes (1 switches on core 0)
+[pid: 63882|app: 0|req: 7086/7086] 46.250.229.125 () {36 vars in 518 bytes} [Thu Sep 19 16:43:55 2024] GET /?q=info => generated 475 bytes in 1 msecs (HTTP/1.1 200) 8 headers in 357 bytes (1 switches on core 0)
+[pid: 63882|app: 0|req: 7087/7087] 46.250.229.125 () {36 vars in 526 bytes} [Thu Sep 19 16:43:55 2024] GET /?xdebuginfo => generated 475 bytes in 1 msecs (HTTP/1.1 200) 8 headers in 357 bytes (1 switches on core 0)
+[pid: 63882|app: 0|req: 7088/7088] 46.250.229.125 () {36 vars in 525 bytes} [Thu Sep 19 16:43:56 2024] GET /admin/test => generated 0 bytes in 1 msecs (HTTP/1.1 302) 10 headers in 376 bytes (1 switches on core 0)
+Not Found: /php.php
+[pid: 63882|app: 0|req: 7089/7089] 46.250.229.125 () {36 vars in 519 bytes} [Thu Sep 19 16:43:56 2024] GET /php.php => generated 3880 bytes in 5 msecs (HTTP/1.1 404) 6 headers in 215 bytes (1 switches on core 0)
+[pid: 63882|app: 0|req: 7090/7090] 46.250.229.125 () {36 vars in 505 bytes} [Thu Sep 19 16:43:56 2024] GET / => generated 475 bytes in 1 msecs (HTTP/1.1 200) 8 headers in 357 bytes (1 switches on core 0)
+Forbidden (CSRF cookie not set.): /
+[pid: 63882|app: 0|req: 7091/7091] 46.250.229.125 () {40 vars in 620 bytes} [Thu Sep 19 16:43:56 2024] POST / => generated 2985 bytes in 2 msecs (HTTP/1.1 403) 6 headers in 215 bytes (1 switches on core 0)
+Forbidden (CSRF cookie not set.): /
+[pid: 63882|app: 0|req: 7092/7092] 222.110.177.70 () {36 vars in 473 bytes} [Thu Sep 19 16:44:44 2024] POST / => generated 2985 bytes in 2 msecs (HTTP/1.1 403) 6 headers in 215 bytes (1 switches on core 0)
+Forbidden (CSRF cookie not set.): /
+[pid: 63882|app: 0|req: 7093/7093] 222.110.177.70 () {36 vars in 473 bytes} [Thu Sep 19 16:49:24 2024] POST / => generated 2985 bytes in 2 msecs (HTTP/1.1 403) 6 headers in 215 bytes (1 switches on core 0)
+[pid: 63882|app: 0|req: 7094/7094] 222.110.177.70 () {46 vars in 868 bytes} [Thu Sep 19 16:50:07 2024] GET / => generated 475 bytes in 2 msecs (HTTP/1.1 200) 8 headers in 357 bytes (1 switches on core 0)
+[pid: 63882|app: 0|req: 7095/7095] 222.110.177.70 () {46 vars in 868 bytes} [Thu Sep 19 16:50:08 2024] GET / => generated 475 bytes in 1 msecs (HTTP/1.1 200) 8 headers in 357 bytes (1 switches on core 0)
+[pid: 63882|app: 0|req: 7096/7096] 222.110.177.70 () {46 vars in 868 bytes} [Thu Sep 19 16:50:10 2024] GET / => generated 475 bytes in 1 msecs (HTTP/1.1 200) 8 headers in 357 bytes (1 switches on core 0)
+[pid: 63882|app: 0|req: 7097/7097] 222.110.177.70 () {46 vars in 868 bytes} [Thu Sep 19 16:51:03 2024] GET / => generated 475 bytes in 1 msecs (HTTP/1.1 200) 8 headers in 357 bytes (1 switches on core 0)
+[pid: 63882|app: 0|req: 7098/7098] 222.110.177.99 () {42 vars in 814 bytes} [Thu Sep 19 16:51:28 2024] GET /letter/ => generated 2805 bytes in 2 msecs (HTTP/1.1 200) 6 headers in 208 bytes (1 switches on core 0)
+Forbidden (CSRF cookie not set.): /
+[pid: 63882|app: 0|req: 7099/7099] 222.110.177.70 () {36 vars in 473 bytes} [Thu Sep 19 16:51:45 2024] POST / => generated 2985 bytes in 2 msecs (HTTP/1.1 403) 6 headers in 215 bytes (1 switches on core 0)
+Forbidden (CSRF cookie has incorrect length.): /
+[pid: 63882|app: 0|req: 7100/7100] 222.110.177.70 () {40 vars in 517 bytes} [Thu Sep 19 16:53:43 2024] POST / => generated 2530 bytes in 2 msecs (HTTP/1.1 403) 8 headers in 365 bytes (1 switches on core 0)
+Forbidden (CSRF cookie has incorrect length.): /
+[pid: 63882|app: 0|req: 7101/7101] 222.110.177.70 () {40 vars in 518 bytes} [Thu Sep 19 16:53:49 2024] POST / => generated 2530 bytes in 2 msecs (HTTP/1.1 403) 8 headers in 365 bytes (1 switches on core 0)
+Forbidden (CSRF cookie has incorrect length.): /
+[pid: 63882|app: 0|req: 7102/7102] 222.110.177.70 () {40 vars in 518 bytes} [Thu Sep 19 16:54:20 2024] POST / => generated 2530 bytes in 2 msecs (HTTP/1.1 403) 8 headers in 365 bytes (1 switches on core 0)
+Forbidden (CSRF cookie has incorrect length.): /
+[pid: 63882|app: 0|req: 7103/7103] 222.110.177.70 () {40 vars in 517 bytes} [Thu Sep 19 16:54:57 2024] POST / => generated 2530 bytes in 2 msecs (HTTP/1.1 403) 8 headers in 365 bytes (1 switches on core 0)
+Forbidden (CSRF cookie has incorrect length.): /
+[pid: 63882|app: 0|req: 7104/7104] 222.110.177.70 () {40 vars in 518 bytes} [Thu Sep 19 16:56:07 2024] POST / => generated 2530 bytes in 2 msecs (HTTP/1.1 403) 8 headers in 365 bytes (1 switches on core 0)
+[pid: 63882|app: 0|req: 7105/7105] 222.110.177.70 () {32 vars in 362 bytes} [Thu Sep 19 16:57:34 2024] GET / => generated 475 bytes in 1 msecs (HTTP/1.1 200) 8 headers in 357 bytes (1 switches on core 0)
+Internal Server Error: /
+Traceback (most recent call last):
+  File "/home/ubuntu/backend/myproject/qnart/lib/python3.12/site-packages/django/utils/datastructures.py", line 84, in __getitem__
+    list_ = super().__getitem__(key)
+            ^^^^^^^^^^^^^^^^^^^^^^^^
+KeyError: 'username'
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/home/ubuntu/backend/myproject/qnart/lib/python3.12/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+               ^^^^^^^^^^^^^^^^^^^^^
+  File "/home/ubuntu/backend/myproject/qnart/lib/python3.12/site-packages/django/core/handlers/base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/ubuntu/backend/common/views.py", line 35, in login
+    username = request.POST['username']
+               ~~~~~~~~~~~~^^^^^^^^^^^^
+  File "/home/ubuntu/backend/myproject/qnart/lib/python3.12/site-packages/django/utils/datastructures.py", line 86, in __getitem__
+    raise MultiValueDictKeyError(key)
+django.utils.datastructures.MultiValueDictKeyError: 'username'
+[pid: 63882|app: 0|req: 7106/7106] 222.110.177.70 () {40 vars in 582 bytes} [Thu Sep 19 16:57:40 2024] POST / => generated 62245 bytes in 26 msecs (HTTP/1.1 500) 7 headers in 242 bytes (1 switches on core 0)
+Internal Server Error: /
+Traceback (most recent call last):
+  File "/home/ubuntu/backend/myproject/qnart/lib/python3.12/site-packages/django/utils/datastructures.py", line 84, in __getitem__
+    list_ = super().__getitem__(key)
+            ^^^^^^^^^^^^^^^^^^^^^^^^
+KeyError: 'username'
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/home/ubuntu/backend/myproject/qnart/lib/python3.12/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+               ^^^^^^^^^^^^^^^^^^^^^
+  File "/home/ubuntu/backend/myproject/qnart/lib/python3.12/site-packages/django/core/handlers/base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/ubuntu/backend/common/views.py", line 35, in login
+    username = request.POST['username']
+               ~~~~~~~~~~~~^^^^^^^^^^^^
+  File "/home/ubuntu/backend/myproject/qnart/lib/python3.12/site-packages/django/utils/datastructures.py", line 86, in __getitem__
+    raise MultiValueDictKeyError(key)
+django.utils.datastructures.MultiValueDictKeyError: 'username'
+[pid: 63882|app: 0|req: 7107/7107] 222.110.177.70 () {40 vars in 582 bytes} [Thu Sep 19 17:01:38 2024] POST / => generated 62245 bytes in 23 msecs (HTTP/1.1 500) 7 headers in 242 bytes (1 switches on core 0)
+[pid: 63882|app: 0|req: 7108/7108] 222.110.177.70 () {32 vars in 362 bytes} [Thu Sep 19 17:01:58 2024] GET / => generated 475 bytes in 1 msecs (HTTP/1.1 200) 8 headers in 357 bytes (1 switches on core 0)
+Internal Server Error: /
+Traceback (most recent call last):
+  File "/home/ubuntu/backend/myproject/qnart/lib/python3.12/site-packages/django/utils/datastructures.py", line 84, in __getitem__
+    list_ = super().__getitem__(key)
+            ^^^^^^^^^^^^^^^^^^^^^^^^
+KeyError: 'username'
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/home/ubuntu/backend/myproject/qnart/lib/python3.12/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+               ^^^^^^^^^^^^^^^^^^^^^
+  File "/home/ubuntu/backend/myproject/qnart/lib/python3.12/site-packages/django/core/handlers/base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/ubuntu/backend/common/views.py", line 35, in login
+    username = request.POST['username']
+               ~~~~~~~~~~~~^^^^^^^^^^^^
+  File "/home/ubuntu/backend/myproject/qnart/lib/python3.12/site-packages/django/utils/datastructures.py", line 86, in __getitem__
+    raise MultiValueDictKeyError(key)
+django.utils.datastructures.MultiValueDictKeyError: 'username'
+[pid: 63882|app: 0|req: 7109/7109] 222.110.177.70 () {40 vars in 582 bytes} [Thu Sep 19 17:02:16 2024] POST / => generated 62245 bytes in 23 msecs (HTTP/1.1 500) 7 headers in 242 bytes (1 switches on core 0)
+[pid: 63882|app: 0|req: 7110/7110] 222.110.177.86 () {52 vars in 1016 bytes} [Thu Sep 19 17:02:20 2024] POST / => generated 571 bytes in 779 msecs (HTTP/1.1 200) 8 headers in 357 bytes (1 switches on core 0)
+[pid: 63882|app: 0|req: 7111/7111] 222.110.177.86 () {52 vars in 1016 bytes} [Thu Sep 19 17:02:25 2024] POST / => generated 571 bytes in 759 msecs (HTTP/1.1 200) 8 headers in 357 bytes (1 switches on core 0)
+[pid: 63882|app: 0|req: 7112/7112] 222.110.177.70 () {42 vars in 863 bytes} [Thu Sep 19 17:04:10 2024] GET /admin/login/?next=/admin/ => generated 4196 bytes in 5 msecs (HTTP/1.1 200) 10 headers in 470 bytes (1 switches on core 0)
+[pid: 63882|app: 0|req: 7113/7113] 222.110.177.70 () {42 vars in 815 bytes} [Thu Sep 19 17:04:15 2024] GET / => generated 475 bytes in 1 msecs (HTTP/1.1 200) 8 headers in 357 bytes (1 switches on core 0)
+[pid: 63882|app: 0|req: 7114/7114] 222.110.177.70 () {32 vars in 362 bytes} [Thu Sep 19 17:04:26 2024] GET / => generated 475 bytes in 1 msecs (HTTP/1.1 200) 8 headers in 357 bytes (1 switches on core 0)
+Internal Server Error: /
+Traceback (most recent call last):
+  File "/home/ubuntu/backend/myproject/qnart/lib/python3.12/site-packages/django/utils/datastructures.py", line 84, in __getitem__
+    list_ = super().__getitem__(key)
+            ^^^^^^^^^^^^^^^^^^^^^^^^
+KeyError: 'username'
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/home/ubuntu/backend/myproject/qnart/lib/python3.12/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+               ^^^^^^^^^^^^^^^^^^^^^
+  File "/home/ubuntu/backend/myproject/qnart/lib/python3.12/site-packages/django/core/handlers/base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/ubuntu/backend/common/views.py", line 35, in login
+    username = request.POST['username']
+               ~~~~~~~~~~~~^^^^^^^^^^^^
+  File "/home/ubuntu/backend/myproject/qnart/lib/python3.12/site-packages/django/utils/datastructures.py", line 86, in __getitem__
+    raise MultiValueDictKeyError(key)
+django.utils.datastructures.MultiValueDictKeyError: 'username'
+[pid: 63882|app: 0|req: 7115/7115] 222.110.177.70 () {40 vars in 581 bytes} [Thu Sep 19 17:04:48 2024] POST / => generated 62244 bytes in 23 msecs (HTTP/1.1 500) 7 headers in 242 bytes (1 switches on core 0)
+[pid: 63882|app: 0|req: 7116/7116] 222.110.177.70 () {32 vars in 362 bytes} [Thu Sep 19 17:08:25 2024] GET / => generated 475 bytes in 1 msecs (HTTP/1.1 200) 8 headers in 357 bytes (1 switches on core 0)
+Internal Server Error: /
+Traceback (most recent call last):
+  File "/home/ubuntu/backend/myproject/qnart/lib/python3.12/site-packages/django/utils/datastructures.py", line 84, in __getitem__
+    list_ = super().__getitem__(key)
+            ^^^^^^^^^^^^^^^^^^^^^^^^
+KeyError: 'username'
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/home/ubuntu/backend/myproject/qnart/lib/python3.12/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+               ^^^^^^^^^^^^^^^^^^^^^
+  File "/home/ubuntu/backend/myproject/qnart/lib/python3.12/site-packages/django/core/handlers/base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/ubuntu/backend/common/views.py", line 35, in login
+    username = request.POST['username']
+               ~~~~~~~~~~~~^^^^^^^^^^^^
+  File "/home/ubuntu/backend/myproject/qnart/lib/python3.12/site-packages/django/utils/datastructures.py", line 86, in __getitem__
+    raise MultiValueDictKeyError(key)
+django.utils.datastructures.MultiValueDictKeyError: 'username'
+[pid: 63882|app: 0|req: 7117/7117] 222.110.177.70 () {40 vars in 582 bytes} [Thu Sep 19 17:08:31 2024] POST / => generated 62245 bytes in 22 msecs (HTTP/1.1 500) 7 headers in 242 bytes (1 switches on core 0)
+[pid: 63882|app: 0|req: 7118/7118] 222.110.177.86 () {52 vars in 1016 bytes} [Thu Sep 19 17:08:45 2024] POST / => generated 571 bytes in 807 msecs (HTTP/1.1 200) 8 headers in 357 bytes (1 switches on core 0)
+Internal Server Error: /
+Traceback (most recent call last):
+  File "/home/ubuntu/backend/myproject/qnart/lib/python3.12/site-packages/django/utils/datastructures.py", line 84, in __getitem__
+    list_ = super().__getitem__(key)
+            ^^^^^^^^^^^^^^^^^^^^^^^^
+KeyError: 'username'
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/home/ubuntu/backend/myproject/qnart/lib/python3.12/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+               ^^^^^^^^^^^^^^^^^^^^^
+  File "/home/ubuntu/backend/myproject/qnart/lib/python3.12/site-packages/django/core/handlers/base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/ubuntu/backend/common/views.py", line 35, in login
+    username = request.POST['username']
+               ~~~~~~~~~~~~^^^^^^^^^^^^
+  File "/home/ubuntu/backend/myproject/qnart/lib/python3.12/site-packages/django/utils/datastructures.py", line 86, in __getitem__
+    raise MultiValueDictKeyError(key)
+django.utils.datastructures.MultiValueDictKeyError: 'username'
+[pid: 63882|app: 0|req: 7119/7119] 222.110.177.70 () {40 vars in 581 bytes} [Thu Sep 19 17:09:00 2024] POST / => generated 62244 bytes in 22 msecs (HTTP/1.1 500) 7 headers in 242 bytes (1 switches on core 0)
+Internal Server Error: /
+Traceback (most recent call last):
+  File "/home/ubuntu/backend/myproject/qnart/lib/python3.12/site-packages/django/utils/datastructures.py", line 84, in __getitem__
+    list_ = super().__getitem__(key)
+            ^^^^^^^^^^^^^^^^^^^^^^^^
+KeyError: 'username'
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/home/ubuntu/backend/myproject/qnart/lib/python3.12/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+               ^^^^^^^^^^^^^^^^^^^^^
+  File "/home/ubuntu/backend/myproject/qnart/lib/python3.12/site-packages/django/core/handlers/base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/ubuntu/backend/common/views.py", line 35, in login
+    username = request.POST['username']
+               ~~~~~~~~~~~~^^^^^^^^^^^^
+  File "/home/ubuntu/backend/myproject/qnart/lib/python3.12/site-packages/django/utils/datastructures.py", line 86, in __getitem__
+    raise MultiValueDictKeyError(key)
+django.utils.datastructures.MultiValueDictKeyError: 'username'
+[pid: 63882|app: 0|req: 7120/7120] 222.110.177.70 () {40 vars in 582 bytes} [Thu Sep 19 17:13:00 2024] POST / => generated 62245 bytes in 22 msecs (HTTP/1.1 500) 7 headers in 242 bytes (1 switches on core 0)
+Internal Server Error: /
+Traceback (most recent call last):
+  File "/home/ubuntu/backend/myproject/qnart/lib/python3.12/site-packages/django/utils/datastructures.py", line 84, in __getitem__
+    list_ = super().__getitem__(key)
+            ^^^^^^^^^^^^^^^^^^^^^^^^
+KeyError: 'username'
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/home/ubuntu/backend/myproject/qnart/lib/python3.12/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+               ^^^^^^^^^^^^^^^^^^^^^
+  File "/home/ubuntu/backend/myproject/qnart/lib/python3.12/site-packages/django/core/handlers/base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/ubuntu/backend/common/views.py", line 35, in login
+    username = request.POST['username']
+               ~~~~~~~~~~~~^^^^^^^^^^^^
+  File "/home/ubuntu/backend/myproject/qnart/lib/python3.12/site-packages/django/utils/datastructures.py", line 86, in __getitem__
+    raise MultiValueDictKeyError(key)
+django.utils.datastructures.MultiValueDictKeyError: 'username'
+[pid: 63882|app: 0|req: 7121/7121] 222.110.177.70 () {40 vars in 582 bytes} [Thu Sep 19 17:14:23 2024] POST / => generated 62245 bytes in 22 msecs (HTTP/1.1 500) 7 headers in 242 bytes (1 switches on core 0)
+Internal Server Error: /
+Traceback (most recent call last):
+  File "/home/ubuntu/backend/myproject/qnart/lib/python3.12/site-packages/django/utils/datastructures.py", line 84, in __getitem__
+    list_ = super().__getitem__(key)
+            ^^^^^^^^^^^^^^^^^^^^^^^^
+KeyError: 'username'
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/home/ubuntu/backend/myproject/qnart/lib/python3.12/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+               ^^^^^^^^^^^^^^^^^^^^^
+  File "/home/ubuntu/backend/myproject/qnart/lib/python3.12/site-packages/django/core/handlers/base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/ubuntu/backend/common/views.py", line 35, in login
+    username = request.POST['username']
+               ~~~~~~~~~~~~^^^^^^^^^^^^
+  File "/home/ubuntu/backend/myproject/qnart/lib/python3.12/site-packages/django/utils/datastructures.py", line 86, in __getitem__
+    raise MultiValueDictKeyError(key)
+django.utils.datastructures.MultiValueDictKeyError: 'username'
+[pid: 63882|app: 0|req: 7122/7122] 222.110.177.70 () {40 vars in 582 bytes} [Thu Sep 19 17:15:29 2024] POST / => generated 62245 bytes in 22 msecs (HTTP/1.1 500) 7 headers in 242 bytes (1 switches on core 0)
+Internal Server Error: /
+Traceback (most recent call last):
+  File "/home/ubuntu/backend/myproject/qnart/lib/python3.12/site-packages/django/utils/datastructures.py", line 84, in __getitem__
+    list_ = super().__getitem__(key)
+            ^^^^^^^^^^^^^^^^^^^^^^^^
+KeyError: 'username'
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/home/ubuntu/backend/myproject/qnart/lib/python3.12/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+               ^^^^^^^^^^^^^^^^^^^^^
+  File "/home/ubuntu/backend/myproject/qnart/lib/python3.12/site-packages/django/core/handlers/base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/ubuntu/backend/common/views.py", line 35, in login
+    username = request.POST['username']
+               ~~~~~~~~~~~~^^^^^^^^^^^^
+  File "/home/ubuntu/backend/myproject/qnart/lib/python3.12/site-packages/django/utils/datastructures.py", line 86, in __getitem__
+    raise MultiValueDictKeyError(key)
+django.utils.datastructures.MultiValueDictKeyError: 'username'
+[pid: 63882|app: 0|req: 7123/7123] 222.110.177.70 () {40 vars in 582 bytes} [Thu Sep 19 17:17:31 2024] POST / => generated 62245 bytes in 23 msecs (HTTP/1.1 500) 7 headers in 242 bytes (1 switches on core 0)
+Internal Server Error: /
+Traceback (most recent call last):
+  File "/home/ubuntu/backend/myproject/qnart/lib/python3.12/site-packages/django/utils/datastructures.py", line 84, in __getitem__
+    list_ = super().__getitem__(key)
+            ^^^^^^^^^^^^^^^^^^^^^^^^
+KeyError: 'username'
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/home/ubuntu/backend/myproject/qnart/lib/python3.12/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+               ^^^^^^^^^^^^^^^^^^^^^
+  File "/home/ubuntu/backend/myproject/qnart/lib/python3.12/site-packages/django/core/handlers/base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/ubuntu/backend/common/views.py", line 35, in login
+    username = request.POST['username']
+               ~~~~~~~~~~~~^^^^^^^^^^^^
+  File "/home/ubuntu/backend/myproject/qnart/lib/python3.12/site-packages/django/utils/datastructures.py", line 86, in __getitem__
+    raise MultiValueDictKeyError(key)
+django.utils.datastructures.MultiValueDictKeyError: 'username'
+[pid: 63882|app: 0|req: 7124/7124] 222.110.177.70 () {40 vars in 582 bytes} [Thu Sep 19 17:17:40 2024] POST / => generated 62245 bytes in 22 msecs (HTTP/1.1 500) 7 headers in 242 bytes (1 switches on core 0)
+[pid: 63882|app: 0|req: 7125/7125] 222.110.177.70 () {46 vars in 868 bytes} [Thu Sep 19 17:18:01 2024] GET / => generated 475 bytes in 1 msecs (HTTP/1.1 200) 8 headers in 357 bytes (1 switches on core 0)
+[pid: 63882|app: 0|req: 7126/7126] 222.110.177.70 () {54 vars in 1059 bytes} [Thu Sep 19 17:18:05 2024] POST / => generated 571 bytes in 754 msecs (HTTP/1.1 200) 8 headers in 357 bytes (1 switches on core 0)
+[pid: 63882|app: 0|req: 7127/7127] 222.110.177.70 () {54 vars in 1059 bytes} [Thu Sep 19 17:18:28 2024] POST / => generated 571 bytes in 766 msecs (HTTP/1.1 200) 8 headers in 357 bytes (1 switches on core 0)
+[pid: 63882|app: 0|req: 7128/7128] 222.110.177.70 () {54 vars in 1059 bytes} [Thu Sep 19 17:18:30 2024] POST / => generated 571 bytes in 756 msecs (HTTP/1.1 200) 8 headers in 357 bytes (1 switches on core 0)
+[pid: 63882|app: 0|req: 7129/7129] 222.110.177.70 () {54 vars in 1059 bytes} [Thu Sep 19 17:18:32 2024] POST / => generated 571 bytes in 768 msecs (HTTP/1.1 200) 8 headers in 357 bytes (1 switches on core 0)
+[pid: 63882|app: 0|req: 7130/7130] 222.110.177.70 () {54 vars in 1059 bytes} [Thu Sep 19 17:18:34 2024] POST / => generated 571 bytes in 767 msecs (HTTP/1.1 200) 8 headers in 357 bytes (1 switches on core 0)
+[pid: 63882|app: 0|req: 7131/7131] 222.110.177.70 () {54 vars in 1059 bytes} [Thu Sep 19 17:18:56 2024] POST / => generated 571 bytes in 776 msecs (HTTP/1.1 200) 8 headers in 357 bytes (1 switches on core 0)
+[pid: 63882|app: 0|req: 7132/7132] 222.110.177.86 () {52 vars in 1015 bytes} [Thu Sep 19 17:18:57 2024] POST / => generated 571 bytes in 777 msecs (HTTP/1.1 200) 8 headers in 357 bytes (2 switches on core 0)
+[pid: 63882|app: 0|req: 7133/7133] 222.110.177.86 () {52 vars in 1015 bytes} [Thu Sep 19 17:18:59 2024] POST / => generated 571 bytes in 764 msecs (HTTP/1.1 200) 8 headers in 357 bytes (1 switches on core 0)
+[pid: 63882|app: 0|req: 7134/7134] 222.110.177.70 () {54 vars in 1059 bytes} [Thu Sep 19 17:19:01 2024] POST / => generated 571 bytes in 765 msecs (HTTP/1.1 200) 8 headers in 357 bytes (1 switches on core 0)
+[pid: 63882|app: 0|req: 7135/7135] 222.110.177.86 () {52 vars in 1015 bytes} [Thu Sep 19 17:19:02 2024] POST / => generated 571 bytes in 757 msecs (HTTP/1.1 200) 8 headers in 357 bytes (1 switches on core 0)
+[pid: 63882|app: 0|req: 7136/7136] 222.110.177.86 () {52 vars in 1015 bytes} [Thu Sep 19 17:19:04 2024] POST / => generated 571 bytes in 757 msecs (HTTP/1.1 200) 8 headers in 357 bytes (1 switches on core 0)
+[pid: 63882|app: 0|req: 7137/7137] 222.110.177.86 () {52 vars in 1015 bytes} [Thu Sep 19 17:19:06 2024] POST / => generated 571 bytes in 751 msecs (HTTP/1.1 200) 8 headers in 357 bytes (1 switches on core 0)
+[pid: 63882|app: 0|req: 7138/7138] 222.110.177.86 () {52 vars in 1015 bytes} [Thu Sep 19 17:19:40 2024] POST / => generated 571 bytes in 758 msecs (HTTP/1.1 200) 8 headers in 357 bytes (1 switches on core 0)
+[pid: 63882|app: 0|req: 7139/7139] 222.110.177.86 () {52 vars in 1015 bytes} [Thu Sep 19 17:19:50 2024] POST / => generated 571 bytes in 766 msecs (HTTP/1.1 200) 8 headers in 357 bytes (1 switches on core 0)
+[pid: 63882|app: 0|req: 7140/7140] 222.110.177.86 () {42 vars in 793 bytes} [Thu Sep 19 17:20:06 2024] GET / => generated 475 bytes in 2 msecs (HTTP/1.1 200) 8 headers in 357 bytes (1 switches on core 0)
+[pid: 63882|app: 0|req: 7141/7141] 222.110.177.86 () {52 vars in 1015 bytes} [Thu Sep 19 17:20:13 2024] POST / => generated 571 bytes in 763 msecs (HTTP/1.1 200) 8 headers in 357 bytes (1 switches on core 0)
+[pid: 63882|app: 0|req: 7142/7142] 222.110.177.86 () {52 vars in 1015 bytes} [Thu Sep 19 17:21:07 2024] POST / => generated 571 bytes in 751 msecs (HTTP/1.1 200) 8 headers in 357 bytes (1 switches on core 0)
+[pid: 63882|app: 0|req: 7143/7143] 222.110.177.86 () {52 vars in 1015 bytes} [Thu Sep 19 17:21:13 2024] POST / => generated 571 bytes in 773 msecs (HTTP/1.1 200) 8 headers in 357 bytes (1 switches on core 0)
+[pid: 63882|app: 0|req: 7144/7144] 222.110.177.86 () {52 vars in 1015 bytes} [Thu Sep 19 17:21:29 2024] POST / => generated 571 bytes in 775 msecs (HTTP/1.1 200) 8 headers in 357 bytes (1 switches on core 0)
+[pid: 63882|app: 0|req: 7145/7145] 222.110.177.70 () {54 vars in 1058 bytes} [Thu Sep 19 17:23:52 2024] POST / => generated 571 bytes in 761 msecs (HTTP/1.1 200) 8 headers in 357 bytes (1 switches on core 0)
+[pid: 63882|app: 0|req: 7146/7146] 109.75.36.154 () {32 vars in 459 bytes} [Thu Sep 19 17:32:03 2024] GET / => generated 475 bytes in 2 msecs (HTTP/1.1 200) 8 headers in 357 bytes (1 switches on core 0)
+Not Found: /Core/Skin/Login.aspx
+[pid: 63882|app: 0|req: 7147/7147] 101.32.218.31 () {42 vars in 783 bytes} [Thu Sep 19 17:47:26 2024] HEAD /Core/Skin/Login.aspx => generated 3923 bytes in 5 msecs (HTTP/1.1 404) 6 headers in 215 bytes (1 switches on core 0)
+[pid: 63882|app: 0|req: 7148/7148] 222.110.177.70 () {32 vars in 362 bytes} [Thu Sep 19 17:51:01 2024] GET / => generated 475 bytes in 1 msecs (HTTP/1.1 200) 8 headers in 357 bytes (1 switches on core 0)
