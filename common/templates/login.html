@@ -1,0 +1,18 @@
+<h1>QnArt Login</h1>
+
+{% if error %}
+<p style="color:rgb(0, 119, 255);">{{ error }}</p>
+{% endif %}
+
+
+<form method="POST" action="{% url 'login'%}">
+{% csrf_token %}
+    아이디<br><input name="username" type="text" value="">
+    <br>
+    비밀번호<br><input name="password" type="password" value="">
+    <br>
+    <br>
+    <input class="btn btn-primary" type="submit" value="로그인">
+</form>
+
+<a href="{% url 'signup' %}" method = 'POST' > 처음 오셨나요?</a>

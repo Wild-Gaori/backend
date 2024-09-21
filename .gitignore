@@ -1,0 +1,33 @@
+# 시스템에서 생성된 파일
+.DS_Store
+
+# 환경 설정 파일 (API 키, 비밀번호가 포함된 파일 등)
+.env
+
+# node_modules 폴더 (npm 사용 시)
+node_modules/
+
+# Python의 가상 환경 폴더
+venv/
+__pycache__/
+
+# 빌드 파일
+dist/
+build/
+
+# IDE에서 생성된 설정 파일
+.vscode/
+.idea/
+
+# 로그 파일
+*.log
+
+# 임시 파일
+*.tmp
+
+# Django
+*.log
+db.sqlite3
+/media/
+local_settings.py
+/staticfiles/
