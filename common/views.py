@@ -4,6 +4,7 @@ from django.contrib import auth
 from django.contrib.auth import get_user_model
 from .models import UserProfile
 
+
 # Create your views here.
 def signup(request):
     if request.method == "POST":
