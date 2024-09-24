@@ -2,10 +2,16 @@ from django.shortcuts import render, redirect
 from django.contrib.auth.models import User
 from django.contrib import auth
 from django.contrib.auth import get_user_model
+from django.contrib.auth import authenticate, login as auth_login
+from django.views import View
 from .models import UserProfile
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 import json
+from rest_framework.views import APIView
+from rest_framework.response import Response
+from rest_framework import status
+from django.utils.decorators import method_decorator
 
 
 
@@ -36,40 +42,31 @@ def signup(request):
     return render(request, "signup.html")
 
 # 로그인 함수
-@csrf_exempt
-def login(request):
-    if request.method == "POST":
-        # JSON 요청도 처리할 수 있도록 설정
-        try:
-            if request.content_type == 'application/json':
-                body = json.loads(request.body)
-                username = body.get('user_id')
-                password = body.get('pw')
-            else:
-                # HTML 폼에서의 로그인 처리
-                username = request.POST.get('user_id')
-                password = request.POST.get('pw')
+@method_decorator(csrf_exempt, name='dispatch')
+class LoginView(APIView):
+    def post(self, request):
+        # request.data를 사용해 POST 데이터 처리 (DRF에서 제공)
+        username = request.data.get('username')
+        password = request.data.get('password')
 
-            # 필수 값이 없을 경우 에러 메시지 반환
-            if not username or not password:
-                return JsonResponse({'error': '아이디와 비밀번호를 모두 입력해주세요.'}, status=400)
+        # 필수 값 확인
+        if not username or not password:
+            return Response({'error': '아이디와 비밀번호를 모두 입력해주세요.'}, status=status.HTTP_400_BAD_REQUEST)
 
-            # 유저 인증 시도
-            user = auth.authenticate(request, username=username, password=password)
+        # 유저 인증 시도
+        user = auth.authenticate(request, username=username, password=password)
 
-            if user is not None:
-                # 인증 성공 시 로그인 후 홈으로 리다이렉트
-                auth.login(request, user)
-                return JsonResponse({'message': '로그인 성공', 'redirect_url': 'home'}, status=200)
-            else:
-                # 인증 실패 시 에러 메시지 표시
-                return JsonResponse({'error': '아이디 또는 비밀번호가 잘못되었습니다.'}, status=400)
-
-        except json.JSONDecodeError:
-            return JsonResponse({'error': '잘못된 요청 형식입니다.'}, status=400)
-
-    # GET 요청일 경우 로그인 페이지 렌더링 (예: HTML 폼을 사용한 로그인)
-    return render(request, "login.html")
+        if user is not None:
+            # 인증 성공 시 로그인 처리
+            auth.login(request, user)
+            return Response({'message': '로그인 성공', 'redirect_url': 'home'}, status=status.HTTP_200_OK)
+        else:
+            # 인증 실패 시 오류 반환
+            return Response({'error': '아이디 또는 비밀번호가 잘못되었습니다.'}, status=status.HTTP_401_UNAUTHORIZED)
+    
+    def get(self, request):
+        # GET 요청일 경우 (예: 로그인 폼이 필요한 경우)
+        return Response({'message': '로그인 페이지'}, status=status.HTTP_200_OK)
 
 @csrf_exempt
 def home(request):
