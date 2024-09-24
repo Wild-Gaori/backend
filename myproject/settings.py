@@ -9,9 +9,16 @@ https://docs.djangoproject.com/en/5.1/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/5.1/ref/settings/
 """
+import environ
 import os
 from dotenv import load_dotenv
 from openai import OpenAI 
+
+# 환경 변수 초기화
+env = environ.Env()
+
+# .env 파일이 있다면 해당 파일을 로드
+environ.Env.read_env()
 
 # .env 파일 로드
 load_dotenv()
@@ -115,13 +122,14 @@ DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
         'NAME': 'qnartdb',#db명
-        'USER': 'wildgaory', #와가
-        'PASSWORD': 'wildgaory', #와가
+        'USER': env('DB_USER'),
+        'PASSWORD': env('DB_PASSWORD'),
         'HOST': 'qnartdb.chkweamwumqs.ap-northeast-2.rds.amazonaws.com', #나중에 aws로 연결
         'PORT': '3306', #mysql 포트번호
     }
 }
-
+env = environ.Env()
+environ.Env.read_env(os.path.join(BASE_DIR, '.env'))
 
 
 # Password validation
