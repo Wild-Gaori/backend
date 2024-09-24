@@ -3,6 +3,10 @@ from django.contrib.auth.models import User
 from django.contrib import auth
 from django.contrib.auth import get_user_model
 from .models import UserProfile
+from django.http import JsonResponse
+from django.views.decorators.csrf import csrf_exempt
+import json
+
 
 
 # Create your views here.
@@ -31,22 +35,35 @@ def signup(request):
     
     return render(request, "signup.html")
 
+@csrf_exempt
 def login(request):
     if request.method == "POST":
-        username = request.POST['username']
-        password = request.POST['password']
+        # request.POST.get()을 사용하여 필드가 존재하는지 확인
+        username = request.POST.get('user_id')
+        password = request.POST.get('pw')
 
+        # 필수 값이 없을 경우 에러 메시지 반환
+        if not username or not password:
+            return render(request, "login.html", {
+                'error': '아이디와 비밀번호를 모두 입력해주세요.',
+            })
+
+        # 유저 인증 시도
         user = auth.authenticate(request, username=username, password=password)
 
         if user is not None:
+            # 인증 성공 시 로그인 후 홈으로 리다이렉트
             auth.login(request, user)
             return redirect('home')
         else:
+            # 인증 실패 시 에러 메시지 표시
             return render(request, "login.html", {
                 'error': '아이디 또는 비밀번호가 잘못되었습니다.',
             })
     else:
+        # GET 요청일 경우 로그인 페이지 렌더링
         return render(request, "login.html")
+
      
 def home(request):
     return render(request, 'home.html')

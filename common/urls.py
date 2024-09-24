@@ -1,5 +1,5 @@
 from django.contrib import admin
-from django.urls import path
+from django.urls import path, include
 from . import views
 
 
@@ -14,5 +14,7 @@ urlpatterns = [
     path('enteruserinfo/', views.enteruserinfo, name='enteruserinfo'),
 
     #path('tutorial/', views.tutorial, name='tutorial'),
+    path('auth/', include('djoser.urls')),  # Djoser 기본 URL
+    path('auth/', include('djoser.urls.authtoken')),  # 토큰 기반 인증 URL
     
 ]  
