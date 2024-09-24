@@ -115,8 +115,8 @@ DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
         'NAME': 'qnartdb',#db명
-        'USER': 'wildgaory', #와가
-        'PASSWORD': 'wildgaory', #와가
+        'USER': '', #와가
+        'PASSWORD': '', #와가
         'HOST': 'qnartdb.chkweamwumqs.ap-northeast-2.rds.amazonaws.com', #나중에 aws로 연결
         'PORT': '3306', #mysql 포트번호
     }
