@@ -34,3 +34,4 @@ local_settings.py
 
 #aws 키 페어
 ec2.pem
+aws-key5.pem
