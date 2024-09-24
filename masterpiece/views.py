@@ -8,11 +8,13 @@ from django.contrib.auth.models import User
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
-from rest_framework.decorators import api_view
+from rest_framework.decorators import api_view, permission_classes
+from rest_framework.permissions import AllowAny
 
 
 # 랜덤 명화 정보를 반환하는 API
 @api_view(['GET'])
+@permission_classes([AllowAny])
 def random_artwork_view(request):
     artwork = get_random_artwork()
     data = {
@@ -26,6 +28,7 @@ def random_artwork_view(request):
 
 # 사용자와 GPT 간의 대화 세션을 처리하는 API
 @api_view(['POST'])
+@permission_classes([AllowAny])
 def chat_view(request):
     # UserProfile을 기반으로 사용자 가져오기(수미 부분 나중에 연결 예정)
     # if request.user.is_authenticated:
@@ -34,7 +37,7 @@ def chat_view(request):
     #    return JsonResponse({'error': 'User must be logged in'}, status=403) 
     
     # 테스트용 임시 사용자 설정
-    user, created = User.objects.get_or_create(username='test_user', defaults={'password': 'testpass'})
+    # user, created = User.objects.get_or_create(username='test_user', defaults={'password': 'testpass'})
     
     # 데이터 파싱
     try:
@@ -72,7 +75,7 @@ def chat_view(request):
     add_message_to_session(session, 'assistant', gpt_response)
     return Response({'response': gpt_response, 'session_id': session.id}, status=status.HTTP_200_OK)
 
-
+@permission_classes([AllowAny])
 @api_view(['GET'])
 def chat_history_view(request):
     # UserProfile을 기반으로 사용자 가져오기(수미 부분 연결)
@@ -82,7 +85,7 @@ def chat_history_view(request):
     #    return JsonResponse({'error': 'User must be logged in'}, status=403)
 
     # 테스트용 임시 사용자 설정
-    user, created = User.objects.get_or_create(username='test_user', defaults={'password': 'testpass'})
+    # user, created = User.objects.get_or_create(username='test_user', defaults={'password': 'testpass'})
 
     chat_sessions = ChatSession.objects.filter(user=user).order_by('-created_at') # db에서 사용자가 진행했던 모든 채팅 세션 최신순으로 불러옴
 
