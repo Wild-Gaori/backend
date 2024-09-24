@@ -15,10 +15,10 @@ from dotenv import load_dotenv
 from openai import OpenAI 
 
 # 환경 변수 초기화
-env = environ.Env()
+# env = environ.Env()
 
 # .env 파일이 있다면 해당 파일을 로드
-environ.Env.read_env()
+# environ.Env.read_env()
 
 # .env 파일 로드
 load_dotenv()
@@ -128,8 +128,8 @@ DATABASES = {
         'PORT': '3306', #mysql 포트번호
     }
 }
-env = environ.Env()
-environ.Env.read_env(os.path.join(BASE_DIR, '.env'))
+# env = environ.Env()
+# environ.Env.read_env(os.path.join(BASE_DIR, '.env'))
 
 
 # Password validation
