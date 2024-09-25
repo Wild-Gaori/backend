@@ -5,7 +5,7 @@ from django.dispatch import receiver
 
 class UserProfile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE, related_name='profile')
-    name = models.CharField(max_length=100, blank=True, null=True)
+    nickname = models.CharField(max_length=100, blank=True, null=True)
     birthdate = models.DateField(null=True, blank=True)
     gender = models.CharField(max_length=10, blank=True, null=True)
     clothing = models.CharField(max_length=100, blank=True, null=True)

@@ -83,10 +83,6 @@ class SignupView(APIView):
 
 
 @csrf_exempt
-def home(request):
-    return render(request, 'home.html')
-
-@csrf_exempt
 def logout(request):
     if request.method == 'POST':
         auth.logout(request)
@@ -101,7 +97,7 @@ def letter(request):
 def enteruserinfo(request):
     if request.method == "POST":
         user_profile = request.user.profile
-        user_profile.name = request.POST.get('name')
+        user_profile.nickname = request.POST.get('nickname')
         user_profile.birthdate = request.POST.get('birthdate')
         user_profile.gender = request.POST.get('gender')
         user_profile.clothing = request.POST.get('clothing')
