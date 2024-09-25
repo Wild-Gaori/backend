@@ -18,8 +18,7 @@ def random_artwork_view(request):
     artwork = get_random_artwork()
 
     # 테스트 사용자
-    user, created = User.objects.get_or_create(username='test', defaults={'password': 'test'})
-
+    user, created = User.objects.get_or_create(username='test_user', defaults={'password': 'testpass'})
 
     # 명화가 주어지면 바로 새로운 대화 세션 생성. 세션 아이디 부여됨
     session = ArtworkChatSession.objects.create(user=user, artwork=artwork)
@@ -39,7 +38,7 @@ def random_artwork_view(request):
 def artwork_chat_view(request):
 
     # 테스트 사용자
-    user, created = User.objects.get_or_create(username='test', defaults={'password': 'test'})
+    user, created = User.objects.get_or_create(username='test_user', defaults={'password': 'testpass'})
 
     # 데이터 파싱
     try:
@@ -74,7 +73,7 @@ def artwork_chat_view(request):
 def artwork_chat_history_view(request):
     
     # 테스트 사용자
-    user, created = User.objects.get_or_create(username='test', defaults={'password': 'test'})
+    user, created = User.objects.get_or_create(username='test_user', defaults={'password': 'testpass'})
 
     # 명화에 대한 사용자의 모든 채팅 세션을 가져옴
     chat_sessions = ArtworkChatSession.objects.filter(user=user).order_by('-created_at') # 사용자의 채팅 세션 최신순으로 불러옴
