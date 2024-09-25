@@ -1,5 +1,5 @@
 import json
-from common.models import UserProfile 
+from account.models import UserProfile 
 from django.shortcuts import render
 from django.shortcuts import get_object_or_404
 from .services import get_random_artwork, create_artwork_chat_session, artwork_chat_with_gpt, add_message_to_session

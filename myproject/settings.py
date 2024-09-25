@@ -21,7 +21,7 @@ from openai import OpenAI
 # environ.Env.read_env()
 
 # .env 파일 로드
-load_dotenv()
+load_dotenv(verbose=True)
 
 # 환경 변수에서 API 키 가져오기
 client = OpenAI(api_key=os.getenv('OPENAI_API_KEY'))
@@ -57,8 +57,7 @@ INSTALLED_APPS = [
     'rest_framework.authtoken',  # 토큰 인증 사용
     'djoser',  #인증 관리 패키지
     'corsheaders', #외부 api 요청
-    'qnart',
-    'common',
+    'account',
     'imagegen',
     'masterpiece',
 ]

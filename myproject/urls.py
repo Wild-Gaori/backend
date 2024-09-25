@@ -6,15 +6,9 @@ from django.conf.urls.static import static
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('qnart/', include('qnart.urls')),
-    path('', include('common.urls')),
+    path('', include('account.urls')), # 로그인,회원가입
     path('masterpiece/', include('masterpiece.urls')),  # 명화 감상 앱
     path('imagegen/', include('imagegen.urls')), # 이미지 생성 앱 
-
-
-    #path('letter/', views.letter, name='letter'),
-    #path('enteruserinfo/', views.enteruserinfo, name='enteruserinfo'),
-    #path('tutorial/', views.tutorial, name='tutorial'),
 ]
 
 # 개발 환경에서 미디어 파일 제공

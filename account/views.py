@@ -1,23 +1,18 @@
-from django.shortcuts import render, redirect
 from django.contrib.auth.models import User
 from django.contrib import auth
-from django.contrib.auth import get_user_model
-from django.contrib.auth import authenticate, login as auth_login
 from django.views import View
 from .models import UserProfile
-from django.http import JsonResponse
-from django.views.decorators.csrf import csrf_exempt
-import json
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
+from django.views.decorators.csrf import csrf_exempt
 from django.utils.decorators import method_decorator
+from .serializers import UserProfileSerializer
 
 # 로그인 함수
 @method_decorator(csrf_exempt, name='dispatch')
 class LoginView(APIView):
     def post(self, request):
-        # request.data를 사용해 POST 데이터 처리 (DRF에서 제공)
         username = request.data.get('username')
         password = request.data.get('password')
 
@@ -29,26 +24,19 @@ class LoginView(APIView):
         user = auth.authenticate(request, username=username, password=password)
 
         if user is not None:
-            # 인증 성공 시 로그인 처리
             auth.login(request, user)
             return Response({'message': 'Login successful', 'redirect_url': 'home'}, status=status.HTTP_200_OK)
         else:
-            # 인증 실패 시 오류 반환
             return Response({'error': 'Invalid username or password.'}, status=status.HTTP_401_UNAUTHORIZED)
     
     def get(self, request):
-        # GET 요청일 경우 (예: 로그인 폼이 필요한 경우)
         return Response({'message': 'Login page'}, status=status.HTTP_200_OK)
-    
-#회원가입 함수   
+
+# 회원가입 함수   
 @method_decorator(csrf_exempt, name='dispatch')
 class SignupView(APIView):
-    """
-    Handles both username check and user registration based on action in request.
-    """
-
     def post(self, request):
-        action = request.data.get('action')  # 'check_username' or 'signup'
+        action = request.data.get('action')
         username = request.data.get('username')
 
         # 아이디 중복 확인
@@ -63,8 +51,8 @@ class SignupView(APIView):
             password_confirm = request.data.get('password_confirm')
             email = request.data.get('email')
 
-            # 입력 필드 확인
-            if not username or not password or not password_confirm or not email:
+            # 필드 확인
+            if not all([username, password, password_confirm, email]):
                 return Response({'error': 'Please fill out all fields.'}, status=status.HTTP_400_BAD_REQUEST)
 
             # 비밀번호 일치 확인
@@ -81,31 +69,14 @@ class SignupView(APIView):
 
         return Response({'error': 'Invalid request.'}, status=status.HTTP_400_BAD_REQUEST)
 
+# 프로필 업데이트 함수
+class UserProfileUpdateView(APIView):
+    def post(self, request):
+        user = request.user  # 현재 로그인한 사용자
+        user_profile = user.profile  # 이미 생성된 UserProfile 가져오기
 
-@csrf_exempt
-def logout(request):
-    if request.method == 'POST':
-        auth.logout(request)
-        return redirect('home')
-    return render(request, 'login.html')
-
-@csrf_exempt
-def letter(request):
-    return render(request, 'letter.html')
-
-@csrf_exempt
-def enteruserinfo(request):
-    if request.method == "POST":
-        user_profile = request.user.profile
-        user_profile.nickname = request.POST.get('nickname')
-        user_profile.birthdate = request.POST.get('birthdate')
-        user_profile.gender = request.POST.get('gender')
-        user_profile.clothing = request.POST.get('clothing')
-        user_profile.hairstyle = request.POST.get('hairstyle')
-        user_profile.save()
-
-        return redirect('home')
-
-    return render(request, 'enteruserinfo.html')
-
-
+        serializer = UserProfileSerializer(user_profile, data=request.data)
+        if serializer.is_valid():
+            serializer.save()  # 유효성 검사 후 저장
+            return Response({'message': 'Profile updated successfully'}, status=status.HTTP_200_OK)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
