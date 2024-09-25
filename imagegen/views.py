@@ -31,7 +31,6 @@ def generate_image(request):
         image_url = image_data.url  # 이미지 URL에 접근 
 
         # 이미지 생성 기록을 DB에 저장
-        # user = request.user  # 현재 로그인한 사용자
         # 테스트용 임시 사용자 설정
         user, created = User.objects.get_or_create(username='test_user', defaults={'password': 'testpass'})
         image_generation = ImageGeneration.objects.create(user=user, image_url=image_url)
@@ -44,7 +43,6 @@ def generate_image(request):
 
 @api_view(['GET'])
 def get_image_history(request):
-    # user = request.user  # 현재 로그인한 사용자
     # 테스트용 임시 사용자 설정
     user, created = User.objects.get_or_create(username='test_user', defaults={'password': 'testpass'})
     
