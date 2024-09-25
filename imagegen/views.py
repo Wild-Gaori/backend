@@ -11,7 +11,8 @@ from .models import ImageGeneration
 
 @api_view(['POST'])
 def generate_image(request):
-
+    print(request.data) 
+    
     prompt = request.data.get("prompt")
     if not prompt:
         return Response({"error": "Prompt is required"}, status=status.HTTP_400_BAD_REQUEST)
