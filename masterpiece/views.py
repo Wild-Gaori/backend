@@ -10,17 +10,16 @@ from rest_framework.response import Response
 from rest_framework import status
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import IsAuthenticated
-from rest_framework.authtoken.models import Token
 
 
 # 랜덤 명화 정보를 반환하는 API
 @api_view(['GET'])
-@permission_classes([IsAuthenticated])
 def random_artwork_view(request):
     artwork = get_random_artwork()
 
-    # 현재 요청에서 인증된 사용자 정보 사용
-    user = request.user
+    # 테스트 사용자
+    user, created = User.objects.get_or_create(username='test', defaults={'password': 'test'})
+
 
     # 명화가 주어지면 바로 새로운 대화 세션 생성. 세션 아이디 부여됨
     session = ArtworkChatSession.objects.create(user=user, artwork=artwork)
@@ -37,11 +36,10 @@ def random_artwork_view(request):
 
 # 명화 기반 대화 세션을 처리하는 API
 @api_view(['POST'])
-@permission_classes([IsAuthenticated])
 def artwork_chat_view(request):
 
-    # 현재 요청에서 인증된 사용자 정보 사용
-    user = request.user
+    # 테스트 사용자
+    user, created = User.objects.get_or_create(username='test', defaults={'password': 'test'})
 
     # 데이터 파싱
     try:
@@ -73,11 +71,10 @@ def artwork_chat_view(request):
 
 # 명화 기반 대화 기록 보여주는 API
 @api_view(['GET'])
-@permission_classes([IsAuthenticated])
 def artwork_chat_history_view(request):
     
-    # 현재 요청에서 인증된 사용자 정보 사용
-    user = request.user
+    # 테스트 사용자
+    user, created = User.objects.get_or_create(username='test', defaults={'password': 'test'})
 
     # 명화에 대한 사용자의 모든 채팅 세션을 가져옴
     chat_sessions = ArtworkChatSession.objects.filter(user=user).order_by('-created_at') # 사용자의 채팅 세션 최신순으로 불러옴
