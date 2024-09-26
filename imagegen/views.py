@@ -5,17 +5,23 @@ from django.shortcuts import render
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
-from rest_framework.decorators import api_view
 from django.contrib.auth.models import User
 from .models import ImageGeneration
+from .serializers import ImageGenerationSerializer
+from rest_framework.decorators import api_view, permission_classes
+from rest_framework.permissions import IsAuthenticated
 
 @api_view(['POST'])
 def generate_image(request):
-    print(request.data) 
-    
-    prompt = request.data.get("prompt")
-    if not prompt:
-        return Response({"error": "Prompt is required"}, status=status.HTTP_400_BAD_REQUEST)
+    # 요청 데이터를 serializer에 전달하여 유효성 검사
+    serializer = ImageGenerationSerializer(data=request.data)
+
+    if not serializer.is_valid():
+        # 유효하지 않은 경우 400 Bad Request와 오류 메시지 반환
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+    # 유효한 경우 prompt 데이터를 추출
+    prompt = serializer.validated_data['prompt']
     
     try:
         client = OpenAI()
@@ -31,9 +37,10 @@ def generate_image(request):
         image_data = response.data[0]  # 첫 번째 이미지 데이터를 추출
         image_url = image_data.url  # 이미지 URL에 접근 
 
-        # 이미지 생성 기록을 DB에 저장
-        # 테스트용 임시 사용자 설정
-        user, created = User.objects.get_or_create(username='test_user', defaults={'password': 'testpass'})
+        # 이미지 생성 기록  DB에 저장
+        #테스트 사용자
+        user, created = User.objects.get_or_create(username='test', defaults={'password': 'test'})
+
         image_generation = ImageGeneration.objects.create(user=user, image_url=image_url)
 
         return Response({"image_url": image_url}, status=status.HTTP_200_OK)
@@ -44,8 +51,9 @@ def generate_image(request):
 
 @api_view(['GET'])
 def get_image_history(request):
-    # 테스트용 임시 사용자 설정
-    user, created = User.objects.get_or_create(username='test_user', defaults={'password': 'testpass'})
+    
+    #테스트 사용자
+    user, created = User.objects.get_or_create(username='test', defaults={'password': 'test'})
     
     # 사용자가 생성한 모든 이미지 조회
     images = ImageGeneration.objects.filter(user=user).order_by('-created_at')
