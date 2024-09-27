@@ -23,7 +23,7 @@ def generate_image(request):
     if not serializer.is_valid():
         logger.error(f"Validation failed: {serializer.errors}")  # 유효성 검사 실패 시 로그 출력
         # 유효하지 않은 경우 400 Bad Request와 오류 메시지 반환
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST, format='json')
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
     # 유효한 경우 prompt 데이터를 추출
     prompt = serializer.validated_data['prompt']
@@ -48,7 +48,7 @@ def generate_image(request):
 
         image_generation = ImageGeneration.objects.create(user=user, image_url=image_url)
 
-        return Response({"image_url": image_url}, status=status.HTTP_200_OK, format='json')
+        return Response({"image_url": image_url}, status=status.HTTP_200_OK)
 
     except Exception as e:
         return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
