@@ -33,14 +33,15 @@ def generate_image(request):
 
         # DALL·E 3 API 호출
         response = client.images.generate(
+            model="dall-e-3",
             prompt=prompt,
-            n=1,  # 생성할 이미지 개수
-            size="1024x1024"  # 이미지 크기
+            size="1024x1024",  # 이미지 크기
+            quality="standard",
+            n=1,
         )
 
         # 응답에서 이미지 URL 추출
-        image_data = response.data[0]  # 첫 번째 이미지 데이터를 추출
-        image_url = image_data.url  # 이미지 URL에 접근 
+        image_url = response.data[0].url  # 이미지 URL에 접근 
 
         # 이미지 생성 기록  DB에 저장
         #테스트 사용자
