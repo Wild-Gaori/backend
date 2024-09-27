@@ -10,13 +10,18 @@ from .models import ImageGeneration
 from .serializers import ImageGenerationSerializer
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import IsAuthenticated
+import logging
+
+logger = logging.getLogger(__name__)
 
 @api_view(['POST'])
 def generate_image(request):
+    logger.info(f"Request data: {request.data}")  # 로그에 요청 데이터 출력
     # 요청 데이터를 serializer에 전달하여 유효성 검사
     serializer = ImageGenerationSerializer(data=request.data)
 
     if not serializer.is_valid():
+        logger.error(f"Validation failed: {serializer.errors}")  # 유효성 검사 실패 시 로그 출력
         # 유효하지 않은 경우 400 Bad Request와 오류 메시지 반환
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST, format='json')
 
