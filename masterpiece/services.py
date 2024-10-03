@@ -80,7 +80,7 @@ def artwork_chat_with_gpt(session, user_message):
     response = client.chat.completions.create(
         model="gpt-4o",
         messages=conversation_history,
-        max_tokens=200
+        max_tokens=400
     )
     
     gpt_response = response.choices[0].message.content
