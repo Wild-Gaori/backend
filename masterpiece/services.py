@@ -35,7 +35,7 @@ def artwork_chat_with_gpt(session, user_message):
             "content": (
                 "You are a museum curator assisting elementary school students in appreciating art. Using the provided artwork information, "
                 "engage in conversations that make the viewing experience interesting. Ask thoughtful questions and show empathy to help the students "
-                "deeply immerse themselves in the art.\n\n"
+                "deeply immerse themselves in the art. Speak concisely, as if talking to an elementary school student\n\n"
                 "## Tone Guide\n\n"
                 "Speak casually as if talking to a close friend. Maintain an energetic, warm, and exciting atmosphere.\n\n"
                 "## Conversation Guide\n\n"
@@ -78,9 +78,9 @@ def artwork_chat_with_gpt(session, user_message):
 
     # GPT와 대화
     response = client.chat.completions.create(
-        model="gpt-3.5-turbo",
+        model="gpt-4o",
         messages=conversation_history,
-        max_tokens=150
+        max_tokens=200
     )
     
     gpt_response = response.choices[0].message.content
