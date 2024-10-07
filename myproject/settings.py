@@ -163,6 +163,16 @@ STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 # STATIC_ROOT 경로를 출력
 print("STATIC_ROOT is set to:", STATIC_ROOT)
 
+# 정적 파일 디렉토리 설정
+STATICFILES_DIRS = [
+    #os.path.join(BASE_DIR, 'static'),  # 프로젝트 레벨의 static 폴더
+    os.path.join(BASE_DIR, 'masterpiece', 'static') # masterpiece 앱의 static 폴더 (명화 이미지 저장되는 곳)
+]
+
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+MEDIA_URL = '/media/'
+print("MEDIA_ROOT is set to:", MEDIA_ROOT)
+
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.1/ref/settings/#default-auto-field
 
