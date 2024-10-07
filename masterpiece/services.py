@@ -120,6 +120,7 @@ def artwork_chat_with_gpt(session, user_message):
     image_description_result = llm.invoke(image_prompt)
     image_description = image_description_result if isinstance(image_description_result, str) else "No description available."
     
+
     answer_system_prompt = (
         "You are a museum docent for children, basically generate quenstions using Guides below"
         "and if the child gives a response that requires further explanation, "
