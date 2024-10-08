@@ -89,7 +89,7 @@ def generate_image_method(request):
             artwork = get_object_or_404(Artwork, id=artwork_fk_id)
             artist_style = artwork.artist_fk.style
             artwork_title = artwork.title
-            combined_prompt = f"{artist_style} 화풍으로 {artwork_title} 작품에서 {prompt} "
+            combined_prompt = f"{artist_style} 화풍으로 {artwork_title} 작품에 {prompt} "
             
             response = client.images.generate(
                 prompt=combined_prompt,
