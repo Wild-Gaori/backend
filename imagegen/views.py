@@ -107,8 +107,8 @@ def generate_image_method(request):
             return Response({"error": "Invalid action"}, status=status.HTTP_400_BAD_REQUEST)
 
         # 응답에서 이미지 URL 추출
-        image_data = response['data'][0]
-        image_url = image_data['url']
+        image_data = response.data[0]
+        image_url = image_data.url
 
         # 응답 반환
         return Response({"image_url": image_url, "final_prompt": final_prompt}, status=status.HTTP_200_OK)
