@@ -87,9 +87,9 @@ def generate_image_method(request):
             
             # 'change' 액션: artwork 정보를 기반으로 프롬프트 수정
             artwork = get_object_or_404(Artwork, id=artwork_fk_id)
-            artist_style = artwork.artist.style
+            artist_style = artwork.artist_fk.style
             artwork_title = artwork.title
-            combined_prompt = f"{artist_style} 화풍으로 {artwork_title} 작품에서 {prompt} 바꿔서 그려줘"
+            combined_prompt = f"{artist_style} 화풍으로 {artwork_title} 작품에서 {prompt} "
             
             response = client.images.generate(
                 prompt=combined_prompt,
@@ -112,8 +112,6 @@ def generate_image_method(request):
     except Exception as e:
         return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
-
-    
 
 @api_view(['GET'])
 def get_image_history(request):
