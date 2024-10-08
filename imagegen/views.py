@@ -84,7 +84,7 @@ def generate_image_method(request):
             # 'experience' 액션: 단순 이미지 생성
             final_prompt = prompt  # 이 경우에는 프롬프트 자체를 사용
             response = client.images.generate(
-                model="dall-e-3"
+                model="dall-e-3",
                 prompt=final_prompt,
                 n=1,  # 생성할 이미지 개수
                 size="1024x1024"  # 이미지 크기
@@ -100,7 +100,7 @@ def generate_image_method(request):
             final_prompt = f"{artist_style} 화풍으로 {artwork_title} 작품에 {prompt}"  # 수정된 프롬프트
             
             response = client.images.generate(
-                model="dall-e-3"
+                model="dall-e-3",
                 prompt=final_prompt,
                 n=1,  # 생성할 이미지 개수
                 size="1024x1024"  # 이미지 크기
