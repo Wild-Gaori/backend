@@ -11,6 +11,9 @@ from .serializers import ImageGenerationSerializer
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import IsAuthenticated
 import logging
+from django.shortcuts import get_object_or_404
+from rest_framework.decorators import api_view
+from masterpiece.models import Artwork, Artist  # 필요한 모델 가져오기
 
 logger = logging.getLogger(__name__)
 
@@ -53,6 +56,63 @@ def generate_image(request):
 
     except Exception as e:
         return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+
+
+@api_view(['POST'])
+def generate_image_method(request):
+    action = request.data.get("action")  # 요청에서 'action' 필드 추출
+    prompt = request.data.get("prompt")
+    artwork_fk_id = request.data.get("artwork_fk_id", None)  # 'change' 액션을 위한 artwork_fk_id
+
+    if not action:
+        return Response({"error": "Action is required"}, status=status.HTTP_400_BAD_REQUEST)
+    
+    if not prompt:
+        return Response({"error": "Prompt is required"}, status=status.HTTP_400_BAD_REQUEST)
+
+    try:
+        client = OpenAI()
+
+        if action == 'experience':
+            # 'experience' 액션: 단순 이미지 생성
+            response = client.images.generate(
+                prompt=prompt,
+                n=1,  # 생성할 이미지 개수
+                size="1024x1024"  # 이미지 크기
+            )
+        elif action == 'change':
+            if not artwork_fk_id:
+                return Response({"error": "Artwork ID is required for 'change' action"}, status=status.HTTP_400_BAD_REQUEST)
+            
+            # 'change' 액션: artwork 정보를 기반으로 프롬프트 수정
+            artwork = get_object_or_404(Artwork, id=artwork_fk_id)
+            artist_style = artwork.artist.style
+            artwork_title = artwork.title
+            combined_prompt = f"{artist_style} 화풍으로 {artwork_title} 작품에서 {prompt} 바꿔서 그려줘"
+            
+            response = client.images.generate(
+                prompt=combined_prompt,
+                n=1,  # 생성할 이미지 개수
+                size="1024x1024"  # 이미지 크기
+            )
+        else:
+            return Response({"error": "Invalid action"}, status=status.HTTP_400_BAD_REQUEST)
+
+        # 응답에서 이미지 URL 추출
+        image_data = response.data[0]
+        image_url = image_data.url
+
+        # 이미지 생성 기록을 DB에 저장
+        user, created = User.objects.get_or_create(username='test_user', defaults={'password': 'testpass'})
+        image_generation = ImageGeneration.objects.create(user=user, image_url=image_url)
+
+        return Response({"image_url": image_url}, status=status.HTTP_200_OK)
+
+    except Exception as e:
+        return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+
     
 
 @api_view(['GET'])
