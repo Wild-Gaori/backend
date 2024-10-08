@@ -1,10 +1,19 @@
 from django.db import models
 from django.contrib.auth.models import User
 
+# 작가 정보를 저장하는 모델
+class Artist(models.Model):
+    name = models.CharField(max_length=255)
+    style = models.CharField(max_length=255)
+
+    def __str__(self):
+        return self.name
+        
 # 명화 정보를 저장하는 모델
 class Artwork(models.Model):
     title = models.CharField(max_length=255) # 제목
     artist = models.CharField(max_length=255) # 작가
+    artist_fk = models.ForeignKey(Artist, on_delete=models.CASCADE, related_name='artwork')  # 작가
     year = models.IntegerField() # 제작연도
     description= models.TextField() # 작품 설명
     hook = models.TextField() # 짧은 설명
