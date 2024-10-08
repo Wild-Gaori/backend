@@ -63,12 +63,11 @@ from rest_framework.response import Response
 from rest_framework import status
 from django.shortcuts import get_object_or_404
 
-
 @api_view(['POST'])
 def generate_image_method(request):
     action = request.data.get("action")  # 요청에서 'action' 필드 추출
     prompt = request.data.get("prompt")
-    artwork_fk_id = request.data.get("artwork_fk_id", None)  # 'change' 액션을 위한 artwork_fk_id
+    artwork_id = request.data.get("artwork_id", None)  # 'change' 액션을 위한 artwork_id
 
     if not action:
         return Response({"error": "Action is required"}, status=status.HTTP_400_BAD_REQUEST)
@@ -89,12 +88,12 @@ def generate_image_method(request):
                 size="1024x1024"  # 이미지 크기
             )
         elif action == 'change':
-            if not artwork_fk_id:
+            if not artwork_id:
                 return Response({"error": "Artwork ID is required for 'change' action"}, status=status.HTTP_400_BAD_REQUEST)
             
             # 'change' 액션: artwork 정보를 기반으로 프롬프트 수정
-            artwork = get_object_or_404(Artwork, id=artwork_fk_id)
-            artist_style = artwork.artist.style
+            artwork = get_object_or_404(Artwork, id=artwork_id)
+            artist_style = artwork.artist_fk.style  # artist_fk 필드에서 style 접근
             artwork_title = artwork.title
             final_prompt = f"{artist_style} 화풍으로 {artwork_title} 작품에 {prompt}"  # 수정된 프롬프트
             
@@ -108,14 +107,10 @@ def generate_image_method(request):
             return Response({"error": "Invalid action"}, status=status.HTTP_400_BAD_REQUEST)
 
         # 응답에서 이미지 URL 추출
-        image_data = response.data[0]
-        image_url = image_data.url
+        image_data = response['data'][0]
+        image_url = image_data['url']
 
-        # 이미지 생성 기록을 DB에 저장
-        user, created = User.objects.get_or_create(username='test_user', defaults={'password': 'testpass'})
-        image_generation = ImageGeneration.objects.create(user=user, image_url=image_url)
-
-        # 최종 생성된 프롬프트와 함께 응답
+        # 응답 반환
         return Response({"image_url": image_url, "final_prompt": final_prompt}, status=status.HTTP_200_OK)
 
     except Exception as e:
