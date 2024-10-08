@@ -58,6 +58,12 @@ def generate_image(request):
         return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 
+from rest_framework.decorators import api_view
+from rest_framework.response import Response
+from rest_framework import status
+from django.shortcuts import get_object_or_404
+from .models import Artwork
+from .openai_client import OpenAI
 
 @api_view(['POST'])
 def generate_image_method(request):
@@ -76,8 +82,9 @@ def generate_image_method(request):
 
         if action == 'experience':
             # 'experience' 액션: 단순 이미지 생성
+            final_prompt = prompt  # 이 경우에는 프롬프트 자체를 사용
             response = client.images.generate(
-                prompt=prompt,
+                prompt=final_prompt,
                 n=1,  # 생성할 이미지 개수
                 size="1024x1024"  # 이미지 크기
             )
@@ -89,10 +96,10 @@ def generate_image_method(request):
             artwork = get_object_or_404(Artwork, id=artwork_fk_id)
             artist_style = artwork.artist_fk.style
             artwork_title = artwork.title
-            combined_prompt = f"{artist_style} 화풍으로 {artwork_title} 작품에 {prompt} "
+            final_prompt = f"{artist_style} 화풍으로 {artwork_title} 작품에 {prompt}"  # 수정된 프롬프트
             
             response = client.images.generate(
-                prompt=combined_prompt,
+                prompt=final_prompt,
                 n=1,  # 생성할 이미지 개수
                 size="1024x1024"  # 이미지 크기
             )
@@ -107,7 +114,8 @@ def generate_image_method(request):
         user, created = User.objects.get_or_create(username='test_user', defaults={'password': 'testpass'})
         image_generation = ImageGeneration.objects.create(user=user, image_url=image_url)
 
-        return Response({"image_url": image_url}, status=status.HTTP_200_OK)
+        # 최종 생성된 프롬프트와 함께 응답
+        return Response({"image_url": image_url, "final_prompt": final_prompt}, status=status.HTTP_200_OK)
 
     except Exception as e:
         return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
