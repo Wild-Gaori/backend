@@ -70,7 +70,7 @@ import os
 import io
 from googletrans import Translator
 
-@api_view(['POST'])
+@api_view(['POST']) 
 def edit_image_with_dalle2(request):
     # 프론트엔드에서 전달된 데이터 추출
     prompt = request.data.get("prompt")  # 프롬프트 텍스트
@@ -84,6 +84,13 @@ def edit_image_with_dalle2(request):
         return Response({"error": "Artwork ID is required"}, status=status.HTTP_400_BAD_REQUEST)
     if not mask_image:
         return Response({"error": "Mask image is required"}, status=status.HTTP_400_BAD_REQUEST)
+
+    # 프롬프트 영어로 번역
+    try:
+        translator = Translator()
+        translated_prompt = translator.translate(prompt, src='ko', dest='en').text
+    except Exception as e:
+        return Response({"error": f"Failed to translate prompt: {str(e)}"}, status=status.HTTP_400_BAD_REQUEST)
 
     # artwork_id로 Artwork 객체 조회
     artwork = get_object_or_404(Artwork, id=artwork_id)
@@ -138,10 +145,6 @@ def edit_image_with_dalle2(request):
         return Response({"error": f"Failed to process mask image: {str(e)}"}, status=status.HTTP_400_BAD_REQUEST)
 
     try:
-        # 한글 프롬프트를 영어로 번역
-        translator = Translator()
-        translated_prompt = translator.translate(prompt, src='ko', dest='en').text
-
         client = OpenAI()
 
         # DALL-E 2 이미지 편집 요청
