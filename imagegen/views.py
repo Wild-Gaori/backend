@@ -59,7 +59,6 @@ def generate_image(request):
 
 
 
-
 from openai import OpenAI
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
@@ -147,7 +146,7 @@ def edit_image_with_dalle2(request):
             max_tokens=100,
             temperature=0.3
         )
-        translated_prompt = translation_response.choices[0].text.strip()
+        translated_prompt = translation_response['choices'][0]['text'].strip()
 
         # DALL-E 2 이미지 편집 요청
         response = client.images.edit(
