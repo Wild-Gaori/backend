@@ -68,6 +68,7 @@ from django.shortcuts import get_object_or_404
 from PIL import Image
 import os
 import io
+from googletrans import Translator
 
 @api_view(['POST'])
 def edit_image_with_dalle2(request):
@@ -137,19 +138,14 @@ def edit_image_with_dalle2(request):
         return Response({"error": f"Failed to process mask image: {str(e)}"}, status=status.HTTP_400_BAD_REQUEST)
 
     try:
+        # 한글 프롬프트를 영어로 번역
+        translator = Translator()
+        translated_prompt = translator.translate(prompt, src='ko', dest='en').text
+
         client = OpenAI()
 
-        # GPT-3.5를 사용하여 한글 프롬프트를 영어로 번역
-        translation_response = client.Completion.create(
-            model="text-davinci-003",
-            prompt=f"Translate the following Korean prompt into English: '{prompt}'",
-            max_tokens=100,
-            temperature=0.3
-        )
-        translated_prompt = translation_response['choices'][0]['text'].strip()
-
         # DALL-E 2 이미지 편집 요청
-        response = client.Images.edit(
+        response = client.images.edit(
             model="dall-e-2",
             image=original_image_io.getvalue(),
             mask=mask_image_io.getvalue(),
@@ -166,7 +162,6 @@ def edit_image_with_dalle2(request):
 
     except Exception as e:
         return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
-
 
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
