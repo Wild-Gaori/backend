@@ -66,6 +66,8 @@ from django.conf import settings
 from django.shortcuts import get_object_or_404
 from openai import OpenAI
 import os
+import io
+from PIL import Image
 from masterpiece.models import Artwork
 
 @api_view(['POST'])
@@ -91,15 +93,23 @@ def edit_image_with_dalle2(request):
     if not os.path.exists(original_image_path):
         return Response({"error": "Original image not found"}, status=status.HTTP_404_NOT_FOUND)
 
+    # 마스크 이미지가 PNG 형식인지와 크기 조건을 만족하는지 확인
+    if mask_image.content_type != 'image/png':
+        return Response({"error": "Mask image must be in PNG format"}, status=status.HTTP_400_BAD_REQUEST)
+    if mask_image.size > 4 * 1024 * 1024:
+        return Response({"error": "Mask image must be less than 4 MB"}, status=status.HTTP_400_BAD_REQUEST)
+
     try:
         client = OpenAI()
 
         # DALL-E 2 이미지 편집 요청
-        with open(original_image_path, "rb") as original_image, mask_image as mask:
+        with open(original_image_path, "rb") as original_image:
+            mask_image_bytes = io.BytesIO(mask_image.read())
+            mask_image_bytes.seek(0)
             response = client.images.edit(
                 model="dall-e-2",
                 image=original_image,
-                mask=mask,
+                mask=mask_image_bytes,
                 prompt=prompt,
                 n=1,
                 size="1024x1024"
@@ -113,7 +123,6 @@ def edit_image_with_dalle2(request):
 
     except Exception as e:
         return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
-
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from rest_framework import status
