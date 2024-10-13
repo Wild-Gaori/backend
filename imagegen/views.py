@@ -56,7 +56,6 @@ def generate_image(request):
 
     except Exception as e:
         return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
-
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from rest_framework import status
@@ -64,6 +63,7 @@ from django.conf import settings
 from django.shortcuts import get_object_or_404
 from openai import OpenAI
 import os
+
 from PIL import Image
 import io
 
@@ -117,7 +117,7 @@ def edit_image_with_dalle2(request):
             response = client.images.edit(
                 model="dall-e-2",
                 image=original_image,
-                mask=mask_image_io,
+                mask=mask_image_io.getvalue(),
                 prompt=prompt,
                 n=1,
                 size="1024x1024"
