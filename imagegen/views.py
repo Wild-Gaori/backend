@@ -65,7 +65,6 @@ from django.conf import settings
 from django.shortcuts import get_object_or_404
 from openai import OpenAI
 import os
-
 from PIL import Image
 import io
 
@@ -150,14 +149,13 @@ def edit_image_with_dalle2(request):
         )
 
         # 생성된 이미지 URL 추출
-        image_url = response['data'][0]['url']
+        image_url = response.data[0].url
 
         # 응답 반환
         return Response({"edited_image_url": image_url}, status=status.HTTP_200_OK)
 
     except Exception as e:
         return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
-
 
 
 from rest_framework.decorators import api_view
