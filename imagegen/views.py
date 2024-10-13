@@ -62,7 +62,6 @@ def generate_image(request):
 
 
 
-
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from rest_framework import status
@@ -108,7 +107,7 @@ def edit_image_with_dalle2(request):
         if mask_image_pil.format != "PNG":
             return Response({"error": "Mask image must be a PNG format"}, status=status.HTTP_400_BAD_REQUEST)
 
-        # 이미지 크기 조정 (정사각형으로 맞추기)
+        # 이미지 크기 체크 (정사각형으로 맞추기)
         width, height = mask_image_pil.size
         if width != height:
             return Response({"error": "Mask image must be square"}, status=status.HTTP_400_BAD_REQUEST)
@@ -142,6 +141,7 @@ def edit_image_with_dalle2(request):
 
     except Exception as e:
         return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
 
 
 from rest_framework.decorators import api_view
