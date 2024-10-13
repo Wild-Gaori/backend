@@ -59,9 +59,6 @@ def generate_image(request):
 
 
 
-
-
-
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from rest_framework import status
@@ -69,6 +66,7 @@ from django.conf import settings
 from django.shortcuts import get_object_or_404
 from openai import OpenAI
 import os
+
 from PIL import Image
 import io
 
@@ -95,6 +93,24 @@ def edit_image_with_dalle2(request):
     if not os.path.exists(original_image_path):
         return Response({"error": "Original image not found"}, status=status.HTTP_404_NOT_FOUND)
 
+    # 원본 이미지 PNG 포맷으로 변환 및 크기 조정
+    try:
+        original_image_pil = Image.open(original_image_path)
+
+        # 이미지 크기 조정 (정사각형으로 맞추기)
+        width, height = original_image_pil.size
+        if width != height:
+            new_size = min(width, height)
+            original_image_pil = original_image_pil.crop(((width - new_size) // 2, (height - new_size) // 2, (width + new_size) // 2, (height + new_size) // 2))
+
+        original_image_pil = original_image_pil.resize((1024, 1024), Image.ANTIALIAS)
+        original_image_pil = original_image_pil.convert("RGBA")  # PNG 포맷 변환
+        original_image_io = io.BytesIO()
+        original_image_pil.save(original_image_io, format="PNG")
+        original_image_io.seek(0)
+    except Exception as e:
+        return Response({"error": f"Failed to process original image: {str(e)}"}, status=status.HTTP_400_BAD_REQUEST)
+
     # 마스크 이미지 PNG 포맷으로 변환 및 크기 조정
     try:
         mask_image_pil = Image.open(mask_image)
@@ -107,11 +123,13 @@ def edit_image_with_dalle2(request):
         if mask_image_pil.format != "PNG":
             return Response({"error": "Mask image must be a PNG format"}, status=status.HTTP_400_BAD_REQUEST)
 
-        # 이미지 크기 체크 (정사각형으로 맞추기)
+        # 이미지 크기 조정 (정사각형으로 맞추기)
         width, height = mask_image_pil.size
         if width != height:
-            return Response({"error": "Mask image must be square"}, status=status.HTTP_400_BAD_REQUEST)
+            new_size = min(width, height)
+            mask_image_pil = mask_image_pil.crop(((width - new_size) // 2, (height - new_size) // 2, (width + new_size) // 2, (height + new_size) // 2))
 
+        mask_image_pil = mask_image_pil.resize((1024, 1024), Image.ANTIALIAS)
         mask_image_pil = mask_image_pil.convert("RGBA")  # PNG 포맷 변환
         mask_image_io = io.BytesIO()
         mask_image_pil.save(mask_image_io, format="PNG")
@@ -123,15 +141,14 @@ def edit_image_with_dalle2(request):
         client = OpenAI()
 
         # DALL-E 2 이미지 편집 요청
-        with open(original_image_path, "rb") as original_image:
-            response = client.images.edit(
-                model="dall-e-2",
-                image=original_image,
-                mask=mask_image_io.getvalue(),
-                prompt=prompt,
-                n=1,
-                size="1024x1024"
-            )
+        response = client.images.edit(
+            model="dall-e-2",
+            image=original_image_io.getvalue(),
+            mask=mask_image_io.getvalue(),
+            prompt=prompt,
+            n=1,
+            size="1024x1024"
+        )
 
         # 생성된 이미지 URL 추출
         image_url = response['data'][0]['url']
