@@ -57,7 +57,6 @@ def generate_image(request):
     except Exception as e:
         return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
-
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from rest_framework import status
@@ -94,6 +93,15 @@ def edit_image_with_dalle2(request):
     # 마스크 이미지 PNG 포맷으로 변환 및 크기 조정
     try:
         mask_image_pil = Image.open(mask_image)
+
+        # 파일 크기 체크
+        if mask_image.size > 4 * 1024 * 1024:
+            return Response({"error": "Mask image must be less than 4MB"}, status=status.HTTP_400_BAD_REQUEST)
+
+        # 이미지 포맷 체크
+        if mask_image_pil.format != "PNG":
+            return Response({"error": "Mask image must be a PNG format"}, status=status.HTTP_400_BAD_REQUEST)
+
         mask_image_pil = mask_image_pil.convert("RGBA")  # PNG 포맷 변환
         mask_image_io = io.BytesIO()
         mask_image_pil.save(mask_image_io, format="PNG")
