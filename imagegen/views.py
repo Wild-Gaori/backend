@@ -70,6 +70,7 @@ from PIL import Image
 import os
 import io
 from django.conf import settings
+from .models import Artwork
 import openai
 
 @api_view(['POST'])
@@ -142,13 +143,13 @@ def edit_image_with_dalle2(request):
     try:
         # GPT-4.0을 사용하여 한글 프롬프트를 영어로 번역
         translation_response = openai.ChatCompletion.create(
-            model="gpt-4.0",
+            model="gpt-4",
             messages=[
                 {"role": "system", "content": "Translate the following Korean text to English."},
                 {"role": "user", "content": prompt}
             ]
         )
-        translated_prompt = translation_response.choices[0].message['content'].strip()
+        translated_prompt = translation_response['choices'][0]['message']['content'].strip()
 
         client = OpenAI()
 
