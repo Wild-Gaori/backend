@@ -70,7 +70,6 @@ from PIL import Image
 import os
 import io
 from django.conf import settings
-from .models import Artwork
 import openai
 
 @api_view(['POST'])
