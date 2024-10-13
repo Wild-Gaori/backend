@@ -60,7 +60,6 @@ def generate_image(request):
 
 
 
-
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from rest_framework import status
@@ -140,15 +139,15 @@ def edit_image_with_dalle2(request):
         return Response({"error": f"Failed to process mask image: {str(e)}"}, status=status.HTTP_400_BAD_REQUEST)
 
     try:
-        # GPT-4.0을 사용하여 한글 프롬프트를 영어로 번역
+        # GPT를 사용하여 한글 프롬프트를 영어로 번역
         translation_response = openai.ChatCompletion.create(
-            model="gpt-4",
+            model="gpt-3.5-turbo",
             messages=[
                 {"role": "system", "content": "Translate the following Korean text to English."},
                 {"role": "user", "content": prompt}
             ]
         )
-        translated_prompt = translation_response['choices'][0]['message']['content'].strip()
+        translated_prompt = translation_response.choices[0].message['content'].strip()
 
         client = OpenAI()
 
