@@ -60,16 +60,15 @@ def generate_image(request):
 
 
 
+from openai import OpenAI
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from rest_framework import status
-from openai import OpenAI
+from django.conf import settings
 from django.shortcuts import get_object_or_404
 from PIL import Image
 import os
 import io
-from django.conf import settings
-import openai
 
 @api_view(['POST'])
 def edit_image_with_dalle2(request):
@@ -139,17 +138,16 @@ def edit_image_with_dalle2(request):
         return Response({"error": f"Failed to process mask image: {str(e)}"}, status=status.HTTP_400_BAD_REQUEST)
 
     try:
-        # GPT를 사용하여 한글 프롬프트를 영어로 번역
-        translation_response = openai.ChatCompletion.create(
-            model="gpt-3.5-turbo",
-            messages=[
-                {"role": "system", "content": "Translate the following Korean text to English."},
-                {"role": "user", "content": prompt}
-            ]
-        )
-        translated_prompt = translation_response.choices[0].message['content'].strip()
-
         client = OpenAI()
+
+        # GPT-3.5를 사용하여 한글 프롬프트를 영어로 번역
+        translation_response = client.Completion.create(
+            model="text-davinci-003",
+            prompt=f"Translate the following Korean prompt into English: '{prompt}'",
+            max_tokens=100,
+            temperature=0.3
+        )
+        translated_prompt = translation_response.choices[0].text.strip()
 
         # DALL-E 2 이미지 편집 요청
         response = client.images.edit(
@@ -162,7 +160,7 @@ def edit_image_with_dalle2(request):
         )
 
         # 생성된 이미지 URL 추출
-        image_url = response.data[0].url
+        image_url = response['data'][0]['url']
 
         # 응답 반환
         return Response({"edited_image_url": image_url}, status=status.HTTP_200_OK)
