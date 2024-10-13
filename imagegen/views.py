@@ -58,7 +58,6 @@ def generate_image(request):
         return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 
-
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from rest_framework import status
@@ -103,7 +102,7 @@ def edit_image_with_dalle2(request):
             new_size = min(width, height)
             original_image_pil = original_image_pil.crop(((width - new_size) // 2, (height - new_size) // 2, (width + new_size) // 2, (height + new_size) // 2))
 
-        original_image_pil = original_image_pil.resize((1024, 1024), Image.ANTIALIAS)
+        original_image_pil = original_image_pil.resize((1024, 1024), Image.LANCZOS)
         original_image_pil = original_image_pil.convert("RGBA")  # PNG 포맷 변환
         original_image_io = io.BytesIO()
         original_image_pil.save(original_image_io, format="PNG")
@@ -129,7 +128,7 @@ def edit_image_with_dalle2(request):
             new_size = min(width, height)
             mask_image_pil = mask_image_pil.crop(((width - new_size) // 2, (height - new_size) // 2, (width + new_size) // 2, (height + new_size) // 2))
 
-        mask_image_pil = mask_image_pil.resize((1024, 1024), Image.ANTIALIAS)
+        mask_image_pil = mask_image_pil.resize((1024, 1024), Image.LANCZOS)
         mask_image_pil = mask_image_pil.convert("RGBA")  # PNG 포맷 변환
         mask_image_io = io.BytesIO()
         mask_image_pil.save(mask_image_io, format="PNG")
