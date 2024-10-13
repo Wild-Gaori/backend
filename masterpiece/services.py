@@ -4,6 +4,8 @@ import json
 import base64
 import requests
 from django.conf import settings
+from dotenv import load_dotenv
+from .models import Artwork, ArtworkChatSession
 # rag 관련
 import bs4
 from langchain_openai import ChatOpenAI, OpenAIEmbeddings
@@ -11,24 +13,21 @@ from langchain_chroma import Chroma
 # from langchain.vectorstores import Chroma
 from urllib.parse import urlparse
 from langchain_community.document_loaders import WebBaseLoader
+from langchain_community.document_loaders import TextLoader
 from langchain_core.output_parsers import StrOutputParser
 from langchain_core.runnables import RunnablePassthrough
 from langchain_text_splitters import RecursiveCharacterTextSplitter
 from langchain.chains import create_history_aware_retriever, create_retrieval_chain,LLMChain
 from langchain.chains.combine_documents import create_stuff_documents_chain
-
 # 대화 기록 관련
 from langchain_core.messages import AIMessage, BaseMessage, HumanMessage
 from langchain_core.prompts import ChatPromptTemplate, MessagesPlaceholder
-
-
-from .models import Artwork, ArtworkChatSession
 
 # 환경 변수에서 API 키 가져오기
 api_key = os.getenv("OPENAI_API_KEY")
 
 # ChatOpenAI 인스턴스 생성
-llm = ChatOpenAI(api_key=api_key, model="gpt-4o-mini",temperature=0)
+llm = ChatOpenAI(api_key=api_key, model="gpt-4o",temperature=1)
 
 # 명화 랜덤 가져오기
 def get_random_artwork():
@@ -38,53 +37,43 @@ def get_random_artwork():
 def create_artwork_chat_session(user, artwork):
     return ArtworkChatSession.objects.create(user=user, artwork=artwork)
 
-# Function to encode the image
-def encode_image(image_path):
-  with open(image_path, "rb") as image_file:
-    return base64.b64encode(image_file.read()).decode('utf-8')
-
 # 명화와 관련된 추가 정보를 웹에서 로드하고 벡터화
 def load_and_retrieve_artwork_data(artwork):
-    # 1) 명화 관련된 웹 URL을 artwork db에서 가져와 사용
-    web_paths = artwork.rag_url
+    # 1) 명화 관련된 텍스트 파일을 artwork db에서 가져와 사용
+    text_path = artwork.rag_path
+    if not os.path.exists(text_path):
+        raise FileNotFoundError(f"File not found: {text_path}")
+    # 여러 텍스트 파일 로드
+    all_docs = []
+    if os.path.isdir(text_path):
+        # 디렉토리 내 모든 텍스트 파일(.txt)을 찾음
+        file_paths = [os.path.join(text_path, file) for file in os.listdir(text_path) if file.endswith('.txt')]
+        
+        # 각 파일을 로드
+        for file_path in file_paths:
+            loader = TextLoader(file_path, encoding='utf-8')
+            docs = loader.load()
+            all_docs.extend(docs)  # 여러 파일에서 로드된 문서를 모두 추가
+    else:
+        # 단일 텍스트 파일  로드
+        loader = TextLoader(text_path, encoding='utf-8')
+        all_docs = loader.load()
 
-    # URL 형식이 올바른지 확인
-    parsed_url = urlparse(web_paths)
-    if not parsed_url.scheme:
-        web_paths = 'https://' + web_paths  # 기본적으로 https를 추가
-
-    try:
-        loader = WebBaseLoader([web_paths]
-        #    web_paths=web_paths,
-        #    requests_kwargs={"headers": headers},
-        #    bs_kwargs=dict(
-        #        parse_only=bs4.SoupStrainer(
-        #            "div",
-        #            class_=("post-content", "post-title", "post-header")
-        #        )
-        #    ),
-        )        
-        docs = loader.load()
-        if not docs:
-            raise ValueError(f"No documents loaded from the given URL: {web_paths}")
-    except Exception as e:
-        print(f"Debug: Error while loading URL {web_paths}: {e}")
-        raise ValueError(f"Could not load document from URL '{web_paths}': {e}")
-
-
+    
     # 2) 텍스트 분할: 검색 성능 향상을 위해 문서를 작은 단위인 청크로 나눔
     text_splitter = RecursiveCharacterTextSplitter(chunk_size=500, chunk_overlap=100)
-    splits = text_splitter.split_documents(docs)
+    splits = text_splitter.split_documents(all_docs)
 
     # 3) 벡터 저장소 설정: 문서의 벡터화된 버전을 크로마 벡터에 저장
     try:
         vectorstore = Chroma.from_documents(documents=splits, embedding=OpenAIEmbeddings())
-        retriever = vectorstore.as_retriever(search_type="similarity", search_kwargs={"k": 1})
+        retriever = vectorstore.as_retriever(search_type="similarity", search_kwargs={"k": 5})
     except Exception as e:
         print(f"Error creating retriever: {e}")
         raise ValueError("Failed to create a retriever from the documents.")
 
     return retriever
+
 
 # 명화 기반 GPT와 대화 생성 (RAG 통합)
 def artwork_chat_with_gpt(session, user_message):
@@ -115,12 +104,11 @@ def artwork_chat_with_gpt(session, user_message):
     
     # 2) 답변 Chain (사용자가 입력한 질문과 외부 정보 검색하여 질문 답변)
 
-    image_url = session.artwork.image_url
-    image_prompt = f"Please describe the artwork shown in this image: {image_url}"
-    image_description_result = llm.invoke(image_prompt)
-    image_description = image_description_result if isinstance(image_description_result, str) else "No description available."
+    #image_url = session.artwork.image_url
+    #image_prompt = f"Please describe the artwork shown in this image: {image_url}"
+    #image_description_result = llm.invoke(image_prompt)
+    #image_description = image_description_result if isinstance(image_description_result, str) else "No description available."
     
-
     answer_system_prompt = (
         "You are a museum docent for children, basically generate quenstions using Guides below"
         "and if the child gives a response that requires further explanation, "
@@ -169,8 +157,6 @@ def artwork_chat_with_gpt(session, user_message):
         "Here is the information about the artwork:[art info]\n"
         f"Artwork: {session.artwork.title} by {session.artwork.artist}, "
         f"created in {session.artwork.year}. Description: {session.artwork.description} "
-        "Please refer to the image_description and provide insights based on what you see in the image.\n\n"
-        f"image_decription : {image_description}"
     )
     answer_prompt = ChatPromptTemplate.from_messages(
         [

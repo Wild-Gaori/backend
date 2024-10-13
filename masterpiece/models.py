@@ -13,11 +13,11 @@ class Artist(models.Model):
 class Artwork(models.Model):
     title = models.CharField(max_length=255) # 제목
     artist = models.CharField(max_length=255) # 작가
-    artist_fk = models.ForeignKey(Artist, on_delete=models.CASCADE, related_name='artwork')  # 작가
+    artist_fk = models.ForeignKey(Artist, on_delete=models.CASCADE, related_name='artwork', default=1)  # 작가
     year = models.IntegerField() # 제작연도
     description= models.TextField() # 작품 설명
     hook = models.TextField() # 짧은 설명
-    rag_url = models.URLField(blank=True, null=True) # rag 활용 링크
+    rag_path = models.CharField(max_length=255, default="")  # rag 활용할 텍스트 파일 경로 저장
     image_url = models.URLField(blank=True, null=True) # 이미지 url 입력
     image_path = models.CharField(max_length=255, default="")  # 이미지 파일 저장
 
