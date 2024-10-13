@@ -66,8 +66,6 @@ from django.conf import settings
 from django.shortcuts import get_object_or_404
 from openai import OpenAI
 import os
-import io
-from PIL import Image
 from masterpiece.models import Artwork
 
 @api_view(['POST'])
@@ -85,12 +83,6 @@ def edit_image_with_dalle2(request):
     if not mask_image:
         return Response({"error": "Mask image is required"}, status=status.HTTP_400_BAD_REQUEST)
 
-    # 마스크 이미지 파일 형식과 크기 검증
-    if mask_image.content_type != 'image/png':
-        return Response({"error": "Mask image must be a PNG file"}, status=status.HTTP_400_BAD_REQUEST)
-    if mask_image.size > 4 * 1024 * 1024:
-        return Response({"error": "Mask image must be less than 4MB"}, status=status.HTTP_400_BAD_REQUEST)
-
     # artwork_id로 Artwork 객체 조회
     artwork = get_object_or_404(Artwork, id=artwork_id)
     original_image_path = os.path.join(settings.BASE_DIR, 'masterpiece', 'static', artwork.image_path)
@@ -103,12 +95,11 @@ def edit_image_with_dalle2(request):
         client = OpenAI()
 
         # DALL-E 2 이미지 편집 요청
-        with open(original_image_path, "rb") as original_image:
-            mask_image_bytes = io.BytesIO(mask_image.read())
+        with open(original_image_path, "rb") as original_image, mask_image as mask:
             response = client.images.edit(
                 model="dall-e-2",
                 image=original_image,
-                mask=mask_image_bytes,
+                mask=mask,
                 prompt=prompt,
                 n=1,
                 size="1024x1024"
