@@ -58,6 +58,63 @@ def generate_image(request):
         return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 
+
+from rest_framework.decorators import api_view
+from rest_framework.response import Response
+from rest_framework import status
+from django.conf import settings
+from django.shortcuts import get_object_or_404
+from openai import OpenAI
+import os
+from masterpiece.models import Artwork
+
+@api_view(['POST'])
+def edit_image_with_dalle2(request):
+    # 프론트엔드에서 전달된 데이터 추출
+    prompt = request.data.get("prompt")  # 프롬프트 텍스트
+    artwork_id = request.data.get("artwork_id")  # 편집할 작품의 ID
+    mask_image = request.FILES.get("mask_image")  # 마스크 이미지 파일
+
+    # 필수 데이터 검증
+    if not prompt:
+        return Response({"error": "Prompt is required"}, status=status.HTTP_400_BAD_REQUEST)
+    if not artwork_id:
+        return Response({"error": "Artwork ID is required"}, status=status.HTTP_400_BAD_REQUEST)
+    if not mask_image:
+        return Response({"error": "Mask image is required"}, status=status.HTTP_400_BAD_REQUEST)
+
+    # artwork_id로 Artwork 객체 조회
+    artwork = get_object_or_404(Artwork, id=artwork_id)
+    original_image_path = os.path.join(settings.BASE_DIR, 'masterpiece', 'static', artwork.image_path)
+
+    # 원본 이미지 파일 존재 여부 확인
+    if not os.path.exists(original_image_path):
+        return Response({"error": "Original image not found"}, status=status.HTTP_404_NOT_FOUND)
+
+    try:
+        client = OpenAI()
+
+        # DALL-E 2 이미지 편집 요청
+        with open(original_image_path, "rb") as original_image, mask_image as mask:
+            response = client.images.edit(
+                model="dall-e-2",
+                image=original_image,
+                mask=mask,
+                prompt=prompt,
+                n=1,
+                size="1024x1024"
+            )
+
+        # 생성된 이미지 URL 추출
+        image_url = response['data'][0]['url']
+
+        # 응답 반환
+        return Response({"edited_image_url": image_url}, status=status.HTTP_200_OK)
+
+    except Exception as e:
+        return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from rest_framework import status
