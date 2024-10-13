@@ -57,16 +57,18 @@ def generate_image(request):
     except Exception as e:
         return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
+
+
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from rest_framework import status
-from django.conf import settings
-from django.shortcuts import get_object_or_404
 from openai import OpenAI
-from googletrans import Translator  # 번역기 추가
-import os
+from django.shortcuts import get_object_or_404
 from PIL import Image
+import os
 import io
+from django.conf import settings
+import openai
 
 @api_view(['POST'])
 def edit_image_with_dalle2(request):
@@ -135,14 +137,15 @@ def edit_image_with_dalle2(request):
     except Exception as e:
         return Response({"error": f"Failed to process mask image: {str(e)}"}, status=status.HTTP_400_BAD_REQUEST)
 
-    # 프롬프트 영어로 번역
     try:
-        translator = Translator()  # 번역기 인스턴스 생성
-        translated_prompt = translator.translate(prompt, src='ko', dest='en').text  # 프롬프트를 영어로 번역
-    except Exception as e:
-        return Response({"error": f"Failed to translate prompt: {str(e)}"}, status=status.HTTP_400_BAD_REQUEST)
+        # GPT를 사용하여 한글 프롬프트를 영어로 번역
+        translation_response = openai.Completion.create(
+            engine="text-davinci-003",
+            prompt=f"Translate the following Korean text to English: '{prompt}'",
+            max_tokens=100
+        )
+        translated_prompt = translation_response.choices[0].text.strip()
 
-    try:
         client = OpenAI()
 
         # DALL-E 2 이미지 편집 요청
@@ -150,7 +153,7 @@ def edit_image_with_dalle2(request):
             model="dall-e-2",
             image=original_image_io.getvalue(),
             mask=mask_image_io.getvalue(),
-            prompt=translated_prompt,  # 번역된 프롬프트 사용
+            prompt=translated_prompt,
             n=1,
             size="1024x1024"
         )
