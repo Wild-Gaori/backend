@@ -159,7 +159,7 @@ def edit_image_with_dalle2(request):
         )
 
         # 생성된 이미지 URL 추출
-        image_url = response.data[0].url
+        image_url = response['data'][0]['url']
 
         # 응답 반환
         return Response({"edited_image_url": image_url}, status=status.HTTP_200_OK)
