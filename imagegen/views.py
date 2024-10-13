@@ -67,6 +67,7 @@ from django.shortcuts import get_object_or_404
 from openai import OpenAI
 import os
 import io
+from PIL import Image
 from masterpiece.models import Artwork
 
 @api_view(['POST'])
@@ -83,6 +84,12 @@ def edit_image_with_dalle2(request):
         return Response({"error": "Artwork ID is required"}, status=status.HTTP_400_BAD_REQUEST)
     if not mask_image:
         return Response({"error": "Mask image is required"}, status=status.HTTP_400_BAD_REQUEST)
+
+    # 마스크 이미지 파일 형식과 크기 검증
+    if mask_image.content_type != 'image/png':
+        return Response({"error": "Mask image must be a PNG file"}, status=status.HTTP_400_BAD_REQUEST)
+    if mask_image.size > 4 * 1024 * 1024:
+        return Response({"error": "Mask image must be less than 4MB"}, status=status.HTTP_400_BAD_REQUEST)
 
     # artwork_id로 Artwork 객체 조회
     artwork = get_object_or_404(Artwork, id=artwork_id)
@@ -115,7 +122,6 @@ def edit_image_with_dalle2(request):
 
     except Exception as e:
         return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
-
 
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
