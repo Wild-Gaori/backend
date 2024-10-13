@@ -66,6 +66,7 @@ from django.conf import settings
 from django.shortcuts import get_object_or_404
 from openai import OpenAI
 import os
+import io
 from masterpiece.models import Artwork
 
 @api_view(['POST'])
@@ -95,11 +96,12 @@ def edit_image_with_dalle2(request):
         client = OpenAI()
 
         # DALL-E 2 이미지 편집 요청
-        with open(original_image_path, "rb") as original_image, mask_image as mask:
+        with open(original_image_path, "rb") as original_image:
+            mask_image_bytes = io.BytesIO(mask_image.read())
             response = client.images.edit(
                 model="dall-e-2",
                 image=original_image,
-                mask=mask,
+                mask=mask_image_bytes,
                 prompt=prompt,
                 n=1,
                 size="1024x1024"
