@@ -148,7 +148,7 @@ def artwork_chat_with_gpt(session, user_message):
         "1. Summarize what was discussed and appreciated about the artwork.\n"
         "2. Thank the student for their participation and engagement.\n"
         "3. Encourage them to explore more artworks and express their own thoughts and creativity.\n"
-        "4. 사용자가 그만하고 싶다는 이야기를 하면 지금까지 나눈 이야기들을 정리하면서 “수고 많았어. 이제 그림 그리러 가자!” 라고 말하세요.\n\n"
+        "4. Warp up the conversation with the sentence, "그림 그리러 가자!” \n\n"
         
         "Here is the [artwork_info]\n"
         f"Artwork: {session.artwork.title} by {session.artwork.artist}, "
