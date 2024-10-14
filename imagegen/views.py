@@ -68,7 +68,7 @@ from django.shortcuts import get_object_or_404
 from PIL import Image
 import os
 import io
-from googletrans import Translator
+
 
 @api_view(['POST']) 
 def edit_image_with_dalle2(request):
@@ -85,12 +85,17 @@ def edit_image_with_dalle2(request):
     if not mask_image:
         return Response({"error": "Mask image is required"}, status=status.HTTP_400_BAD_REQUEST)
 
-    # 프롬프트 영어로 번역
-    try:
-        translator = Translator()
-        translated_prompt = translator.translate(prompt, src='ko', dest='en').text
-    except Exception as e:
-        return Response({"error": f"Failed to translate prompt: {str(e)}"}, status=status.HTTP_400_BAD_REQUEST)
+    completion = client.chat.completions.create(
+        model="gpt-4o-mini",
+        messages=[
+            {"role": "system", "content": "You are a helpful assistant that translates text from Korean to English."},
+            {
+                "role": "user",
+                "content": f"Translate the following text to English:{prompt}"
+            }
+        ]
+    ) 
+    translated_prompt = completion.choices[0].message['content']  # 번역된 텍스트 추출
 
     # artwork_id로 Artwork 객체 조회
     artwork = get_object_or_404(Artwork, id=artwork_id)
