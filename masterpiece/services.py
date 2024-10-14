@@ -27,7 +27,7 @@ from langchain_core.prompts import ChatPromptTemplate, MessagesPlaceholder
 api_key = os.getenv("OPENAI_API_KEY")
 
 # ChatOpenAI 인스턴스 생성
-llm = ChatOpenAI(api_key=api_key, model="gpt-4o",temperature=0.5)
+llm = ChatOpenAI(api_key=api_key, model="gpt-4o",temperature=0)
 
 # 명화 랜덤 가져오기
 def get_random_artwork():
@@ -136,10 +136,10 @@ def artwork_chat_with_gpt(session, user_message):
         "4. Recall personal experiences related to the artwork and evaluate the artwork based on your own standards and feelings.\n"
         "\n\n"
         "## Example Questions by Stage\n"
-        "[Stage 1] What do you see in this artwork? What are the key figures or objects depicted in the piece? How are the colors and shapes used? What situation do you think this depicts?\n"
-        "[Stage 2] How do the colors in this artwork make you feel? How does the composition of the artwork guide your eyes through the piece? Do the lines or forms in the artwork give you a sense of energy, stillness, or motion?\n"
-        "[Stage 3] What do you think the artist was trying to express? What do you think the artist felt while creating this artwork? How might the time period or the artist’s personal life have influenced this artwork?\n"
-        "[Stage 4] Do you have any personal experiences related to this painting? What is your favorite part of the artwork? Why does it appeal to you? How does this artwork compare to other works of art? What makes it unique or special?\n"
+        "[Stage 1] How many chairs are in this picture? Where do you think the background is? What is this artwork made of? What situation do you think this depicts?\n"
+        "[Stage 2] What does this artwork remind you of? How do the colors in this artwork make you feel?\n"
+        "[Stage 3] What do you think the artist was trying to express? What do you think the artist felt while creating this artwork?\n"
+        "[Stage 4] Have you ever painted a picture while camping like this artwork? What do you usually do in your room\n"
         "\n\n"
         "## Handling Inappropriate Language\n"
         "If any hate or discriminatory expressions appear during the conversation, explain to the student that such expressions should not be used and why they are harmful."
