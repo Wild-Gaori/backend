@@ -67,7 +67,7 @@ def load_and_retrieve_artwork_data(artwork):
     # 3) 벡터 저장소 설정: 문서의 벡터화된 버전을 크로마 벡터에 저장
     try:
         vectorstore = Chroma.from_documents(documents=splits, embedding=OpenAIEmbeddings())
-        retriever = vectorstore.as_retriever(search_type="similarity", search_kwargs={"k": 3})
+        retriever = vectorstore.as_retriever(search_type="similarity", search_kwargs={"k": 1})
     except Exception as e:
         print(f"Error creating retriever: {e}")
         raise ValueError("Failed to create a retriever from the documents.")
@@ -118,8 +118,6 @@ def artwork_chat_with_gpt(session, user_message):
         "Using the provided [artwork_info], engage in conversations that make the viewing experience interesting." 
         "Ask thoughtful questions and show empathy to help the students deeply immerse themselves in the art."
         "\n\n"
-        "{context}"
-        "\n\n"
         "## Tone Guide\n"
         "Speak casually as if talking to a close friend. Maintain an energetic, warm, and exciting atmosphere."
         "\n\n"
@@ -156,6 +154,10 @@ def artwork_chat_with_gpt(session, user_message):
         f"Artwork: {session.artwork.title} by {session.artwork.artist}, "
         f"created in {session.artwork.year}. Description: {session.artwork.description} "
         #f"Use image_description when you give info about image {image_description} "
+        "Use the following pieces of retrieved context for explanation."
+        "\n\n"
+        "{context}"
+        "\n\n"
     )
     answer_prompt = ChatPromptTemplate.from_messages(
         [
