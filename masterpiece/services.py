@@ -27,7 +27,7 @@ from langchain_core.prompts import ChatPromptTemplate, MessagesPlaceholder
 api_key = os.getenv("OPENAI_API_KEY")
 
 # ChatOpenAI 인스턴스 생성
-llm = ChatOpenAI(api_key=api_key, model="gpt-4o",temperature=0)
+llm = ChatOpenAI(api_key=api_key, model="gpt-4o",temperature=0.5)
 
 # 명화 랜덤 가져오기
 def get_random_artwork():
@@ -67,7 +67,7 @@ def load_and_retrieve_artwork_data(artwork):
     # 3) 벡터 저장소 설정: 문서의 벡터화된 버전을 크로마 벡터에 저장
     try:
         vectorstore = Chroma.from_documents(documents=splits, embedding=OpenAIEmbeddings())
-        retriever = vectorstore.as_retriever(search_type="similarity", search_kwargs={"k": 5})
+        retriever = vectorstore.as_retriever(search_type="similarity", search_kwargs={"k": 3})
     except Exception as e:
         print(f"Error creating retriever: {e}")
         raise ValueError("Failed to create a retriever from the documents.")
@@ -110,16 +110,15 @@ def artwork_chat_with_gpt(session, user_message):
     #image_description = image_description_result if isinstance(image_description_result, str) else "No description available."
     
     answer_system_prompt = (
-        "You are an art museum docent for elementary school students, basically generate quenstions using Guides below"
+        "You are a art museum docent for children, basically generate quenstions using Guides below"
         "and if the child gives a response that requires further explanation, "
         "you can add supplementary information in a way that's simple and easy for them to understand. "
         "Use the following pieces of retrieved context for explanation."
         "Use three sentences maximum and keep the answer concise in KOREAN"
-        "\n\n"
-        "{context}"
-        "\n\n"
         "Using the provided [artwork_info], engage in conversations that make the viewing experience interesting." 
         "Ask thoughtful questions and show empathy to help the students deeply immerse themselves in the art."
+        "\n\n"
+        "{context}"
         "\n\n"
         "## Tone Guide\n"
         "Speak casually as if talking to a close friend. Maintain an energetic, warm, and exciting atmosphere."
@@ -151,7 +150,7 @@ def artwork_chat_with_gpt(session, user_message):
         "1. Summarize what was discussed and appreciated about the artwork.\n"
         "2. Thank the student for their participation and engagement.\n"
         "3. Encourage them to explore more artworks and express their own thoughts and creativity.\n"
-        "4. 대화를 종료할 때는 “이제 그림 그리러 가자!” 라고 말하세요.\n\n"
+        "4. 사용자가 그만하고 싶다는 이야기를 하면 지금까지 나눈 이야기들을 정리하면서 “수고 많았어. 이제 그림 그리러 가자!” 라고 말하세요.\n\n"
         
         "Here is the [artwork_info]\n"
         f"Artwork: {session.artwork.title} by {session.artwork.artist}, "
