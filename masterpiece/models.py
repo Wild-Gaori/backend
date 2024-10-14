@@ -13,7 +13,7 @@ class Artist(models.Model):
 class Artwork(models.Model):
     title = models.CharField(max_length=255) # 제목
     artist = models.CharField(max_length=255) # 작가
-    artist_fk = models.ForeignKey(Artist, on_delete=models.CASCADE, related_name='artwork', default=1)  # 작가
+    artist_fk= models.ForeignKey(Artist, on_delete=models.CASCADE, related_name='artwork', default=1)  # 작가
     year = models.IntegerField() # 제작연도
     description= models.TextField() # 작품 설명
     hook = models.TextField() # 짧은 설명
