@@ -85,7 +85,9 @@ def edit_image_with_dalle2(request):
     if not mask_image:
         return Response({"error": "Mask image is required"}, status=status.HTTP_400_BAD_REQUEST)
     
-    client = OpenAI()  # 상단에 client 객체 초기화
+
+    client = OpenAI()
+
     # 프롬프트 번역
     try:
         completion = client.chat.completions.create(
@@ -153,6 +155,8 @@ def edit_image_with_dalle2(request):
 
     # DALL-E 2 이미지 편집 요청
     try:
+        #client = OpenAI()
+        # DALL-E 2 이미지 편집 요청
         response = client.images.edit(
             model="dall-e-2",
             image=original_image_io.getvalue(),
