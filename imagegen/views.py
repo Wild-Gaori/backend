@@ -69,7 +69,6 @@ import os
 import io
 from openai import OpenAI
 
-client = OpenAI()  # 상단에 client 객체 초기화
 
 @api_view(['POST'])
 def edit_image_with_dalle2(request):
@@ -86,6 +85,7 @@ def edit_image_with_dalle2(request):
     if not mask_image:
         return Response({"error": "Mask image is required"}, status=status.HTTP_400_BAD_REQUEST)
     
+
     client = OpenAI()
 
     # 프롬프트 번역
