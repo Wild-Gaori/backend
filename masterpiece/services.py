@@ -153,15 +153,9 @@ def artwork_chat_with_gpt(session, user_message):
         "1. Summarize what was discussed and appreciated about the artwork.\n"
         "2. Thank the student for their participation and engagement.\n"
         "3. Encourage them to explore more artworks and express their own thoughts and creativity.\n"
-<<<<<<< HEAD
         "4. Ask the user if they have any additional questions. If not, Warp up the conversation with this sentence : 그림 그리러 가자!\n\n"
         "----------------------"
         "Here is the **artwork info**\n"
-=======
-        "4. Warp up the conversation with this sentence : 그림 그리러 가자! \n\n"
-        
-        "Here is the [artwork_info]\n"
->>>>>>> e430241301dde498a0dac2cfc13d26854b47e464
         f"Artwork: {session.artwork.title} by {session.artwork.artist}, "
         f"created in {session.artwork.year}. Description: {session.artwork.description} "
     )
