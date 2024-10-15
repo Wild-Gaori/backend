@@ -59,18 +59,19 @@ def generate_image(request):
 
 
 
-from openai import OpenAI
+from django.conf import settings
+from django.shortcuts import get_object_or_404
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from rest_framework import status
-from django.conf import settings
-from django.shortcuts import get_object_or_404
 from PIL import Image
 import os
 import io
+from openai import OpenAI
 
+client = OpenAI()  # 상단에 client 객체 초기화
 
-@api_view(['POST']) 
+@api_view(['POST'])
 def edit_image_with_dalle2(request):
     # 프론트엔드에서 전달된 데이터 추출
     prompt = request.data.get("prompt")  # 프롬프트 텍스트
@@ -87,17 +88,18 @@ def edit_image_with_dalle2(request):
     
     client = OpenAI()
 
-    completion = client.chat.completions.create(
-        model="gpt-4o-mini",
-        messages=[
-            {"role": "system", "content": "You are a helpful assistant that translates text from Korean to English."},
-            {
-                "role": "user",
-                "content": f"Translate the following text to English:{prompt}"
-            }
-        ]
-    ) 
-    translated_prompt = completion.choices[0].message['content']  # 번역된 텍스트 추출
+    # 프롬프트 번역
+    try:
+        completion = client.chat.completions.create(
+            model="gpt-4o-mini",
+            messages=[
+                {"role": "system", "content": "You are a helpful assistant that translates text from Korean to English."},
+                {"role": "user", "content": f"Translate the following text to English: {prompt}"}
+            ]
+        )
+        translated_prompt = completion.choices[0].message.content  # 번역된 텍스트 추출
+    except Exception as e:
+        return Response({"error": f"Failed to translate prompt: {str(e)}"}, status=status.HTTP_400_BAD_REQUEST)
 
     # artwork_id로 Artwork 객체 조회
     artwork = get_object_or_404(Artwork, id=artwork_id)
@@ -151,9 +153,9 @@ def edit_image_with_dalle2(request):
     except Exception as e:
         return Response({"error": f"Failed to process mask image: {str(e)}"}, status=status.HTTP_400_BAD_REQUEST)
 
+    # DALL-E 2 이미지 편집 요청
     try:
         #client = OpenAI()
-
         # DALL-E 2 이미지 편집 요청
         response = client.images.edit(
             model="dall-e-2",
@@ -163,15 +165,16 @@ def edit_image_with_dalle2(request):
             n=1,
             size="1024x1024"
         )
-
         # 생성된 이미지 URL 추출
         image_url = response.data[0].url
-
-        # 응답 반환
-        return Response({"edited_image_url": image_url}, status=status.HTTP_200_OK)
-
     except Exception as e:
-        return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+        return Response({"error": f"Failed to edit image: {str(e)}"}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+    # 응답 반환
+    return Response({"edited_image_url": image_url}, status=status.HTTP_200_OK)
+
+
+
 
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
