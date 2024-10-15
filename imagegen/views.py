@@ -84,6 +84,8 @@ def edit_image_with_dalle2(request):
         return Response({"error": "Artwork ID is required"}, status=status.HTTP_400_BAD_REQUEST)
     if not mask_image:
         return Response({"error": "Mask image is required"}, status=status.HTTP_400_BAD_REQUEST)
+    
+    client = OpenAI()
 
     completion = client.chat.completions.create(
         model="gpt-4o-mini",
@@ -150,7 +152,7 @@ def edit_image_with_dalle2(request):
         return Response({"error": f"Failed to process mask image: {str(e)}"}, status=status.HTTP_400_BAD_REQUEST)
 
     try:
-        client = OpenAI()
+        #client = OpenAI()
 
         # DALL-E 2 이미지 편집 요청
         response = client.images.edit(
