@@ -95,7 +95,7 @@ def edit_image_with_dalle2(request):
                 {"role": "user", "content": f"Translate the following text to English: {prompt}"}
             ]
         )
-        translated_prompt = completion.choices[0].message['content']  # 번역된 텍스트 추출
+        translated_prompt = completion.choices[0].message.content  # 번역된 텍스트 추출
     except Exception as e:
         return Response({"error": f"Failed to translate prompt: {str(e)}"}, status=status.HTTP_400_BAD_REQUEST)
 
