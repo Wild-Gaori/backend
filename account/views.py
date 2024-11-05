@@ -10,6 +10,7 @@ from django.utils.decorators import method_decorator
 from .serializers import UserProfileSerializer
 
 # 로그인 함수
+# 로그인 함수
 @method_decorator(csrf_exempt, name='dispatch')
 class LoginView(APIView):
     def post(self, request):
@@ -25,12 +26,13 @@ class LoginView(APIView):
 
         if user is not None:
             auth.login(request, user)
-            return Response({'message': 'Login successful', 'redirect_url': 'home'}, status=status.HTTP_200_OK)
+            return Response({'message': 'Login successful', 'redirect_url': 'home', 'user_pk': user.pk}, status=status.HTTP_200_OK)
         else:
             return Response({'error': 'Invalid username or password.'}, status=status.HTTP_401_UNAUTHORIZED)
     
     def get(self, request):
         return Response({'message': 'Login page'}, status=status.HTTP_200_OK)
+
 
 # 회원가입 함수   
 @method_decorator(csrf_exempt, name='dispatch')
@@ -70,13 +72,52 @@ class SignupView(APIView):
         return Response({'error': 'Invalid request.'}, status=status.HTTP_400_BAD_REQUEST)
 
 # 프로필 업데이트 함수
-class UserProfileUpdateView(APIView):
-    def post(self, request):
-        user = request.user  # 현재 로그인한 사용자
-        user_profile = user.profile  # 이미 생성된 UserProfile 가져오기
+from rest_framework.views import APIView
+from rest_framework.response import Response
+from rest_framework import status
+from django.contrib.auth.models import User
+from .models import UserProfile
+from django.views.decorators.csrf import csrf_exempt
+from django.utils.decorators import method_decorator
 
-        serializer = UserProfileSerializer(user_profile, data=request.data)
-        if serializer.is_valid():
-            serializer.save()  # 유효성 검사 후 저장
-            return Response({'message': 'Profile updated successfully'}, status=status.HTTP_200_OK)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+@method_decorator(csrf_exempt, name='dispatch')
+class UpdateUserProfileView(APIView):
+    def post(self, request):
+        user_pk = request.data.get('user_pk')
+        profile_data = request.data.get('profile_data')
+
+        # 필수 값 확인
+        if not user_pk or not profile_data:
+            return Response({'error': 'Please provide both user_pk and profile_data.'}, status=status.HTTP_400_BAD_REQUEST)
+
+        try:
+            # 사용자 검색
+            user = User.objects.get(pk=user_pk)
+            user_profile, created = UserProfile.objects.get_or_create(user=user)
+
+            # 프로필 업데이트
+            nickname = profile_data.get('nickname')
+            birthdate = profile_data.get('birthdate')
+            gender = profile_data.get('gender')
+            clothing = profile_data.get('clothing')
+            hairstyle = profile_data.get('hairstyle')
+
+            if nickname is not None:
+                user_profile.nickname = nickname
+            if birthdate is not None:
+                user_profile.birthdate = birthdate
+            if gender is not None:
+                user_profile.gender = gender
+            if clothing is not None:
+                user_profile.clothing = clothing
+            if hairstyle is not None:
+                user_profile.hairstyle = hairstyle
+
+            # 프로필 저장
+            user_profile.save()
+
+            return Response({'message': 'User profile updated successfully.'}, status=status.HTTP_200_OK)
+        except User.DoesNotExist:
+            return Response({'error': 'User not found.'}, status=status.HTTP_404_NOT_FOUND)
+        except Exception as e:
+            return Response({'error': str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)

@@ -30,7 +30,7 @@ def random_artwork_view(request):
     data = {
         "id": artwork.id,
         "title": artwork.title,
-        "artist": artwork.artist,
+        "artist_id": artwork.artist.id,
         "hook" : artwork.hook,
         "image_path": image_path,
         "session_id": session.id  # 생성된 세션 ID 포함
@@ -83,7 +83,7 @@ def artwork_chat_history_view(request):
             "session_id": session.id,
             "artwork": {
                 "title": session.artwork.title,
-                "artist": session.artwork.artist,
+                "artist_id": session.artwork.artist.id,
                 "image_path": request.build_absolute_uri(settings.STATIC_URL + session.artwork.image_path)
             }, 
              "messages": chat_history 

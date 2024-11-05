@@ -11,8 +11,14 @@ from .serializers import ImageGenerationSerializer
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import IsAuthenticated
 import logging
-from django.shortcuts import get_object_or_404
 from rest_framework.decorators import api_view
+from rest_framework.response import Response
+from rest_framework import status
+from django.conf import settings
+from django.shortcuts import get_object_or_404
+from openai import OpenAI
+from masterpiece.models import Artwork
+from account.models import UserProfile
 from masterpiece.models import Artwork, Artist  # 필요한 모델 가져오기
 
 logger = logging.getLogger(__name__)
@@ -185,7 +191,11 @@ from django.shortcuts import get_object_or_404
 def generate_image_method(request):
     action = request.data.get("action")  # 요청에서 'action' 필드 추출
     prompt = request.data.get("prompt")
-    artwork_id = request.data.get("artwork_id", None)  # 'imagine' 액션을 위한 artwork_id
+    artwork_id = request.data.get("artwork_id", None)  # 'change' 액션을 위한 artwork_id
+    user_pk = request.data.get("user_pk")  # 사용자 pk 값
+
+    # 디버깅을 위한 로그 추가
+    print(f"Received artwork_id: {artwork_id}, user_pk: {user_pk}")  # 서버 콘솔에 artwork_id와 user_pk 출력
 
     if not action:
         return Response({"error": "Action is required"}, status=status.HTTP_400_BAD_REQUEST)
@@ -197,23 +207,32 @@ def generate_image_method(request):
         client = OpenAI()
 
         if action == 'experience':
-            # 'experience' 액션: 단순 이미지 생성
-            final_prompt = prompt  # 이 경우에는 프롬프트 자체를 사용
+            if not user_pk:
+                return Response({"error": "User PK is required for 'experience' action"}, status=status.HTTP_400_BAD_REQUEST)
+            
+            user = get_object_or_404(User, pk=user_pk)
+            user_profile = get_object_or_404(UserProfile, user=user)
+            
+            # 'experience' 액션: 사용자 프로필 정보를 포함한 프롬프트 생성
+            gender = user_profile.gender or ""
+            clothing = user_profile.clothing or "반팔옷"
+            hairstyle = user_profile.hairstyle or "짧은 머리"
+            final_prompt = f"나는 {gender} 초등학생이고 {clothing} 옷을 입었고 머리는 {hairstyle}(이)야. {prompt}"  # 사용자 정보 포함한 프롬프트
             response = client.images.generate(
                 model="dall-e-3",
                 prompt=final_prompt,
                 n=1,  # 생성할 이미지 개수
                 size="1024x1024"  # 이미지 크기
             )
-        elif action == 'imagine':
+        elif action == 'change':
             if not artwork_id:
-                return Response({"error": "Artwork ID is required for 'imagine' action"}, status=status.HTTP_400_BAD_REQUEST)
+                return Response({"error": "Artwork ID is required for 'change' action"}, status=status.HTTP_400_BAD_REQUEST)
             
-            # 'imagine' 액션: artwork 정보를 기반으로 프롬프트 수정
+            # 'change' 액션: artwork 정보를 기반으로 프롬프트 수정
             artwork = get_object_or_404(Artwork, id=artwork_id)
             artist_style = artwork.artist_fk.style  # artist_fk 필드에서 style 접근
             artwork_title = artwork.title
-            final_prompt = f"{artist_style} 화풍으로 {artwork_title} 작품에 {prompt}"  # 수정된 프롬프트
+            final_prompt = f"{artist_style} 화풍으로 {artwork_title} 작품에서 {prompt}"  # 수정된 프롬프트
             
             response = client.images.generate(
                 model="dall-e-3",

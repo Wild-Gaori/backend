@@ -8,6 +8,7 @@ class UserProfile(models.Model):
     gender = models.CharField(max_length=10, blank=True, null=True)
     clothing = models.CharField(max_length=100, blank=True, null=True)
     hairstyle = models.CharField(max_length=100, blank=True, null=True)
+    selected_docent_id = models.IntegerField(default=1)
 
     def __str__(self):
         return self.nickname
