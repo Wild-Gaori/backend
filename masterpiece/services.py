@@ -167,7 +167,7 @@ def artwork_chat_with_gpt(session, user_message):
         "4. 대화를 종료할 때 “그림 그리러 가자!” 라고 말하세요.\n\n"
         
         "Here is the information about the artwork:[art info]\n"
-        f"Artwork: {session.artwork.title} by {session.artwork.artist}, "
+        f"Artwork: {session.artwork.title} by {session.artwork.artist.name}, "
         f"created in {session.artwork.year}. Description: {session.artwork.description} "
         "Please refer to the image_description and provide insights based on what you see in the image.\n\n"
         f"image_decription : {image_description}"
