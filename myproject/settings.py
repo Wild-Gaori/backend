@@ -13,6 +13,7 @@ import os
 from dotenv import load_dotenv
 from openai import OpenAI 
 
+
 # .env 파일 로드
 load_dotenv(verbose=True)
 
@@ -53,6 +54,7 @@ INSTALLED_APPS = [
     'account',
     'imagegen',
     'masterpiece',
+    'docent',
 ]
 
 REST_FRAMEWORK = {
@@ -126,16 +128,10 @@ DATABASES = {
 
 AUTH_PASSWORD_VALIDATORS = [
     {
-        'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator',
-    },
-    {
         'NAME': 'django.contrib.auth.password_validation.MinimumLengthValidator',
-    },
-    {
-        'NAME': 'django.contrib.auth.password_validation.CommonPasswordValidator',
-    },
-    {
-        'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator',
+        'OPTIONS': {
+            'min_length': 4,  # 최소 4자리 이상으로 설정
+        }
     },
 ]
 #AUTH_USER_MODEL = 'qnart.User'
@@ -199,3 +195,5 @@ LOGGING = {
         },
     },
 }
+
+

@@ -83,7 +83,7 @@ def artwork_chat_history_view(request):
             "session_id": session.id,
             "artwork": {
                 "title": session.artwork.title,
-                "artist": session.artwork.artist,
+                "artist_id": session.artwork.artist.id,
                 "image_path": request.build_absolute_uri(settings.STATIC_URL + session.artwork.image_path)
             }, 
              "messages": chat_history 
