@@ -43,6 +43,9 @@ def load_and_retrieve_artwork_data(artwork):
     text_path = artwork.rag_path
     if not os.path.exists(text_path):
         raise FileNotFoundError(f"File not found: {text_path}")
+    
+    print(f"Loading documents from path: {text_path}")  # 디버깅 로그 추가
+
     # 여러 텍스트 파일 로드
     all_docs = []
     if os.path.isdir(text_path):
@@ -51,38 +54,50 @@ def load_and_retrieve_artwork_data(artwork):
         
         # 각 파일을 로드
         for file_path in file_paths:
+            print(f"Loading document from file: {file_path}")  # 디버깅 로그 추가
             loader = TextLoader(file_path, encoding='utf-8')
-            docs = loader.load()
-            all_docs.extend(docs)  # 여러 파일에서 로드된 문서를 모두 추가
-    else:
-        # 단일 텍스트 파일  로드
-        loader = TextLoader(text_path, encoding='utf-8')
-        all_docs = loader.load()
+            try:
+                docs = loader.load()
+                all_docs.extend(docs)  # 여러 파일에서 로드된 문서를 모두 추가
+            except Exception as e:
+                print(f"Error loading file {file_path}: {e}")  # 파일 로드 오류 시 로그 추가
+                raise
 
-    
-    # 2) 텍스트 분할: 검색 성능 향상을 위해 문서를 작은 단위인 청크로 나눔
+    else:
+        # 단일 텍스트 파일 로드
+        print(f"Loading document from single file: {text_path}")  # 디버깅 로그 추가
+        loader = TextLoader(text_path, encoding='utf-8')
+        try:
+            all_docs = loader.load()
+        except Exception as e:
+            print(f"Error loading file {text_path}: {e}")  # 파일 로드 오류 시 로그 추가
+            raise
+
+    # 2) 텍스트 분할
     text_splitter = RecursiveCharacterTextSplitter(chunk_size=500, chunk_overlap=100)
     splits = text_splitter.split_documents(all_docs)
+    print(f"Split into {len(splits)} documents.")  # 디버깅 로그 추가
 
-    # 3) 벡터 저장소 설정: 문서의 벡터화된 버전을 크로마 벡터에 저장
+    # 3) 벡터 저장소 설정
     try:
         vectorstore = Chroma.from_documents(documents=splits, embedding=OpenAIEmbeddings())
         retriever = vectorstore.as_retriever(search_type="similarity", search_kwargs={"k": 3})
     except Exception as e:
-        print(f"Error creating retriever: {e}")
+        print(f"Error creating retriever: {e}")  # 디버깅 로그 추가
         raise ValueError("Failed to create a retriever from the documents.")
 
     return retriever
 
 
+
 # 명화 기반 GPT와 대화 생성 (RAG 통합)
-def artwork_chat_with_gpt(session, user_message):
+def artwork_chat_with_gpt(session, user_message, docent_prompt):
     # 명화 데이터 로드 및 검색기 설정
     retriever = load_and_retrieve_artwork_data(session.artwork)
     if retriever is None:
         return "Error: Could not retrieve artwork data. Please check the URL or try again later."
 
-    # 1) Contextualize question(대화 맥락에 맞추어 사용자의 질문 다시 생성)
+    # 1) Contextualize question (대화 맥락에 맞추어 사용자의 질문 다시 생성)
     contextualize_q_system_prompt = (
         "Given a chat history and the latest user question "
         "which might reference context in the chat history, "
@@ -104,33 +119,29 @@ def artwork_chat_with_gpt(session, user_message):
     
     # 2) 답변 Chain (사용자가 입력한 질문과 외부 정보 검색하여 질문 답변)
 
-    #image_url = session.artwork.image_url
-    #image_prompt = f"Please describe the artwork shown in this image: {image_url}"
-    #image_description_result = llm.invoke(image_prompt)
-    #image_description = image_description_result if isinstance(image_description_result, str) else "No description available."
-    
+    # answer_system_prompt에 docent_prompt 추가
     answer_system_prompt = (
-        "You are a art docent for elementary school students. Lead the conversation according to the guide and stages below."  
-        "Using the provided **artwork_info**, engage in conversations that make the viewing experience interesting." 
-        "Ask thoughtful questions and show empathy to help the students deeply immerse themselves in the art."
-        "and if the student gives a response that requires further explanation,"
+        "You are an art docent for elementary school students. Lead the conversation according to the guide and stages below. "
+        "Using the provided **artwork_info**, engage in conversations that make the viewing experience interesting. "
+        "Ask thoughtful questions and show empathy to help the students deeply immerse themselves in the art. "
+        "If the student gives a response that requires further explanation, "
         "you can add supplementary information in a way that's simple and easy for them to understand. "
-        "Use the following pieces of retrieved context for explanation. Use three sentences maximum and keep the answer concise in KOREAN" 
+        "Use the following pieces of retrieved context for explanation. Use three sentences maximum and keep the answer concise in KOREAN."
         "\n\n"
         "{context}"
         "\n\n"
         "----------------------"
         "## Tone Guide\n"
-        "**Speak casually as if talking to a close friend. Maintain an energetic, warm, and exciting atmosphere."
+        f"{docent_prompt}"  # 선택된 도슨트의 프롬프트를 추가
         "\n\n"
         "## Conversation Guide\n"
         "All information should be based on the details provided below **artwork info**."
         "Using the 'Description' in the **artwork_info**, ask interesting questions. Follow the [Conversation Learning Stages]. The order can change depending on the conversation flow."
-        "But Asking GOOD questions and engagin in deep conversation is more important than strictly following the stages. Refer to the question examples below for guidance."
+        "But asking GOOD questions and engaging in deep conversation is more important than strictly following the stages. Refer to the question examples below for guidance."
         "** At each stage, ask follow-up questions based on the user's response to encourage them to keep thinking."
-        "** Ensure the user has the opportunity to explore their thoughts fully by continuing with additional questions that prompt further reflection"
+        "** Ensure the user has the opportunity to explore their thoughts fully by continuing with additional questions that prompt further reflection."
         "** The conversation should continue until the user has fully explored the topic at each stage."
-        "After 2-3 questions at each stage, bring the conversation to a close. Follow the ## How to end conversation "
+        "After 2-3 questions at each stage, bring the conversation to a close. Follow the ## How to end conversation."
         "\n\n"
         "## [Conversation Learning Stages]##\n"
         "1. Observe the artwork closely and describe what you see.\n"
@@ -153,24 +164,23 @@ def artwork_chat_with_gpt(session, user_message):
         "1. Summarize what was discussed and appreciated about the artwork.\n"
         "2. Thank the student for their participation and engagement.\n"
         "3. Encourage them to explore more artworks and express their own thoughts and creativity.\n"
-        "4. Ask the user if they have any additional questions. If not, Warp up the conversation with this sentence : 그림 그리러 가자!\n\n"
+        "4. Ask the user if they have any additional questions. If not, wrap up the conversation with this sentence: 그림 그리러 가자!\n\n"
         "----------------------"
         "Here is the **artwork info**\n"
         f"Artwork: {session.artwork.title} by {session.artwork.artist}, "
         f"created in {session.artwork.year}. Description: {session.artwork.description} "
-        
     )
+
     answer_prompt = ChatPromptTemplate.from_messages(
         [
-            ("system", answer_system_prompt), # 시스템 프롬프트
-            MessagesPlaceholder("chat_history"), # 이전 대화 기록
-            ("human", "{input}"), # 사용자 입력
-    
-        ]    
+            ("system", answer_system_prompt),  # 시스템 프롬프트
+            MessagesPlaceholder("chat_history"),  # 이전 대화 기록
+            ("human", "{input}"),  # 사용자 입력
+        ]
     )
     question_answer_chain = create_stuff_documents_chain(llm, answer_prompt)
 
-    # Create the rag chain (history_aware + qa chain 통합 : 사용자의 질문 맥락에 맞추어 명확화, 필요 정보 검색, 최종 답변 생성!)
+    # Create the RAG chain (history-aware + QA chain 통합: 사용자의 질문 맥락에 맞추어 명확화, 필요 정보 검색, 최종 답변 생성!)
     rag_chain = create_retrieval_chain(history_aware_retriever, question_answer_chain)
     
     # 현재 세션에 저장된 chat_history 불러오기
