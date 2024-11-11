@@ -121,3 +121,36 @@ class UpdateUserProfileView(APIView):
             return Response({'error': 'User not found.'}, status=status.HTTP_404_NOT_FOUND)
         except Exception as e:
             return Response({'error': str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+        
+#저장된 사용자 프로필 정보 불러오는 함수
+@method_decorator(csrf_exempt, name='dispatch')
+class GetUserProfileView(APIView):
+    def post(self, request):
+        user_pk = request.data.get('user_pk')
+
+        # 필수 값 확인
+        if not user_pk:
+            return Response({'error': 'Please provide user_pk.'}, status=status.HTTP_400_BAD_REQUEST)
+
+        try:
+            # 사용자 검색
+            user = User.objects.get(pk=user_pk)
+            try:
+                user_profile = UserProfile.objects.get(user=user)
+            except UserProfile.DoesNotExist:
+                user_profile = None
+
+            # 프로필 정보 반환
+            response_data = {
+                'nickname': user_profile.nickname if user_profile and user_profile.nickname is not None else '',
+                'birthdate': user_profile.birthdate if user_profile and user_profile.birthdate is not None else '',
+                'gender': user_profile.gender if user_profile and user_profile.gender is not None else '',
+                'clothing': user_profile.clothing if user_profile and user_profile.clothing is not None else '',
+                'hairstyle': user_profile.hairstyle if user_profile and user_profile.hairstyle is not None else '',
+            }
+
+            return Response(response_data, status=status.HTTP_200_OK)
+        except User.DoesNotExist:
+            return Response({'error': 'User not found.'}, status=status.HTTP_404_NOT_FOUND)
+        except Exception as e:
+            return Response({'error': str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
