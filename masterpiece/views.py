@@ -14,13 +14,17 @@ from rest_framework.permissions import IsAuthenticated
 from langchain.memory import ConversationBufferMemory
 
 
-# 랜덤 명화 정보를 반환하는 API
-@api_view(['GET'])
+# 랜덤 명화 정보를 반환하는 API 
+@api_view(['POST'])
 def random_artwork_view(request):
-    artwork = get_random_artwork()
+    user_pk = request.data.get("user_pk")  # 사용자 pk 값 전달받기
 
-    # 테스트 사용자
-    user, created = User.objects.get_or_create(username='test_user', defaults={'password': 'testpass'})
+    if not user_pk:
+        return Response({'error': 'User PK is required'}, status=status.HTTP_400_BAD_REQUEST)
+
+    user = get_object_or_404(User, pk=user_pk)
+    
+    artwork = get_random_artwork()
 
     # 명화가 주어지면 바로 새로운 대화 세션 생성. 세션 아이디 부여됨
     session = create_artwork_chat_session(user, artwork)
