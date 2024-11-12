@@ -20,6 +20,8 @@ from openai import OpenAI
 from masterpiece.models import Artwork
 from account.models import UserProfile
 from masterpiece.models import Artwork, Artist  # 필요한 모델 가져오기
+import requests
+from django.core.files.base import ContentFile
 
 logger = logging.getLogger(__name__)
 
@@ -52,28 +54,23 @@ def generate_image(request):
         # 응답에서 이미지 URL 추출
         image_url = response.data[0].url  # 이미지 URL에 접근 
 
-        # 이미지 생성 기록  DB에 저장
-        #테스트 사용자
-        user, created = User.objects.get_or_create(username='test', defaults={'password': 'test'})
+        # 이미지 다운로드 및 저장
+        response = requests.get(image_url)
+        if response.status_code != 200:
+            raise ValueError("이미지를 가져오지 못했습니다. URL을 확인해주세요.")
 
+        image_name = image_url.split("/")[-1]  # 이미지 파일 이름 추출
+        image_file = ContentFile(response.content)
+
+        # 이미지 생성 기록  DB에 저장
+        user, created = User.objects.get_or_create(username='test', defaults={'password': 'test'})
         image_generation = ImageGeneration.objects.create(user=user, image_url=image_url)
+        image_generation.image.save(image_name, image_file, save=True)
 
         return Response({"image_url": image_url}, status=status.HTTP_200_OK)
 
     except Exception as e:
         return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
-
-
-
-from django.conf import settings
-from django.shortcuts import get_object_or_404
-from rest_framework.decorators import api_view
-from rest_framework.response import Response
-from rest_framework import status
-from PIL import Image
-import os
-import io
-from openai import OpenAI
 
 
 @api_view(['POST'])
@@ -178,19 +175,21 @@ def edit_image_with_dalle2(request):
     except Exception as e:
         return Response({"error": f"Failed to edit image: {str(e)}"}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
+    # 이미지 다운로드 및 저장
+    response = requests.get(image_url)
+    if response.status_code != 200:
+        return Response({"error": "Failed to download edited image"}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+    image_name = image_url.split("/")[-1]  # 이미지 파일 이름 추출
+    image_file = ContentFile(response.content)
+
     # 이미지 생성 기록을 DB에 저장
-    ImageGeneration.objects.create(user=user, image_url=image_url)
+    image_generation = ImageGeneration.objects.create(user=user, image_url=image_url)
+    image_generation.image.save(image_name, image_file, save=True)
 
     # 응답 반환
     return Response({"edited_image_url": image_url}, status=status.HTTP_200_OK)
 
-
-
-
-from rest_framework.decorators import api_view
-from rest_framework.response import Response
-from rest_framework import status
-from django.shortcuts import get_object_or_404
 
 @api_view(['POST'])
 def generate_image_method(request):
@@ -252,39 +251,14 @@ def generate_image_method(request):
         image_data = response.data[0]
         image_url = image_data.url
         
+        # 이미지 다운로드 및 저장
+        response = requests.get(image_url)
+        if response.status_code != 200:
+            return Response({"error": "Failed to download generated image"}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+        image_name = image_url.split("/")[-1]  # 이미지 파일 이름 추출
+        image_file = ContentFile(response.content)
+
         # 이미지 생성 기록을 DB에 저장
         user = get_object_or_404(User, pk=user_pk)
-        ImageGeneration.objects.create(user=user, image_url=image_url)
-
-        # 응답 반환
-        return Response({"image_url": image_url, "final_prompt": final_prompt}, status=status.HTTP_200_OK)
-
-    except Exception as e:
-        return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
-
-
-@api_view(['POST'])
-def get_image_history(request):
-    # 요청에서 사용자 pk 값 가져오기
-    user_pk = request.data.get('user_pk')
-    
-    # 사용자 pk 값이 없는 경우 오류 반환
-    if not user_pk:
-        return Response({'error': 'User pk is required'}, status=status.HTTP_400_BAD_REQUEST)
-
-    # 사용자 pk에 해당하는 사용자 가져오기
-    user = get_object_or_404(User, pk=user_pk)
-    
-    # 사용자가 생성한 모든 이미지 조회
-    images = ImageGeneration.objects.filter(user=user).order_by('-created_at')
-
-    # 기록을 리스트로 변환
-    history = []
-    for image in images:
-        history.append({
-            'image_id': image.id,
-            'image_url': image.image_url,
-            'created_at': image.created_at,
-        })
-
-    return Response(history, status=status.HTTP_200_OK)
+        image_generation = ImageGeneration.objects.create(user=user
