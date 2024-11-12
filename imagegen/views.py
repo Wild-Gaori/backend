@@ -82,6 +82,7 @@ def edit_image_with_dalle2(request):
     prompt = request.data.get("prompt")  # 프롬프트 텍스트
     artwork_id = request.data.get("artwork_id")  # 편집할 작품의 ID
     mask_image = request.FILES.get("mask_image")  # 마스크 이미지 파일
+    user_pk = request.data.get("user_pk")  # 사용자 pk 값
 
     # 필수 데이터 검증
     if not prompt:
@@ -90,7 +91,10 @@ def edit_image_with_dalle2(request):
         return Response({"error": "Artwork ID is required"}, status=status.HTTP_400_BAD_REQUEST)
     if not mask_image:
         return Response({"error": "Mask image is required"}, status=status.HTTP_400_BAD_REQUEST)
-    
+    if not user_pk:
+        return Response({"error": "User PK is required"}, status=status.HTTP_400_BAD_REQUEST)
+
+    user = get_object_or_404(User, pk=user_pk)
 
     client = OpenAI()
 
@@ -161,8 +165,6 @@ def edit_image_with_dalle2(request):
 
     # DALL-E 2 이미지 편집 요청
     try:
-        #client = OpenAI()
-        # DALL-E 2 이미지 편집 요청
         response = client.images.edit(
             model="dall-e-2",
             image=original_image_io.getvalue(),
@@ -175,6 +177,9 @@ def edit_image_with_dalle2(request):
         image_url = response.data[0].url
     except Exception as e:
         return Response({"error": f"Failed to edit image: {str(e)}"}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+    # 이미지 생성 기록을 DB에 저장
+    ImageGeneration.objects.create(user=user, image_url=image_url)
 
     # 응답 반환
     return Response({"edited_image_url": image_url}, status=status.HTTP_200_OK)
