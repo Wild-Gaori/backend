@@ -191,7 +191,7 @@ from django.shortcuts import get_object_or_404
 def generate_image_method(request):
     action = request.data.get("action")  # 요청에서 'action' 필드 추출
     prompt = request.data.get("prompt")
-    artwork_id = request.data.get("artwork_id", None)  # 'imagine' 액션을 위한 artwork_id
+    artwork_id = request.data.get("artwork_id", None)  # 'change' 액션을 위한 artwork_id
     user_pk = request.data.get("user_pk")  # 사용자 pk 값
 
     # 디버깅을 위한 로그 추가
@@ -224,11 +224,11 @@ def generate_image_method(request):
                 n=1,  # 생성할 이미지 개수
                 size="1024x1024"  # 이미지 크기
             )
-        elif action == 'imagine':
+        elif action == 'change':
             if not artwork_id:
-                return Response({"error": "Artwork ID is required for 'imagine' action"}, status=status.HTTP_400_BAD_REQUEST)
+                return Response({"error": "Artwork ID is required for 'change' action"}, status=status.HTTP_400_BAD_REQUEST)
             
-            # 'imagine' 액션: artwork 정보를 기반으로 프롬프트 수정
+            # 'change' 액션: artwork 정보를 기반으로 프롬프트 수정
             artwork = get_object_or_404(Artwork, id=artwork_id)
             artist_style = artwork.artist_fk.style  # artist_fk 필드에서 style 접근
             artwork_title = artwork.title
@@ -246,6 +246,10 @@ def generate_image_method(request):
         # 응답에서 이미지 URL 추출
         image_data = response.data[0]
         image_url = image_data.url
+        
+        # 이미지 생성 기록을 DB에 저장
+        user = get_object_or_404(User, pk=user_pk)
+        ImageGeneration.objects.create(user=user, image_url=image_url)
 
         # 응답 반환
         return Response({"image_url": image_url, "final_prompt": final_prompt}, status=status.HTTP_200_OK)
@@ -254,11 +258,17 @@ def generate_image_method(request):
         return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 
-@api_view(['GET'])
+@api_view(['POST'])
 def get_image_history(request):
+    # 요청에서 사용자 pk 값 가져오기
+    user_pk = request.data.get('user_pk')
     
-    #테스트 사용자
-    user, created = User.objects.get_or_create(username='test', defaults={'password': 'test'})
+    # 사용자 pk 값이 없는 경우 오류 반환
+    if not user_pk:
+        return Response({'error': 'User pk is required'}, status=status.HTTP_400_BAD_REQUEST)
+
+    # 사용자 pk에 해당하는 사용자 가져오기
+    user = get_object_or_404(User, pk=user_pk)
     
     # 사용자가 생성한 모든 이미지 조회
     images = ImageGeneration.objects.filter(user=user).order_by('-created_at')
