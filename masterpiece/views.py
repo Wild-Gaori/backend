@@ -106,10 +106,15 @@ def artwork_chat_view(request):
 
 
 # 명화 기반 대화 기록을 보여주는 API
-@api_view(['GET'])
+@api_view(['POST'])
 def artwork_chat_history_view(request):
-    # 테스트 사용자
-    user, created = User.objects.get_or_create(username='test_user', defaults={'password': 'testpass'})
+    # 사용자 pk를 프론트에서 전달받음
+    user_pk = request.data.get('user_pk')
+    if not user_pk:
+        return Response({'error': 'User pk is required'}, status=status.HTTP_400_BAD_REQUEST)
+
+    # 사용자 pk로 사용자 객체 가져오기
+    user = get_object_or_404(User, pk=user_pk)
 
     # 명화에 대한 사용자의 모든 채팅 세션을 가져옴
     chat_sessions = ArtworkChatSession.objects.filter(user=user).order_by('-created_at')  # 사용자의 채팅 세션을 최신순으로 불러옴
@@ -125,8 +130,8 @@ def artwork_chat_history_view(request):
                 "title": session.artwork.title,
                 "artist": session.artwork.artist,
                 "image_path": request.build_absolute_uri(settings.STATIC_URL + session.artwork.image_path)
-            }, 
-             "messages": chat_history 
+            },
+            "messages": chat_history
         })
 
     return Response(history, status=status.HTTP_200_OK)
