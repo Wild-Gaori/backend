@@ -37,6 +37,9 @@ def random_artwork_view(request):
     # 랜덤으로 명화 가져오기
     artwork = get_random_artwork()
 
+    # 명화가 주어지면 새로운 대화 세션 생성. 세션 아이디 부여됨
+    session = create_artwork_chat_session(user, artwork)
+
     # 이미지 URL 생성 (static 파일 사용)
     image_path = request.build_absolute_uri(settings.STATIC_URL + artwork.image_path)
 
@@ -47,25 +50,25 @@ def random_artwork_view(request):
         "artist": artwork.artist,
         "hook": artwork.hook,
         "image_path": image_path,
+        "session_id": session.id,  # 생성된 세션 ID 포함
         "selected_docent_id": selected_docent_id  # UserProfile에 저장된 selected_docent_id 값 포함
     }
 
     return Response(data, status=status.HTTP_200_OK)
-
 
 # 명화 기반 대화 세션을 처리하는 API
 @api_view(['POST'])
 def artwork_chat_view(request):
     # 사용자 pk를 요청 데이터에서 가져옴
     user_pk = request.data.get('user_pk')
-    artwork_id = request.data.get('artwork_id')  # JSON 데이터에서 artwork ID 가져오기
+    session_id = request.data.get('session_id')  # JSON 데이터에서 세션 ID 가져오기
     message = request.data.get('message')  # JSON 데이터에서 메시지 가져오기
 
-    # user_pk, artwork_id, message가 비어있는지 확인
+    # user_pk, session_id, message가 비어있는지 확인
     if not user_pk:
         return Response({'error': 'User pk is required'}, status=status.HTTP_400_BAD_REQUEST)
-    if not artwork_id:
-        return Response({'error': 'Artwork ID is required'}, status=status.HTTP_400_BAD_REQUEST)
+    if not session_id:
+        return Response({'error': 'Session ID is required'}, status=status.HTTP_400_BAD_REQUEST)
     if not message or message.strip() == "":
         return Response({'error': 'Message cannot be empty'}, status=status.HTTP_400_BAD_REQUEST)
 
@@ -84,11 +87,8 @@ def artwork_chat_view(request):
     # 도슨트의 프롬프트 가져오기
     docent_prompt = docent.docent_prompt
 
-    # Artwork 조회
-    artwork = get_object_or_404(Artwork, pk=artwork_id)
-
-    # 새로운 대화 세션 생성
-    session = ArtworkChatSession.objects.create(user=user, artwork=artwork, docent_at_chat=docent)
+    # 세션이 있으면 기존 채팅 세션을 이어감
+    session = get_object_or_404(ArtworkChatSession, id=session_id, user=user)
 
     # GPT와 대화 생성 (대화 기록은 자동으로 메모리에 관리됨)
     gpt_response = artwork_chat_with_gpt(session, message, docent_prompt)
