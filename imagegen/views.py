@@ -16,7 +16,7 @@ from PIL import Image
 from openai import OpenAI
 from .models import ImageGeneration
 from .serializers import ImageGenerationSerializer
-from masterpiece.models import Artwork, Artist, ArtworkChatSession, ChatSession  # 필요한 모델 가져오기
+from masterpiece.models import Artwork, Artist, ChatSession  # 필요한 모델 가져오기
 from account.models import UserProfile
 from django.core.files.base import ContentFile
 
@@ -27,7 +27,7 @@ def generate_image_method(request):
     prompt = request.data.get("prompt")
     artwork_id = request.data.get("artwork_id", None)  # 'imagine' 액션을 위한 artwork_id
     user_pk = request.data.get("user_pk")  # 사용자 pk 값
-    session_id = request.data.get("session_id")  # 추가: masterpiece앱에서 생성된 세션 ID
+    session_id = request.data.get("session_id")  # 추가: masterpiece앱에서 복사된 세션 ID
 
     # 디버깅을 위한 로그 추가
     print(f"Received artwork_id: {artwork_id}, user_pk: {user_pk}, session_id: {session_id}")
@@ -83,7 +83,7 @@ def generate_image_method(request):
         image_url = image_data.url
 
         # 세션 정보 가져오기
-        session = get_object_or_404(ArtworkChatSession, id=session_id)
+        session = get_object_or_404(ChatSession, id=session_id)
 
         # 데이터베이스에 ImageGeneration 저장, 세션ID 및 final_prompt 포함
         user = get_object_or_404(User, pk=user_pk)
@@ -95,7 +95,7 @@ def generate_image_method(request):
             image_blob=requests.get(image_url).content  # 원본 바이너리 이미지도 저장
         )
 
-        # masterpiece 앱의 ArtworkChatSession 모델의 imggen_status 필드를 'COMPLETED'로 업데이트
+        # masterpiece 앱의 ChatSession 모델의 imggen_status 필드를 'COMPLETED'로 업데이트
         session.imggen_status = 'COMPLETED'
         session.save()
 
@@ -116,7 +116,7 @@ def edit_image_with_dalle2(request):
     artwork_id = request.data.get("artwork_id")  # 편집할 작품의 ID
     mask_image = request.FILES.get("mask_image")  # 마스크 이미지 파일
     user_pk = request.data.get("user_pk")  # 사용자 pk 값
-    session_id = request.data.get("session_id")  # 추가: masterpiece앱에서 생성된 세션 ID
+    session_id = request.data.get("session_id")  # 추가: masterpiece앱에서 복사된 세션 ID
 
     # 필수 데이터 검증
     if not prompt:
@@ -131,7 +131,7 @@ def edit_image_with_dalle2(request):
         return Response({"error": "Session ID is required"}, status=status.HTTP_400_BAD_REQUEST)
 
     user = get_object_or_404(User, pk=user_pk)
-    session = get_object_or_404(ArtworkChatSession, id=session_id)  # 세션 객체 가져오기
+    session = get_object_or_404(ChatSession, id=session_id)  # 세션 객체 가져오기
 
     client = OpenAI()
 
@@ -251,7 +251,7 @@ from rest_framework.response import Response
 from rest_framework import status
 from .models import ImageGeneration
 from django.contrib.auth.models import User
-from masterpiece.models import ArtworkChatSession
+from masterpiece.models import ChatSession
 
 logger = logging.getLogger(__name__)
 
@@ -266,7 +266,7 @@ def get_image_history(request):
         return Response({'error': 'Session ID is required'}, status=status.HTTP_400_BAD_REQUEST)
 
     user = get_object_or_404(User, pk=user_pk)
-    session = get_object_or_404(ArtworkChatSession, id=session_id)
+    session = get_object_or_404(ChatSession, id=session_id)
 
     latest_image = ImageGeneration.objects.filter(user=user, session=session).order_by('-created_at').first()
 
