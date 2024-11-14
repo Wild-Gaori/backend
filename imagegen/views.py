@@ -70,6 +70,7 @@ def edit_image_with_dalle2(request):
     artwork_id = request.data.get("artwork_id")  # 편집할 작품의 ID
     mask_image = request.FILES.get("mask_image")  # 마스크 이미지 파일
     user_pk = request.data.get("user_pk")  # 사용자 pk 값
+    session_id = request.data.get("session_id")  # 추가: masterpiece앱에서 생성된 세션 ID
 
     # 필수 데이터 검증
     if not prompt:
@@ -80,8 +81,11 @@ def edit_image_with_dalle2(request):
         return Response({"error": "Mask image is required"}, status=status.HTTP_400_BAD_REQUEST)
     if not user_pk:
         return Response({"error": "User PK is required"}, status=status.HTTP_400_BAD_REQUEST)
+    if not session_id:
+        return Response({"error": "Session ID is required"}, status=status.HTTP_400_BAD_REQUEST)
 
     user = get_object_or_404(User, pk=user_pk)
+    session = get_object_or_404(ArtworkChatSession, id=session_id)  # 세션 객체 가져오기
 
     client = OpenAI()
 
@@ -163,13 +167,29 @@ def edit_image_with_dalle2(request):
         # 생성된 이미지 URL 추출
         image_url = response.data[0].url
     except Exception as e:
+        # 실패 시 세션의 imggen_status 업데이트
+        session.imggen_status = 'FAILED'
+        session.save()
         return Response({"error": f"Failed to edit image: {str(e)}"}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
-    # 이미지 생성 기록을 DB에 저장
-    ImageGeneration.objects.create(user=user, image_url=image_url)
+    # 이미지 생성 기록을 DB에 저장, 세션ID 및 원본 prompt 포함
+    ImageGeneration.objects.create(
+        user=user,
+        session=session,  # 세션 ID 저장
+        prompt=prompt,  # 원본 프롬프트 저장
+        image_url=image_url,
+        image_blob=requests.get(image_url).content  # 원본 바이너리 이미지도 저장
+    )
 
-    # 응답 반환
-    return Response({"edited_image_url": image_url}, status=status.HTTP_200_OK)
+    # 성공 시 세션의 imggen_status 업데이트
+    session.imggen_status = 'COMPLETED'
+    session.save()
+
+    # 응답 반환 (이미지 URL 반환)
+    return Response({
+        "edited_image_url": image_url,
+    }, status=status.HTTP_200_OK)
+
 
 
 @api_view(['POST'])
