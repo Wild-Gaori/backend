@@ -178,9 +178,10 @@ def generate_image_method(request):
     prompt = request.data.get("prompt")
     artwork_id = request.data.get("artwork_id", None)  # 'imagine' 액션을 위한 artwork_id
     user_pk = request.data.get("user_pk")  # 사용자 pk 값
+    session_id = request.data.get("session_id")  # masterpiece 앱에서 생성된 세션 ID
 
     # 디버깅을 위한 로그 추가
-    print(f"Received artwork_id: {artwork_id}, user_pk: {user_pk}")  # 서버 콘솔에 artwork_id와 user_pk 출력
+    print(f"Received artwork_id: {artwork_id}, user_pk: {user_pk}, session_id: {session_id}")  # 서버 콘솔에 artwork_id, user_pk, session_id 출력
 
     if not action:
         return Response({"error": "Action is required"}, status=status.HTTP_400_BAD_REQUEST)
@@ -233,24 +234,35 @@ def generate_image_method(request):
         image_url = image_data.url
         image_content = requests.get(image_url).content
 
+        # 세션 객체 가져오기
+        session = get_object_or_404(ArtworkChatSession, id=session_id)
+
         # 데이터베이스에 저장
         user = get_object_or_404(User, pk=user_pk)
         ImageGeneration.objects.create(
             user=user,
-            prompt=prompt,
+            session=session,           # 세션 ID 저장
+            prompt=final_prompt,       # 최종 프롬프트 저장
             image_url=image_url,
-            image_blob=image_content  # 원본 바이너리 이미지도 저장
+            image_blob=image_content   # 원본 바이너리 이미지도 저장
         )
 
         # PNG 파일로 반환을 위한 in-memory 파일 생성
         image_io = io.BytesIO(image_content)
         image_io.seek(0)  # 파일의 시작으로 포인터 이동
 
-        # Django의 FileResponse를 사용하여 PNG 이미지로 반환
-        return FileResponse(image_io, as_attachment=True, filename="generated_image.png", content_type="image/png")
+        # Django의 FileResponse를 사용하여 PNG 이미지로 반환 및 추가 정보 포함
+        response_data = {
+            "image_url": image_url,
+            "final_prompt": final_prompt,
+            "png_image": FileResponse(image_io, as_attachment=True, filename="generated_image.png", content_type="image/png")
+        }
+        
+        return Response(response_data, status=status.HTTP_200_OK)
 
     except Exception as e:
         return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
 
 
 @api_view(['POST'])
