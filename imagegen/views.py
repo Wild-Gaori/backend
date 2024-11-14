@@ -16,7 +16,7 @@ from PIL import Image
 from openai import OpenAI
 from .models import ImageGeneration
 from .serializers import ImageGenerationSerializer
-from masterpiece.models import Artwork, Artist, ArtworkChatSession  # 필요한 모델 가져오기
+from masterpiece.models import Artwork, Artist, ArtworkChatSession, ChatSession  # 필요한 모델 가져오기
 from account.models import UserProfile
 from django.core.files.base import ContentFile
 
