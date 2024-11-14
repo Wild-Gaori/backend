@@ -287,6 +287,7 @@ logger = logging.getLogger(__name__)
 
 import base64
 import io
+import logging
 from django.http import FileResponse
 from django.shortcuts import get_object_or_404
 from rest_framework.decorators import api_view
@@ -295,6 +296,8 @@ from rest_framework import status
 from .models import ImageGeneration
 from django.contrib.auth.models import User
 from masterpiece.models import ArtworkChatSession
+
+logger = logging.getLogger(__name__)
 
 @api_view(['POST'])
 def get_image_history(request):
@@ -309,19 +312,28 @@ def get_image_history(request):
     user = get_object_or_404(User, pk=user_pk)
     session = get_object_or_404(ArtworkChatSession, id=session_id)
 
-    # 사용자와 세션에 맞는 최신 이미지 조회
     latest_image = ImageGeneration.objects.filter(user=user, session=session).order_by('-created_at').first()
 
     if not latest_image:
+        logger.error('No images found for this session')
         return Response({'error': 'No images found for this session'}, status=status.HTTP_404_NOT_FOUND)
 
     image_content = latest_image.image_blob
     if image_content:
-        # base64 데이터를 디코딩하여 PNG 이미지로 변환
-        image_io = io.BytesIO(base64.b64decode(image_content))
-        image_io.seek(0)  # 파일의 시작으로 포인터 이동
+        try:
+            # base64 데이터를 디코딩하여 PNG 이미지로 변환
+            logger.info("Starting base64 decoding of image content")
+            image_data = base64.b64decode(image_content)
+            image_io = io.BytesIO(image_data)
+            image_io.seek(0)
+            logger.info("Image decoding successful, preparing FileResponse")
 
-        # FileResponse로 PNG 이미지 반환
-        return FileResponse(image_io, as_attachment=True, filename="generated_image.png", content_type="image/png")
+            # FileResponse로 PNG 이미지 반환
+            return FileResponse(image_io, as_attachment=True, filename="generated_image.png", content_type="image/png")
+        except Exception as e:
+            logger.error(f"Failed to decode image content: {e}")
+            return Response({'error': 'Image decoding failed'}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
     else:
+        logger.error('Image data not available')
         return Response({'error': 'Image data not available'}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
