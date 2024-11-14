@@ -5,7 +5,7 @@ from django.shortcuts import render
 from django.shortcuts import get_object_or_404
 from django.conf import settings
 from .services import get_random_artwork, create_artwork_chat_session, artwork_chat_with_gpt
-from .models import Artwork,ArtworkChatSession
+from .models import Artwork,ArtworkChatSession, ChatSession
 from django.contrib.auth.models import User
 from rest_framework.views import APIView
 from rest_framework.response import Response
@@ -56,7 +56,7 @@ def random_artwork_view(request):
 
     return Response(data, status=status.HTTP_200_OK)
 
-# 명화 기반 대화 세션을 처리하는 API
+# 명화 기반 대화 세션을 처리하는 API 
 @api_view(['POST'])
 def artwork_chat_view(request):
     # 사용자 pk를 요청 데이터에서 가져옴
@@ -90,6 +90,10 @@ def artwork_chat_view(request):
     # 세션이 있으면 기존 채팅 세션을 이어감
     session = get_object_or_404(ArtworkChatSession, id=session_id, user=user)
 
+    # 대화 당시의 도슨트 정보 저장
+    session.docent_at_chat = docent
+    session.save()
+
     # GPT와 대화 생성 (대화 기록은 자동으로 메모리에 관리됨)
     gpt_response = artwork_chat_with_gpt(session, message, docent_prompt)
     
@@ -103,7 +107,34 @@ def artwork_chat_view(request):
         'docent_prompt': docent_prompt
     }, status=status.HTTP_200_OK)
 
+# 그림 그리러 가기 버튼으로 채팅 종료 후 채팅 세션 복사하는 API
+@api_view(['POST'])
+def copy_artwork_chat_session(request):
+    # 프론트에서 ArtworkChatSession의 세션 ID를 입력받음
+    artwork_chat_session_id = request.data.get('session_id')
 
+    # 세션 ID가 없으면 에러 반환
+    if not artwork_chat_session_id:
+        return Response({'error': 'Session ID is required'}, status=status.HTTP_400_BAD_REQUEST)
+
+    # ArtworkChatSession 객체 가져오기
+    artwork_chat_session = get_object_or_404(ArtworkChatSession, id=artwork_chat_session_id)
+
+    # ChatSession에 복사
+    chat_session = ChatSession.objects.create(
+        user=artwork_chat_session.user,
+        artwork=artwork_chat_session.artwork,
+        created_at=artwork_chat_session.created_at,
+        chat_history=artwork_chat_session.chat_history,
+        docent_at_chat=artwork_chat_session.docent_at_chat,
+        imggen_status='PENDING'  # 초기 상태 설정
+    )
+
+    # 복사 완료 메시지 반환
+    return Response({
+        'message': 'Session copied successfully.',
+        'session_id': chat_session.id,
+    }, status=status.HTTP_200_OK)
 
 
 @api_view(['POST'])
@@ -122,10 +153,10 @@ def artwork_chat_history_view(request):
     # 액션에 따른 필터 조건 설정
     if action == 'completed':
         # imggen_status가 COMPLETED인 세션만 가져오기
-        chat_sessions = ArtworkChatSession.objects.filter(user=user, imggen_status='COMPLETED').order_by('-created_at')
+        chat_sessions = ChatSession.objects.filter(user=user, imggen_status='COMPLETED').order_by('-created_at')
     else:
         # 모든 세션 가져오기
-        chat_sessions = ArtworkChatSession.objects.filter(user=user).order_by('-created_at')
+        chat_sessions = ChatSession.objects.filter(user=user).order_by('-created_at')
 
     # 채팅 기록을 저장할 리스트
     history = []
