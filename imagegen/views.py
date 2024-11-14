@@ -52,7 +52,7 @@ def generate_image_method(request):
             gender = user_profile.gender or ""
             clothing = user_profile.clothing or "반팔옷"
             hairstyle = user_profile.hairstyle or "짧은 머리"
-            final_prompt = f"나는 {gender} 초등학생이고 {clothing} 옷을 입었고 머리는 {hairstyle}(이)야. {prompt}"  # 사용자 정보 포함한 프롬프트
+            final_prompt = f"나는 {gender} 초등학생이고 {clothing} 옷을 입었고 머리는 {hairstyle}(이)야. {prompt} (그려줘)"  # 사용자 정보 포함한 프롬프트
             response = client.images.generate(
                 model="dall-e-3",
                 prompt=final_prompt,
