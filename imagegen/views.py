@@ -22,6 +22,7 @@ from account.models import UserProfile
 from masterpiece.models import Artwork, Artist  # 필요한 모델 가져오기
 from django.core.files.base import ContentFile
 import requests
+import base64
 
 logger = logging.getLogger(__name__)
 
@@ -250,23 +251,27 @@ def generate_image_method(request):
         else:
             return Response({"error": "Invalid action"}, status=status.HTTP_400_BAD_REQUEST)
 
-         # 이미지 다운로드 후 BinaryField에 저장할 준비
+         # 이미지 URL 및 바이너리 데이터 처리
         image_data = response.data[0]
         image_url = image_data.url
         image_content = requests.get(image_url).content
 
-        # ImageGeneration 객체 생성 및 바이너리 이미지 저장
+        # 바이너리 이미지를 base64로 인코딩
+        image_base64 = base64.b64encode(image_content).decode('utf-8')
+
+        # 데이터베이스에 저장
         user = get_object_or_404(User, pk=user_pk)
-        image_instance = ImageGeneration.objects.create(
+        ImageGeneration.objects.create(
             user=user,
             prompt=prompt,
             image_url=image_url,
-            image_blob=image_content  # 바이너리 데이터를 직접 저장
+            image_blob=image_content  # 원본 바이너리 이미지도 저장
         )
 
+        # base64 인코딩된 이미지와 URL을 JSON으로 반환
         return Response({
             "image_url": image_url,
-            "image_blob": image_instance.image_blob  # BLOB 데이터를 반환
+            "image_base64": image_base64  # base64로 인코딩된 이미지 데이터 포함
         }, status=status.HTTP_200_OK)
 
     except Exception as e:
