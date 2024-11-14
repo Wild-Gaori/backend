@@ -21,6 +21,7 @@ from masterpiece.models import Artwork
 from account.models import UserProfile
 from masterpiece.models import Artwork, Artist  # 필요한 모델 가져오기
 from django.core.files.base import ContentFile
+import requests
 
 logger = logging.getLogger(__name__)
 
