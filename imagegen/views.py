@@ -258,18 +258,18 @@ def generate_image_method(request):
         # ContentFile로 변환하여 BinaryField에 저장
         image = ContentFile(image_content, name=f"{user_pk}_{action}.png")
 
-        # ImageGeneration 객체 생성 및 이미지 저장
+        # ImageGeneration 객체 생성 및 바이너리 이미지 저장
         user = get_object_or_404(User, pk=user_pk)
         image_instance = ImageGeneration.objects.create(
             user=user,
             prompt=prompt,
             image_url=image_url,
-            image_png=image  # ContentFile 객체로 저장
+            image_blob=image  # 필드명을 image_blob으로 수정
         )
 
         return Response({
             "image_url": image_url,
-            "image_png": image_instance.image_png.name  # 파일 이름 반환
+            "image_blob": image_instance.image_blob  # BLOB 데이터를 반환
         }, status=status.HTTP_200_OK)
 
     except Exception as e:
