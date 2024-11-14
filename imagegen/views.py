@@ -1,29 +1,28 @@
 import os
-from openai import OpenAI
+import io
+import base64
+import logging
+import requests
 from django.conf import settings
-from django.shortcuts import render
+from django.shortcuts import render, get_object_or_404
+from django.contrib.auth.models import User
+from django.http import FileResponse
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
-from django.contrib.auth.models import User
-from .models import ImageGeneration
-from .serializers import ImageGenerationSerializer
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import IsAuthenticated
-import logging
-from rest_framework.decorators import api_view
-from rest_framework.response import Response
-from rest_framework import status
-from django.conf import settings
-from django.shortcuts import get_object_or_404
+from PIL import Image
 from openai import OpenAI
-from masterpiece.models import Artwork
+from .models import ImageGeneration
+from .serializers import ImageGenerationSerializer
+from masterpiece.models import Artwork, Artist, ArtworkChatSession  # 필요한 모델 가져오기
 from account.models import UserProfile
-from masterpiece.models import Artwork, Artist  # 필요한 모델 가져오기
 from django.core.files.base import ContentFile
-import requests
-import base64
-from django.http import FileResponse
+
+# 로깅 설정
+logger = logging.getLogger(__name__)
+
 
 logger = logging.getLogger(__name__)
 
@@ -66,18 +65,6 @@ def generate_image(request):
 
     except Exception as e:
         return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
-
-
-
-from django.conf import settings
-from django.shortcuts import get_object_or_404
-from rest_framework.decorators import api_view
-from rest_framework.response import Response
-from rest_framework import status
-from PIL import Image
-import os
-import io
-from openai import OpenAI
 
 
 @api_view(['POST'])
@@ -189,13 +176,6 @@ def edit_image_with_dalle2(request):
     return Response({"edited_image_url": image_url}, status=status.HTTP_200_OK)
 
 
-
-
-from rest_framework.decorators import api_view
-from rest_framework.response import Response
-from rest_framework import status
-from django.shortcuts import get_object_or_404
-
 @api_view(['POST'])
 def generate_image_method(request):
     action = request.data.get("action")  # 요청에서 'action' 필드 추출
@@ -252,10 +232,13 @@ def generate_image_method(request):
         else:
             return Response({"error": "Invalid action"}, status=status.HTTP_400_BAD_REQUEST)
 
-        # 이미지 URL 및 바이너리 데이터 처리
+         # 이미지 URL 및 바이너리 데이터 처리
         image_data = response.data[0]
         image_url = image_data.url
         image_content = requests.get(image_url).content
+
+        # 바이너리 이미지를 base64로 인코딩
+        image_base64 = base64.b64encode(image_content).decode('utf-8')
 
         # 데이터베이스에 저장
         user = get_object_or_404(User, pk=user_pk)
@@ -266,12 +249,11 @@ def generate_image_method(request):
             image_blob=image_content  # 원본 바이너리 이미지도 저장
         )
 
-        # PNG 파일로 반환을 위한 in-memory 파일 생성
-        image_io = io.BytesIO(image_content)
-        image_io.seek(0)  # 파일의 시작으로 포인터 이동
-
-        # Django의 FileResponse를 사용하여 PNG 이미지로 반환
-        return FileResponse(image_io, as_attachment=True, filename="generated_image.png", content_type="image/png")
+        # base64 인코딩된 이미지와 URL을 JSON으로 반환
+        return Response({
+            "image_url": image_url,
+            "image_base64": image_base64  # base64로 인코딩된 이미지 데이터 포함
+        }, status=status.HTTP_200_OK)
 
     except Exception as e:
         return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
