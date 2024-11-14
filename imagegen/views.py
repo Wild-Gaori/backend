@@ -283,26 +283,30 @@ def generate_image_method(request):
 
 @api_view(['POST'])
 def get_image_history(request):
-    # 요청에서 사용자 pk 값 가져오기
+    # 요청에서 사용자 pk 값과 세션 id 값 가져오기
     user_pk = request.data.get('user_pk')
+    session_id = request.data.get('session_id')
     
     # 사용자 pk 값이 없는 경우 오류 반환
     if not user_pk:
         return Response({'error': 'User pk is required'}, status=status.HTTP_400_BAD_REQUEST)
+    if not session_id:
+        return Response({'error': 'Session ID is required'}, status=status.HTTP_400_BAD_REQUEST)
 
     # 사용자 pk에 해당하는 사용자 가져오기
     user = get_object_or_404(User, pk=user_pk)
-    
-    # 사용자가 생성한 모든 이미지 조회
-    images = ImageGeneration.objects.filter(user=user).order_by('-created_at')
+    session = get_object_or_404(ArtworkChatSession, id=session_id)
 
-    # 기록을 리스트로 변환
-    history = []
-    for image in images:
-        history.append({
-            'image_id': image.id,
-            'image_url': image.image_url,
-            'created_at': image.created_at,
-        })
+    # 사용자가 생성한 해당 세션의 마지막 이미지 조회
+    last_image = ImageGeneration.objects.filter(user=user, session=session).order_by('-created_at').first()
 
-    return Response(history, status=status.HTTP_200_OK)
+    # 이미지가 없는 경우 오류 반환
+    if not last_image:
+        return Response({'error': 'No images found for this session'}, status=status.HTTP_404_NOT_FOUND)
+
+    # 바이너리 데이터를 PNG 이미지로 변환하여 반환
+    image_io = io.BytesIO(last_image.image_blob)
+    image_io.seek(0)  # 파일 포인터를 처음으로 이동
+
+    # Django의 FileResponse를 사용하여 PNG 이미지로 반환
+    return FileResponse(image_io, as_attachment=True, filename="last_generated_image.png", content_type="image/png")
