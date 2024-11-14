@@ -250,13 +250,10 @@ def generate_image_method(request):
         else:
             return Response({"error": "Invalid action"}, status=status.HTTP_400_BAD_REQUEST)
 
-        # 이미지 다운로드 후 BinaryField에 저장할 준비
+         # 이미지 다운로드 후 BinaryField에 저장할 준비
         image_data = response.data[0]
         image_url = image_data.url
         image_content = requests.get(image_url).content
-
-        # ContentFile로 변환하여 BinaryField에 저장
-        image = ContentFile(image_content, name=f"{user_pk}_{action}.png")
 
         # ImageGeneration 객체 생성 및 바이너리 이미지 저장
         user = get_object_or_404(User, pk=user_pk)
@@ -264,7 +261,7 @@ def generate_image_method(request):
             user=user,
             prompt=prompt,
             image_url=image_url,
-            image_blob=image  # 필드명을 image_blob으로 수정
+            image_blob=image_content  # 바이너리 데이터를 직접 저장
         )
 
         return Response({
