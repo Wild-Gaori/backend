@@ -44,7 +44,7 @@ def random_artwork_view(request):
     # 필터링된 명화 중 하나를 랜덤으로 가져오기
     artwork = artwork_queryset.order_by('?').first()
 
-    # 명화가 주어지면 새로운 대화 세션 생성
+    # 명화가 주어지면 새로운 대화 세션 생성. 세션 아이디 부여됨
     session = create_artwork_chat_session(user, artwork)
 
     # 이미지 URL 생성 (static 파일 사용)
