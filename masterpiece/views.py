@@ -5,7 +5,7 @@ from django.shortcuts import render
 from django.shortcuts import get_object_or_404
 from django.conf import settings
 from .services import get_random_artwork, create_artwork_chat_session, artwork_chat_with_gpt
-from .models import ArtworkChatSession
+from .models import Artwork, ArtworkChatSession
 from django.contrib.auth.models import User
 from rest_framework.views import APIView
 from rest_framework.response import Response
