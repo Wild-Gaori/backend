@@ -10,7 +10,6 @@ from django.utils.decorators import method_decorator
 from .serializers import UserProfileSerializer
 
 # 로그인 함수
-# 로그인 함수
 @method_decorator(csrf_exempt, name='dispatch')
 class LoginView(APIView):
     def post(self, request):
