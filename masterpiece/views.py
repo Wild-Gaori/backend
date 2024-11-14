@@ -57,7 +57,6 @@ def random_artwork_view(request):
     return Response(data, status=status.HTTP_200_OK)
 
 # 명화 기반 대화 세션을 처리하는 API
-
 @api_view(['POST'])
 def artwork_chat_view(request):
     # 사용자 pk를 요청 데이터에서 가져옴
@@ -91,6 +90,10 @@ def artwork_chat_view(request):
     # 세션이 있으면 기존 채팅 세션을 이어감
     session = get_object_or_404(ArtworkChatSession, id=session_id, user=user)
 
+    # 채팅 세션에 도슨트 정보 저장
+    session.docent_at_chat = docent
+    session.save()
+
     # GPT와 대화 생성 (대화 기록은 자동으로 메모리에 관리됨)
     gpt_response = artwork_chat_with_gpt(session, message, docent_prompt)
     
@@ -103,6 +106,7 @@ def artwork_chat_view(request):
         'selected_docent_id': selected_docent_id,
         'docent_prompt': docent_prompt
     }, status=status.HTTP_200_OK)
+
 
 
 # 명화 기반 대화 기록을 보여주는 API
