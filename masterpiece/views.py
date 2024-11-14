@@ -177,3 +177,30 @@ def artwork_chat_history_view(request):
         })
 
     return Response(history, status=status.HTTP_200_OK)
+
+# 사용자의 전시 작품 감상 여부 확인 API
+@api_view(['POST'])
+def completed_artworks_for_user(request):
+    user_pk = request.data.get('user_pk')
+    artwork_ids = request.data.get('artwork_ids', [])
+
+    # 필수 필드가 있는지 확인
+    if not user_pk or not artwork_ids:
+        return Response({"error": "User pk와 artwork_ids가 필요합니다."}, status=status.HTTP_400_BAD_REQUEST)
+
+    # 사용자 확인
+    user = get_object_or_404(User, pk=user_pk)
+
+    # 해당 사용자의 imggen_status가 'COMPLETED'인 ChatSession 가져오기
+    completed_sessions = ChatSession.objects.filter(user=user, imggen_status='COMPLETED')
+
+    # 완료된 세션에서 입력받은 artwork_ids와 일치하는 작품 ID 필터링
+    completed_artwork_ids = [
+        session.artwork.id
+        for session in completed_sessions
+        if session.artwork.id in artwork_ids
+    ]
+
+    # 일치하는 artwork_id 리스트 반환
+    return Response({"completed_artwork_ids": completed_artwork_ids}, status=status.HTTP_200_OK)
+
