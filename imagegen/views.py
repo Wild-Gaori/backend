@@ -286,6 +286,15 @@ import logging
 logger = logging.getLogger(__name__)
 
 import base64
+import io
+from django.http import FileResponse
+from django.shortcuts import get_object_or_404
+from rest_framework.decorators import api_view
+from rest_framework.response import Response
+from rest_framework import status
+from .models import ImageGeneration
+from django.contrib.auth.models import User
+from masterpiece.models import ArtworkChatSession
 
 @api_view(['POST'])
 def get_image_history(request):
@@ -293,26 +302,26 @@ def get_image_history(request):
     session_id = request.data.get('session_id')
 
     if not user_pk:
-        logger.error("User pk is missing in the request.")
         return Response({'error': 'User pk is required'}, status=status.HTTP_400_BAD_REQUEST)
     if not session_id:
-        logger.error("Session ID is missing in the request.")
         return Response({'error': 'Session ID is required'}, status=status.HTTP_400_BAD_REQUEST)
 
     user = get_object_or_404(User, pk=user_pk)
     session = get_object_or_404(ArtworkChatSession, id=session_id)
 
+    # 사용자와 세션에 맞는 최신 이미지 조회
     latest_image = ImageGeneration.objects.filter(user=user, session=session).order_by('-created_at').first()
 
     if not latest_image:
-        logger.warning(f"No images found for user {user_pk} in session {session_id}.")
         return Response({'error': 'No images found for this session'}, status=status.HTTP_404_NOT_FOUND)
 
     image_content = latest_image.image_blob
     if image_content:
-        image_base64 = base64.b64encode(image_content).decode('utf-8')
-        logger.info(f"Returning image as base64 for user {user_pk}, session {session_id}")
-        return Response({"image_base64": image_base64}, status=status.HTTP_200_OK)
+        # base64 데이터를 디코딩하여 PNG 이미지로 변환
+        image_io = io.BytesIO(base64.b64decode(image_content))
+        image_io.seek(0)  # 파일의 시작으로 포인터 이동
+
+        # FileResponse로 PNG 이미지 반환
+        return FileResponse(image_io, as_attachment=True, filename="generated_image.png", content_type="image/png")
     else:
-        logger.error(f"Image blob is empty for image ID: {latest_image.id}")
         return Response({'error': 'Image data not available'}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
