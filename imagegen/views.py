@@ -178,10 +178,10 @@ def generate_image_method(request):
     prompt = request.data.get("prompt")
     artwork_id = request.data.get("artwork_id", None)  # 'imagine' 액션을 위한 artwork_id
     user_pk = request.data.get("user_pk")  # 사용자 pk 값
-    session_id = request.data.get("session_id")  # masterpiece 앱에서 생성된 세션 ID
+    session_id = request.data.get("session_id")  # 추가: masterpiece앱에서 생성된 세션 ID
 
     # 디버깅을 위한 로그 추가
-    print(f"Received artwork_id: {artwork_id}, user_pk: {user_pk}, session_id: {session_id}")  # 서버 콘솔에 artwork_id, user_pk, session_id 출력
+    print(f"Received artwork_id: {artwork_id}, user_pk: {user_pk}, session_id: {session_id}")
 
     if not action:
         return Response({"error": "Action is required"}, status=status.HTTP_400_BAD_REQUEST)
@@ -232,33 +232,29 @@ def generate_image_method(request):
         # 이미지 URL 및 바이너리 데이터 처리
         image_data = response.data[0]
         image_url = image_data.url
-        image_content = requests.get(image_url).content
 
-        # 세션 객체 가져오기
+        # 세션 정보 가져오기
         session = get_object_or_404(ArtworkChatSession, id=session_id)
 
-        # 데이터베이스에 저장
+        # 데이터베이스에 ImageGeneration 저장, 세션ID 및 final_prompt 포함
         user = get_object_or_404(User, pk=user_pk)
         ImageGeneration.objects.create(
             user=user,
-            session=session,           # 세션 ID 저장
-            prompt=final_prompt,       # 최종 프롬프트 저장
+            session=session,  # 세션 ID 저장
+            prompt=final_prompt,  # 최종 프롬프트 저장
             image_url=image_url,
-            image_blob=image_content   # 원본 바이너리 이미지도 저장
+            image_blob=requests.get(image_url).content  # 원본 바이너리 이미지도 저장
         )
 
-        # PNG 파일로 반환을 위한 in-memory 파일 생성
-        image_io = io.BytesIO(image_content)
-        image_io.seek(0)  # 파일의 시작으로 포인터 이동
+        # masterpiece 앱의 ArtworkChatSession 모델의 imggen_status 필드를 'COMPLETED'로 업데이트
+        session.imggen_status = 'COMPLETED'
+        session.save()
 
-        # Django의 FileResponse를 사용하여 PNG 이미지로 반환 및 추가 정보 포함
-        response_data = {
+        # 최종 반환 (PNG 이미지는 제외, image_url과 final_prompt만 반환)
+        return Response({
             "image_url": image_url,
-            "final_prompt": final_prompt,
-            "png_image": FileResponse(image_io, as_attachment=True, filename="generated_image.png", content_type="image/png")
-        }
-        
-        return Response(response_data, status=status.HTTP_200_OK)
+            "final_prompt": final_prompt
+        }, status=status.HTTP_200_OK)
 
     except Exception as e:
         return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
