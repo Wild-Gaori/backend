@@ -27,9 +27,19 @@ class Artwork(models.Model):
     
 # 채팅 세션을 저장하는 모델 (감상했던 명화 별로 관리)
 class ArtworkChatSession(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)  # 사용자
+    artwork = models.ForeignKey(Artwork, on_delete=models.CASCADE)  # 해당 채팅에서 사용된 명화
+    created_at = models.DateTimeField(auto_now_add=True)  # 채팅 세션 생성 시각
+    chat_history = models.JSONField(default=list)  # 대화 기록을 JSON 형식으로 저장
+    docent_at_chat = models.ForeignKey(Docent, on_delete=models.SET_DEFAULT, default=1)  # 대화 당시의 도슨트 정보
+
+    def __str__(self):
+        return f"Session with {self.user.username} on '{self.artwork.title}'"
+    
+class ChatSession(models.Model):
     STATUS_CHOICES = [
         ('PENDING', 'Pending'),           # 생성 대기 중
-        ('IN_PROGRESS', 'In Progress'),   # 생성 중
+        #('IN_PROGRESS', 'In Progress'),   # 생성 중
         ('COMPLETED', 'Completed'),       # 생성 완료
         ('FAILED', 'Failed')              # 생성 실패
     ]
