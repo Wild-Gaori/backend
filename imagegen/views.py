@@ -2,6 +2,7 @@ import os
 import io
 import logging
 from PIL import Image
+from django.core.files.base import ContentFile
 from django.conf import settings
 from django.contrib.auth.models import User
 from django.shortcuts import get_object_or_404
@@ -161,10 +162,27 @@ def generate_image_method(request):
 
         image_data = response.data[0]
         image_url = image_data.url
-        user = get_object_or_404(User, pk=user_pk)
-        ImageGeneration.objects.create(user=user, image_url=image_url)
 
-        return Response({"image_url": image_url, "final_prompt": final_prompt}, status=status.HTTP_200_OK)
+        # 이미지 다운로드 후 BinaryField에 저장할 준비
+        image_content = requests.get(image_url).content
+        image = Image.open(io.BytesIO(image_content))
+        image_io = io.BytesIO()
+        image.save(image_io, format="PNG")
+
+        # ImageGeneration 객체 생성 및 바이너리 이미지 저장
+        user = get_object_or_404(User, pk=user_pk)
+        image_instance = ImageGeneration.objects.create(
+            user=user,
+            prompt=prompt,
+            image_url=image_url,
+            image_png=image_io.getvalue()  # 바이너리 데이터를 직접 저장
+        )
+        
+        # 프론트엔드로 바이너리 데이터를 반환
+        return Response({
+            "image_url": image_url,
+            "image_png": image_instance.image_png  # 바이너리 데이터를 직접 반환
+        }, status=status.HTTP_200_OK)
 
     except Exception as e:
         return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
