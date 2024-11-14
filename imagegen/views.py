@@ -20,49 +20,95 @@ from masterpiece.models import Artwork, Artist, ArtworkChatSession  # 필요한 
 from account.models import UserProfile
 from django.core.files.base import ContentFile
 
-logger = logging.getLogger(__name__)
-
+# 1,3 경험, 상상 이미지 생성 API
 @api_view(['POST'])
-def generate_image(request):
-    logger.info(f"Request data: {request.data}")  # 로그에 요청 데이터 출력
-    # 요청 데이터를 serializer에 전달하여 유효성 검사
-    serializer = ImageGenerationSerializer(data=request.data)
+def generate_image_method(request):
+    action = request.data.get("action")  # 요청에서 'action' 필드 추출
+    prompt = request.data.get("prompt")
+    artwork_id = request.data.get("artwork_id", None)  # 'imagine' 액션을 위한 artwork_id
+    user_pk = request.data.get("user_pk")  # 사용자 pk 값
+    session_id = request.data.get("session_id")  # 추가: masterpiece앱에서 생성된 세션 ID
 
-    if not serializer.is_valid():
-        logger.error(f"Validation failed: {serializer.errors}")  # 유효성 검사 실패 시 로그 출력
-        # 유효하지 않은 경우 400 Bad Request와 오류 메시지 반환
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    # 디버깅을 위한 로그 추가
+    print(f"Received artwork_id: {artwork_id}, user_pk: {user_pk}, session_id: {session_id}")
 
-    # 유효한 경우 prompt 데이터를 추출
-    prompt = serializer.validated_data['prompt']
+    if not action:
+        return Response({"error": "Action is required"}, status=status.HTTP_400_BAD_REQUEST)
     
+    if not prompt:
+        return Response({"error": "Prompt is required"}, status=status.HTTP_400_BAD_REQUEST)
+
     try:
         client = OpenAI()
 
-        # DALL·E 3 API 호출
-        response = client.images.generate(
-            model="dall-e-3",
-            prompt=prompt,
-            size="1024x1024",  # 이미지 크기
-            quality="standard",
-            n=1,
+        if action == 'experience':
+            if not user_pk:
+                return Response({"error": "User PK is required for 'experience' action"}, status=status.HTTP_400_BAD_REQUEST)
+            
+            user = get_object_or_404(User, pk=user_pk)
+            user_profile = get_object_or_404(UserProfile, user=user)
+            
+            # 'experience' 액션: 사용자 프로필 정보를 포함한 프롬프트 생성
+            gender = user_profile.gender or ""
+            clothing = user_profile.clothing or "반팔옷"
+            hairstyle = user_profile.hairstyle or "짧은 머리"
+            final_prompt = f"나는 {gender} 초등학생이고 {clothing} 옷을 입었고 머리는 {hairstyle}(이)야. {prompt}"  # 사용자 정보 포함한 프롬프트
+            response = client.images.generate(
+                model="dall-e-3",
+                prompt=final_prompt,
+                n=1,  # 생성할 이미지 개수
+                size="1024x1024"  # 이미지 크기
+            )
+        elif action == 'imagine':
+            if not artwork_id:
+                return Response({"error": "Artwork ID is required for 'imagine' action"}, status=status.HTTP_400_BAD_REQUEST)
+            
+            # 'imagine' 액션: artwork 정보를 기반으로 프롬프트 수정
+            artwork = get_object_or_404(Artwork, id=artwork_id)
+            artist_style = artwork.artist_fk.style  # artist_fk 필드에서 style 접근
+            artwork_title = artwork.title
+            final_prompt = f"{artist_style} 화풍으로 {prompt} (그려줘)"  # 수정된 프롬프트
+            
+            response = client.images.generate(
+                model="dall-e-3",
+                prompt=final_prompt,
+                n=1,  # 생성할 이미지 개수
+                size="1024x1024"  # 이미지 크기
+            )
+        else:
+            return Response({"error": "Invalid action"}, status=status.HTTP_400_BAD_REQUEST)
+
+        # 이미지 URL 및 바이너리 데이터 처리
+        image_data = response.data[0]
+        image_url = image_data.url
+
+        # 세션 정보 가져오기
+        session = get_object_or_404(ArtworkChatSession, id=session_id)
+
+        # 데이터베이스에 ImageGeneration 저장, 세션ID 및 final_prompt 포함
+        user = get_object_or_404(User, pk=user_pk)
+        ImageGeneration.objects.create(
+            user=user,
+            session=session,  # 세션 ID 저장
+            prompt=final_prompt,  # 최종 프롬프트 저장
+            image_url=image_url,
+            image_blob=requests.get(image_url).content  # 원본 바이너리 이미지도 저장
         )
 
-        # 응답에서 이미지 URL 추출
-        image_url = response.data[0].url  # 이미지 URL에 접근 
+        # masterpiece 앱의 ArtworkChatSession 모델의 imggen_status 필드를 'COMPLETED'로 업데이트
+        session.imggen_status = 'COMPLETED'
+        session.save()
 
-        # 이미지 생성 기록  DB에 저장
-        #테스트 사용자
-        user, created = User.objects.get_or_create(username='test', defaults={'password': 'test'})
-
-        image_generation = ImageGeneration.objects.create(user=user, image_url=image_url)
-
-        return Response({"image_url": image_url}, status=status.HTTP_200_OK)
+        # 최종 반환 (PNG 이미지는 제외, image_url과 final_prompt만 반환)
+        return Response({
+            "image_url": image_url,
+            "final_prompt": final_prompt
+        }, status=status.HTTP_200_OK)
 
     except Exception as e:
         return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
-
+# 2. 이미지 부분 편집 API
 @api_view(['POST'])
 def edit_image_with_dalle2(request):
     # 프론트엔드에서 전달된 데이터 추출
@@ -190,97 +236,7 @@ def edit_image_with_dalle2(request):
         "edited_image_url": image_url,
     }, status=status.HTTP_200_OK)
 
-
-
-@api_view(['POST'])
-def generate_image_method(request):
-    action = request.data.get("action")  # 요청에서 'action' 필드 추출
-    prompt = request.data.get("prompt")
-    artwork_id = request.data.get("artwork_id", None)  # 'imagine' 액션을 위한 artwork_id
-    user_pk = request.data.get("user_pk")  # 사용자 pk 값
-    session_id = request.data.get("session_id")  # 추가: masterpiece앱에서 생성된 세션 ID
-
-    # 디버깅을 위한 로그 추가
-    print(f"Received artwork_id: {artwork_id}, user_pk: {user_pk}, session_id: {session_id}")
-
-    if not action:
-        return Response({"error": "Action is required"}, status=status.HTTP_400_BAD_REQUEST)
-    
-    if not prompt:
-        return Response({"error": "Prompt is required"}, status=status.HTTP_400_BAD_REQUEST)
-
-    try:
-        client = OpenAI()
-
-        if action == 'experience':
-            if not user_pk:
-                return Response({"error": "User PK is required for 'experience' action"}, status=status.HTTP_400_BAD_REQUEST)
-            
-            user = get_object_or_404(User, pk=user_pk)
-            user_profile = get_object_or_404(UserProfile, user=user)
-            
-            # 'experience' 액션: 사용자 프로필 정보를 포함한 프롬프트 생성
-            gender = user_profile.gender or ""
-            clothing = user_profile.clothing or "반팔옷"
-            hairstyle = user_profile.hairstyle or "짧은 머리"
-            final_prompt = f"나는 {gender} 초등학생이고 {clothing} 옷을 입었고 머리는 {hairstyle}(이)야. {prompt}"  # 사용자 정보 포함한 프롬프트
-            response = client.images.generate(
-                model="dall-e-3",
-                prompt=final_prompt,
-                n=1,  # 생성할 이미지 개수
-                size="1024x1024"  # 이미지 크기
-            )
-        elif action == 'imagine':
-            if not artwork_id:
-                return Response({"error": "Artwork ID is required for 'imagine' action"}, status=status.HTTP_400_BAD_REQUEST)
-            
-            # 'imagine' 액션: artwork 정보를 기반으로 프롬프트 수정
-            artwork = get_object_or_404(Artwork, id=artwork_id)
-            artist_style = artwork.artist_fk.style  # artist_fk 필드에서 style 접근
-            artwork_title = artwork.title
-            final_prompt = f"{artist_style} 화풍으로 {prompt} (그려줘)"  # 수정된 프롬프트
-            
-            response = client.images.generate(
-                model="dall-e-3",
-                prompt=final_prompt,
-                n=1,  # 생성할 이미지 개수
-                size="1024x1024"  # 이미지 크기
-            )
-        else:
-            return Response({"error": "Invalid action"}, status=status.HTTP_400_BAD_REQUEST)
-
-        # 이미지 URL 및 바이너리 데이터 처리
-        image_data = response.data[0]
-        image_url = image_data.url
-
-        # 세션 정보 가져오기
-        session = get_object_or_404(ArtworkChatSession, id=session_id)
-
-        # 데이터베이스에 ImageGeneration 저장, 세션ID 및 final_prompt 포함
-        user = get_object_or_404(User, pk=user_pk)
-        ImageGeneration.objects.create(
-            user=user,
-            session=session,  # 세션 ID 저장
-            prompt=final_prompt,  # 최종 프롬프트 저장
-            image_url=image_url,
-            image_blob=requests.get(image_url).content  # 원본 바이너리 이미지도 저장
-        )
-
-        # masterpiece 앱의 ArtworkChatSession 모델의 imggen_status 필드를 'COMPLETED'로 업데이트
-        session.imggen_status = 'COMPLETED'
-        session.save()
-
-        # 최종 반환 (PNG 이미지는 제외, image_url과 final_prompt만 반환)
-        return Response({
-            "image_url": image_url,
-            "final_prompt": final_prompt
-        }, status=status.HTTP_200_OK)
-
-    except Exception as e:
-        return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
-
-
-
+# 이미지 생성 기록 조회 API
 import logging
 
 logger = logging.getLogger(__name__)
@@ -336,4 +292,3 @@ def get_image_history(request):
     else:
         logger.error('Image data not available')
         return Response({'error': 'Image data not available'}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
-
