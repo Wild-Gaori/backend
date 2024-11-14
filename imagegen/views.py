@@ -213,23 +213,54 @@ def generate_image_method(request):
     prompt = request.data.get("prompt")
     artwork_id = request.data.get("artwork_id", None)  # 'imagine' 액션을 위한 artwork_id
     user_pk = request.data.get("user_pk")  # 사용자 pk 값
-    session_id = request.data.get("session_id")  # 세션 ID 값
+    session_id = request.data.get("session_id")  # 추가된 세션 ID 값
 
-    # 필수 입력값 체크
+    # 디버깅을 위한 로그 추가
+    print(f"Received artwork_id: {artwork_id}, user_pk: {user_pk}, session_id: {session_id}") 
+
+     # 필수 입력값 체크
     if not action or not prompt or not user_pk or not session_id:
         return Response({"error": "Missing required fields"}, status=status.HTTP_400_BAD_REQUEST)
 
     try:
         client = OpenAI()
 
-        # DALL-E 3 API 호출로 이미지 생성
+        # 'experience' 또는 'imagine'에 따라 프롬프트 생성
         if action == 'experience':
-            # 프롬프트 생성 및 API 요청 처리
-            # ... 기존의 프롬프트 생성 및 응답 처리 로직 포함 ...
-
+            if not user_pk:
+                return Response({"error": "User PK is required for 'experience' action"}, status=status.HTTP_400_BAD_REQUEST)
+            
+            user = get_object_or_404(User, pk=user_pk)
+            user_profile = get_object_or_404(UserProfile, user=user)
+            
+            # 사용자 프로필 정보 포함한 프롬프트 생성
+            gender = user_profile.gender or ""
+            clothing = user_profile.clothing or "반팔옷"
+            hairstyle = user_profile.hairstyle or "짧은 머리"
+            final_prompt = f"나는 {gender} 초등학생이고 {clothing} 옷을 입었고 머리는 {hairstyle}(이)야. {prompt} (그려줘)"
+            
+            response = client.images.generate(
+                model="dall-e-3",
+                prompt=final_prompt,
+                n=1,
+                size="1024x1024"
+            )
         elif action == 'imagine':
-            # 프롬프트 생성 및 API 요청 처리
-            # ... 기존의 프롬프트 생성 및 응답 처리 로직 포함 ...
+            if not artwork_id:
+                return Response({"error": "Artwork ID is required for 'imagine' action"}, status=status.HTTP_400_BAD_REQUEST)
+            
+            artwork = get_object_or_404(Artwork, id=artwork_id)
+            artist_style = artwork.artist_fk.style
+            final_prompt = f"{artist_style} 화풍으로 {prompt} (그려줘)"
+            
+            response = client.images.generate(
+                model="dall-e-3",
+                prompt=final_prompt,
+                n=1,
+                size="1024x1024"
+            )
+        else:
+            return Response({"error": "Invalid action"}, status=status.HTTP_400_BAD_REQUEST)
 
         # 이미지 URL로부터 이미지 다운로드
         image_data = response.data[0]
