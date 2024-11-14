@@ -20,10 +20,6 @@ from masterpiece.models import Artwork, Artist, ArtworkChatSession  # 필요한 
 from account.models import UserProfile
 from django.core.files.base import ContentFile
 
-# 로깅 설정
-logger = logging.getLogger(__name__)
-
-
 logger = logging.getLogger(__name__)
 
 @api_view(['POST'])
