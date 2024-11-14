@@ -285,13 +285,13 @@ import logging
 
 logger = logging.getLogger(__name__)
 
+import base64
+
 @api_view(['POST'])
 def get_image_history(request):
-    # 요청에서 사용자 pk 값 가져오기
     user_pk = request.data.get('user_pk')
     session_id = request.data.get('session_id')
 
-    # 필수 데이터 검증
     if not user_pk:
         logger.error("User pk is missing in the request.")
         return Response({'error': 'User pk is required'}, status=status.HTTP_400_BAD_REQUEST)
@@ -299,28 +299,20 @@ def get_image_history(request):
         logger.error("Session ID is missing in the request.")
         return Response({'error': 'Session ID is required'}, status=status.HTTP_400_BAD_REQUEST)
 
-    # 사용자 및 세션 정보 가져오기
     user = get_object_or_404(User, pk=user_pk)
     session = get_object_or_404(ArtworkChatSession, id=session_id)
 
-    # 세션에서 사용자가 생성한 마지막 이미지 가져오기
     latest_image = ImageGeneration.objects.filter(user=user, session=session).order_by('-created_at').first()
 
     if not latest_image:
         logger.warning(f"No images found for user {user_pk} in session {session_id}.")
         return Response({'error': 'No images found for this session'}, status=status.HTTP_404_NOT_FOUND)
 
-    # 이미지 데이터 로깅
-    logger.info(f"Found latest image for user {user_pk} in session {session_id}, image ID: {latest_image.id}")
-
-    # 이미지 데이터를 in-memory 파일로 변환하여 반환
     image_content = latest_image.image_blob
     if image_content:
-        image_io = io.BytesIO(image_content)
-        image_io.seek(0)
-        logger.info(f"Returning image as PNG for user {user_pk}, session {session_id}")
-        return FileResponse(image_io, as_attachment=True, filename="latest_image.png", content_type="image/png")
+        image_base64 = base64.b64encode(image_content).decode('utf-8')
+        logger.info(f"Returning image as base64 for user {user_pk}, session {session_id}")
+        return Response({"image_base64": image_base64}, status=status.HTTP_200_OK)
     else:
         logger.error(f"Image blob is empty for image ID: {latest_image.id}")
         return Response({'error': 'Image data not available'}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
-
