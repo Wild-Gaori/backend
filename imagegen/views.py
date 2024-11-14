@@ -237,7 +237,7 @@ def generate_image_method(request):
             artwork = get_object_or_404(Artwork, id=artwork_id)
             artist_style = artwork.artist_fk.style  # artist_fk 필드에서 style 접근
             artwork_title = artwork.title
-            final_prompt = f"{artist_style} 화풍으로 {artwork_title} 작품에서 {prompt}"  # 수정된 프롬프트
+            final_prompt = f"{artist_style} 화풍으로 {prompt} (그려줘)"  # 수정된 프롬프트
             
             response = client.images.generate(
                 model="dall-e-3",
