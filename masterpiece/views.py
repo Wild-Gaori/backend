@@ -13,13 +13,15 @@ from rest_framework import status
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import IsAuthenticated
 from langchain.memory import ConversationBufferMemory
+from django.db.models import Q
 
 
-# 랜덤 명화 정보를 반환하는 API 
+# 랜덤 명화 정보를 반환하는 API
 @api_view(['POST'])
 def random_artwork_view(request):
     user_pk = request.data.get('user_pk')
-    
+    excluded_artwork_ids = request.data.get('excluded_artwork_ids', [])
+
     # 사용자 pk가 없을 경우 에러 반환
     if not user_pk:
         return Response({"error": "User pk is required."}, status=status.HTTP_400_BAD_REQUEST)
@@ -34,10 +36,15 @@ def random_artwork_view(request):
     except UserProfile.DoesNotExist:
         return Response({"error": "UserProfile not found."}, status=status.HTTP_404_NOT_FOUND)
 
-    # 랜덤으로 명화 가져오기
-    artwork = get_random_artwork()
+    # 제외할 명화가 있을 경우 필터링
+    artwork_queryset = Artwork.objects.exclude(id__in=excluded_artwork_ids)
+    if not artwork_queryset.exists():
+        return Response({"error": "No artworks available after exclusion."}, status=status.HTTP_404_NOT_FOUND)
 
-    # 명화가 주어지면 새로운 대화 세션 생성. 세션 아이디 부여됨
+    # 필터링된 명화 중 하나를 랜덤으로 가져오기
+    artwork = artwork_queryset.order_by('?').first()
+
+    # 명화가 주어지면 새로운 대화 세션 생성
     session = create_artwork_chat_session(user, artwork)
 
     # 이미지 URL 생성 (static 파일 사용)
@@ -203,4 +210,3 @@ def completed_artworks_for_user(request):
 
     # 일치하는 artwork_id 리스트 반환
     return Response({"completed_artwork_ids": completed_artwork_ids}, status=status.HTTP_200_OK)
-
