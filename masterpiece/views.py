@@ -5,7 +5,7 @@ from django.shortcuts import render
 from django.shortcuts import get_object_or_404
 from django.conf import settings
 from .services import get_random_artwork, create_artwork_chat_session, artwork_chat_with_gpt
-from .models import Artwork, ArtworkChatSession
+from .models import Artwork,ArtworkChatSession
 from django.contrib.auth.models import User
 from rest_framework.views import APIView
 from rest_framework.response import Response
@@ -106,25 +106,33 @@ def artwork_chat_view(request):
 
 
 
-# 명화 기반 대화 기록을 보여주는 API
 @api_view(['POST'])
 def artwork_chat_history_view(request):
-    # 사용자 pk를 프론트에서 전달받음
+    # 사용자 pk와 액션을 요청 데이터에서 가져오기
     user_pk = request.data.get('user_pk')
+    action = request.data.get('action')  # 액션: 'all' 또는 'completed' 중 하나
+
+    # 사용자 pk가 없을 경우 에러 반환
     if not user_pk:
         return Response({'error': 'User pk is required'}, status=status.HTTP_400_BAD_REQUEST)
 
-    # 사용자 pk로 사용자 객체 가져오기
+    # 사용자 조회
     user = get_object_or_404(User, pk=user_pk)
 
-    # 명화에 대한 사용자의 모든 채팅 세션을 가져옴
-    chat_sessions = ArtworkChatSession.objects.filter(user=user).order_by('-created_at')  # 사용자의 채팅 세션을 최신순으로 불러옴
+    # 액션에 따른 필터 조건 설정
+    if action == 'completed':
+        # imggen_status가 COMPLETED인 세션만 가져오기
+        chat_sessions = ArtworkChatSession.objects.filter(user=user, imggen_status='COMPLETED').order_by('-created_at')
+    else:
+        # 모든 세션 가져오기
+        chat_sessions = ArtworkChatSession.objects.filter(user=user).order_by('-created_at')
 
-    history = []  # 모든 채팅 세션 기록을 저장할 빈 리스트
+    # 채팅 기록을 저장할 리스트
+    history = []
 
     for session in chat_sessions:
         chat_history = json.loads(session.chat_history) if session.chat_history else []
-        # 각 채팅 세션의 명화 기록과 도슨트 ID 함께 추가
+        # 각 세션의 정보 추가
         history.append({
             "session_id": session.id,
             "artwork": {
@@ -132,7 +140,8 @@ def artwork_chat_history_view(request):
                 "artist": session.artwork.artist,
                 "image_path": request.build_absolute_uri(settings.STATIC_URL + session.artwork.image_path)
             },
-            "docent_id": session.docent_at_chat_id,  # 도슨트 ID 추가
+            "docent_id": session.docent_at_chat_id,
+            "imggen_status": session.imggen_status,
             "messages": chat_history
         })
 
