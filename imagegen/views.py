@@ -198,69 +198,82 @@ def generate_image_method(request):
     prompt = request.data.get("prompt")
     artwork_id = request.data.get("artwork_id", None)  # 'imagine' 액션을 위한 artwork_id
     user_pk = request.data.get("user_pk")  # 사용자 pk 값
+    session_id = request.data.get("session_id")  # 세션 ID 추가
 
-    # 디버깅을 위한 로그 추가
-    print(f"Received artwork_id: {artwork_id}, user_pk: {user_pk}")  # 서버 콘솔에 artwork_id와 user_pk 출력
-
+    # 필수 값 확인
     if not action:
         return Response({"error": "Action is required"}, status=status.HTTP_400_BAD_REQUEST)
-    
     if not prompt:
         return Response({"error": "Prompt is required"}, status=status.HTTP_400_BAD_REQUEST)
-
+    if not session_id:
+        return Response({"error": "Session ID is required"}, status=status.HTTP_400_BAD_REQUEST)
+    
+    # 사용자, 세션 및 프로필 정보 가져오기
+    user = get_object_or_404(User, pk=user_pk)
+    session = get_object_or_404(ArtworkChatSession, id=session_id)
     try:
         client = OpenAI()
 
+        # 이미지 생성 작업
         if action == 'experience':
-            if not user_pk:
-                return Response({"error": "User PK is required for 'experience' action"}, status=status.HTTP_400_BAD_REQUEST)
-            
-            user = get_object_or_404(User, pk=user_pk)
             user_profile = get_object_or_404(UserProfile, user=user)
-            
-            # 'experience' 액션: 사용자 프로필 정보를 포함한 프롬프트 생성
             gender = user_profile.gender or ""
             clothing = user_profile.clothing or "반팔옷"
             hairstyle = user_profile.hairstyle or "짧은 머리"
-            final_prompt = f"나는 {gender} 초등학생이고 {clothing} 옷을 입었고 머리는 {hairstyle}(이)야. {prompt}"  # 사용자 정보 포함한 프롬프트
+            final_prompt = f"나는 {gender} 초등학생이고 {clothing} 옷을 입었고 머리는 {hairstyle}(이)야. {prompt} (그려줘)"
             response = client.images.generate(
                 model="dall-e-3",
                 prompt=final_prompt,
-                n=1,  # 생성할 이미지 개수
-                size="1024x1024"  # 이미지 크기
+                n=1,
+                size="1024x1024"
             )
         elif action == 'imagine':
             if not artwork_id:
                 return Response({"error": "Artwork ID is required for 'imagine' action"}, status=status.HTTP_400_BAD_REQUEST)
-            
-            # 'imagine' 액션: artwork 정보를 기반으로 프롬프트 수정
             artwork = get_object_or_404(Artwork, id=artwork_id)
-            artist_style = artwork.artist_fk.style  # artist_fk 필드에서 style 접근
-            artwork_title = artwork.title
-            final_prompt = f"{artist_style} 화풍으로 {prompt} (그려줘)"  # 수정된 프롬프트
-            
+            artist_style = artwork.artist_fk.style
+            final_prompt = f"{artist_style} 화풍으로 {prompt} (그려줘)"
             response = client.images.generate(
                 model="dall-e-3",
                 prompt=final_prompt,
-                n=1,  # 생성할 이미지 개수
-                size="1024x1024"  # 이미지 크기
+                n=1,
+                size="1024x1024"
             )
         else:
             return Response({"error": "Invalid action"}, status=status.HTTP_400_BAD_REQUEST)
 
-        # 응답에서 이미지 URL 추출
+        # 이미지 URL 추출
         image_data = response.data[0]
         image_url = image_data.url
-        
-        # 이미지 생성 기록을 DB에 저장
-        user = get_object_or_404(User, pk=user_pk)
-        ImageGeneration.objects.create(user=user, image_url=image_url)
 
-        # 응답 반환
-        return Response({"image_url": image_url, "final_prompt": final_prompt}, status=status.HTTP_200_OK)
+        # 이미지 다운로드 및 PNG로 저장
+        image_response = requests.get(image_url)
+        image = Image.open(io.BytesIO(image_response.content))
+        image_path = f"{settings.MEDIA_ROOT}/generated_images/{user.username}_{session_id}.png"
+        image.save(image_path, "PNG")
+
+        # ImageGeneration에 기록 저장
+        image_generation = ImageGeneration.objects.create(
+            user=user,
+            image_url=image_url,
+            image_png=image_path,
+            prompt=final_prompt,
+            session=session
+        )
+
+        # ArtworkChatSession에 이미지 생성 상태 업데이트
+        session.imggenstatus = 'complete'  # 이미지 생성 상태 업데이트
+        session.save()
+
+        return Response({
+            "image_url": image_url,
+            "final_prompt": final_prompt,
+            "image_png_path": request.build_absolute_uri(image_generation.image_png.url)
+        }, status=status.HTTP_200_OK)
 
     except Exception as e:
         return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
 
 
 @api_view(['POST'])
