@@ -108,7 +108,6 @@ def artwork_chat_view(request):
     }, status=status.HTTP_200_OK)
 
 
-
 # 명화 기반 대화 기록을 보여주는 API
 @api_view(['POST'])
 def artwork_chat_history_view(request):
@@ -127,7 +126,7 @@ def artwork_chat_history_view(request):
 
     for session in chat_sessions:
         chat_history = json.loads(session.chat_history) if session.chat_history else []
-        # 각 채팅 세션의 명화 기록 함께 추가
+        # 각 채팅 세션의 명화 기록과 도슨트 ID 함께 추가
         history.append({
             "session_id": session.id,
             "artwork": {
@@ -135,7 +134,9 @@ def artwork_chat_history_view(request):
                 "artist": session.artwork.artist,
                 "image_path": request.build_absolute_uri(settings.STATIC_URL + session.artwork.image_path)
             },
+            "docent_id": session.docent_at_chat_id,  # 도슨트 ID 추가
             "messages": chat_history
         })
 
     return Response(history, status=status.HTTP_200_OK)
+
