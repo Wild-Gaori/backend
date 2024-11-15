@@ -195,6 +195,15 @@ def completed_artworks_for_user(request):
     if not user_pk or not artwork_ids:
         return Response({"error": "User pk와 artwork_ids가 필요합니다."}, status=status.HTTP_400_BAD_REQUEST)
 
+    # 작품 ID가 없으면 백엔드에서 기본값 설정
+    if not artwork_ids:
+        # 기본적으로 조회할 ID 리스트 (필요시 변경 가능)
+        artwork_ids = [ 5, 6, 7]
+
+    # artwork_ids가 리스트가 아니거나 비어있는 경우 에러 반환
+    if not isinstance(artwork_ids, list) or len(artwork_ids) == 0:
+        return Response({'error': 'A valid list of artwork IDs is required.'}, status=status.HTTP_400_BAD_REQUEST)
+
     # 사용자 확인
     user = get_object_or_404(User, pk=user_pk)
 
@@ -210,3 +219,103 @@ def completed_artworks_for_user(request):
 
     # 일치하는 artwork_id 리스트 반환
     return Response({"completed_artwork_ids": completed_artwork_ids}, status=status.HTTP_200_OK)
+
+
+# 미술관 전시 작품 정보 반환 API
+@api_view(['POST'])
+def get_gallery_artworks(request):
+    # 프론트엔드에서 전달된 작품 ID 리스트
+    artwork_ids = request.data.get('artwork_ids', None)
+
+    # 작품 ID가 없으면 백엔드에서 기본값 설정
+    if not artwork_ids:
+        # 기본적으로 조회할 ID 리스트 (필요시 변경 가능)
+        artwork_ids = [1, 2, 3]  # 예시: ID 1, 2, 3번 작품
+
+    # artwork_ids가 리스트가 아니거나 비어있는 경우 에러 반환
+    if not isinstance(artwork_ids, list) or len(artwork_ids) == 0:
+        return Response({'error': 'A valid list of artwork IDs is required.'}, status=status.HTTP_400_BAD_REQUEST)
+
+    try:
+        # ID에 해당하는 Artwork 객체 가져오기
+        artworks = Artwork.objects.filter(id__in=artwork_ids)
+
+        # 해당하는 Artwork가 없을 경우 처리
+        if not artworks.exists():
+            return Response({'error': 'No artworks found for the given IDs.'}, status=status.HTTP_404_NOT_FOUND)
+
+        # Artwork 정보 구성
+        artwork_data = [
+            {
+                'id': artwork.id,
+                'title': artwork.title,
+                'artist': artwork.artist,
+                'year': artwork.year,
+                'description': artwork.description,
+                'hook': artwork.hook,
+                'image_url': artwork.image_url,
+                'image_path': request.build_absolute_uri(settings.STATIC_URL + artwork.image_path),
+            }
+            for artwork in artworks
+        ]
+
+        return Response({'artworks': artwork_data}, status=status.HTTP_200_OK)
+
+    except Exception as e:
+        return Response({'error': str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+    
+# 미술관 전시 작품 기반 대화 세션을 처리하는 API
+@api_view(['POST'])
+def gallery_artwork_chat_view(request):
+    user_pk = request.data.get('user_pk')
+    artwork_id = request.data.get('artwork_id')
+    message = request.data.get('message')  # 사용자가 GPT에게 보낼 메시지
+
+    # 필수 값 검증
+    if not user_pk:
+        return Response({'error': 'User pk is required.'}, status=status.HTTP_400_BAD_REQUEST)
+    if not artwork_id:
+        return Response({'error': 'Artwork ID is required.'}, status=status.HTTP_400_BAD_REQUEST)
+    if not message or message.strip() == "":
+        return Response({'error': 'Message cannot be empty.'}, status=status.HTTP_400_BAD_REQUEST)
+
+    try:
+        # 사용자 조회
+        user = get_object_or_404(User, pk=user_pk)
+
+        # 명화 조회
+        artwork = get_object_or_404(Artwork, id=artwork_id)
+
+        # 사용자 프로필 조회
+        user_profile = get_object_or_404(UserProfile, user=user)
+
+        # UserProfile에서 selected_docent_id 가져오기
+        selected_docent_id = user_profile.selected_docent_id
+
+        # Docent 정보 가져오기
+        docent = get_object_or_404(Docent, pk=selected_docent_id)
+        docent_prompt = docent.docent_prompt  # 도슨트의 GPT 프롬프트
+
+        # 새로운 세션 생성
+        session = ArtworkChatSession.objects.create(
+            user=user,
+            artwork=artwork,
+            docent_at_chat=docent
+        )
+
+        # GPT와 대화 수행
+        gpt_response = artwork_chat_with_gpt(session, message, docent_prompt)
+        if not gpt_response or gpt_response.strip() == "":
+            return Response({'error': 'GPT response is empty'}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+        # 응답 데이터 반환
+        return Response({
+            'session_id': session.id,
+            'response': gpt_response,
+            'selected_docent_id': selected_docent_id,
+            'docent_prompt': docent_prompt
+        }, status=status.HTTP_200_OK)
+
+    except Exception as e:
+        return Response({'error': str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
