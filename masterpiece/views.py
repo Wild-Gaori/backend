@@ -192,13 +192,14 @@ def completed_artworks_for_user(request):
     artwork_ids = request.data.get('artwork_ids', None)
 
     # 필수 필드가 있는지 확인
-    if not user_pk or not artwork_ids:
-        return Response({"error": "User pk와 artwork_ids가 필요합니다."}, status=status.HTTP_400_BAD_REQUEST)
+    if not user_pk:
+        return Response({"error": "User pk가 필요합니다."}, status=status.HTTP_400_BAD_REQUEST)
 
     # 작품 ID가 없으면 백엔드에서 기본값 설정
     if not artwork_ids:
         # 기본적으로 조회할 ID 리스트 (필요시 변경 가능)
         artwork_ids = [ 5, 6, 7]
+        
 
     # artwork_ids가 리스트가 아니거나 비어있는 경우 에러 반환
     if not isinstance(artwork_ids, list) or len(artwork_ids) == 0:
@@ -230,7 +231,7 @@ def get_gallery_artworks_list(request):
     # 작품 ID가 없으면 백엔드에서 기본값 설정
     if not artwork_ids:
         # 기본적으로 조회할 ID 리스트 (필요시 변경 가능)
-        artwork_ids = [5, 6, 7]  # 예시: ID 1, 2, 3번 작품
+        artwork_ids = [5, 6, 7] 
 
     # artwork_ids가 리스트가 아니거나 비어있는 경우 에러 반환
     if not isinstance(artwork_ids, list) or len(artwork_ids) == 0:
