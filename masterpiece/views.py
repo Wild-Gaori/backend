@@ -267,18 +267,15 @@ def get_gallery_artworks_list(request):
     
 # 미술관 전시 작품 기반 대화 세션을 처리하는 API
 @api_view(['POST'])
-def gallery_artwork_chat_view(request):
+def create_artwork_chat_session_view(request):
     user_pk = request.data.get('user_pk')
     artwork_id = request.data.get('artwork_id')
-    message = request.data.get('message')  # 사용자가 GPT에게 보낼 메시지
 
     # 필수 값 검증
     if not user_pk:
         return Response({'error': 'User pk is required.'}, status=status.HTTP_400_BAD_REQUEST)
     if not artwork_id:
         return Response({'error': 'Artwork ID is required.'}, status=status.HTTP_400_BAD_REQUEST)
-    if not message or message.strip() == "":
-        return Response({'error': 'Message cannot be empty.'}, status=status.HTTP_400_BAD_REQUEST)
 
     try:
         # 사용자 조회
@@ -295,7 +292,6 @@ def gallery_artwork_chat_view(request):
 
         # Docent 정보 가져오기
         docent = get_object_or_404(Docent, pk=selected_docent_id)
-        docent_prompt = docent.docent_prompt  # 도슨트의 GPT 프롬프트
 
         # 새로운 세션 생성
         session = ArtworkChatSession.objects.create(
@@ -304,17 +300,10 @@ def gallery_artwork_chat_view(request):
             docent_at_chat=docent
         )
 
-        # GPT와 대화 수행
-        gpt_response = artwork_chat_with_gpt(session, message, docent_prompt)
-        if not gpt_response or gpt_response.strip() == "":
-            return Response({'error': 'GPT response is empty'}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
-
         # 응답 데이터 반환
         return Response({
             'session_id': session.id,
-            'response': gpt_response,
             'selected_docent_id': selected_docent_id,
-            'docent_prompt': docent_prompt
         }, status=status.HTTP_200_OK)
 
     except Exception as e:
