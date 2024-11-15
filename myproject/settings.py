@@ -55,6 +55,7 @@ INSTALLED_APPS = [
     'imagegen',
     'masterpiece',
     'docent',
+    'gallery',
 ]
 
 REST_FRAMEWORK = {
