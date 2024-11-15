@@ -189,7 +189,7 @@ def artwork_chat_history_view(request):
 @api_view(['POST'])
 def completed_artworks_for_user(request):
     user_pk = request.data.get('user_pk')
-    artwork_ids = request.data.get('artwork_ids', [])
+    artwork_ids = request.data.get('artwork_ids', None)
 
     # 필수 필드가 있는지 확인
     if not user_pk or not artwork_ids:
@@ -223,14 +223,14 @@ def completed_artworks_for_user(request):
 
 # 미술관 전시 작품 정보 반환 API
 @api_view(['POST'])
-def get_gallery_artworks(request):
+def get_gallery_artworks_list(request):
     # 프론트엔드에서 전달된 작품 ID 리스트
     artwork_ids = request.data.get('artwork_ids', None)
 
     # 작품 ID가 없으면 백엔드에서 기본값 설정
     if not artwork_ids:
         # 기본적으로 조회할 ID 리스트 (필요시 변경 가능)
-        artwork_ids = [1, 2, 3]  # 예시: ID 1, 2, 3번 작품
+        artwork_ids = [5, 6, 7]  # 예시: ID 1, 2, 3번 작품
 
     # artwork_ids가 리스트가 아니거나 비어있는 경우 에러 반환
     if not isinstance(artwork_ids, list) or len(artwork_ids) == 0:
