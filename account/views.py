@@ -66,8 +66,10 @@ class SignupView(APIView):
 
             # 사용자 생성
             user = User.objects.create_user(username=username, password=password, email=email)
+
             # UserProfile 생성
             UserProfile.objects.create(user=user)
+            
             return Response({'message': 'Signup completed successfully.'}, status=status.HTTP_201_CREATED)
 
         return Response({'error': 'Invalid request.'}, status=status.HTTP_400_BAD_REQUEST)
