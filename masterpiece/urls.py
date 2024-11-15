@@ -1,6 +1,6 @@
 from django.urls import path
 from .views import random_artwork_view, artwork_chat_view, artwork_chat_history_view, copy_artwork_chat_session
-from .views import completed_artworks_for_user, gallery_artwork_chat_view, get_gallery_artworks
+from .views import completed_artworks_for_user, gallery_artwork_chat_view, get_gallery_artworks_list
 from django.conf import settings
 from django.conf.urls.static import static
 
@@ -12,5 +12,5 @@ urlpatterns = [
 
     path('completed/', completed_artworks_for_user, name='completed_artworks_for_user'),  # 전시 작품 감상 여부
     path('gallery/chat/', gallery_artwork_chat_view, name='gallery_artwork_chat'),  # 미술관 전시 작품 채팅
-    path('gallery/list/', get_gallery_artworks, name='get_gallery_artworks'),  # 미술관 작품 정보 불러오기
+    path('gallery/list/', get_gallery_artworks_list, name='get_gallery_artworks_list'),  # 미술관 작품 정보 불러오기
 ]
