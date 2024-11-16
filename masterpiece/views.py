@@ -20,20 +20,11 @@ from django.db.models import Q
 @api_view(['POST'])
 def random_artwork_view(request):
     user_pk = request.data.get('user_pk')
-    excluded_artwork_ids = request.data.get('excluded_artwork_ids', None)
+    excluded_artwork_ids = request.data.get('excluded_artwork_ids', [])
 
     # 사용자 pk가 없을 경우 에러 반환
     if not user_pk:
         return Response({"error": "User pk is required."}, status=status.HTTP_400_BAD_REQUEST)
-    
-    # 작품 ID가 없으면 백엔드에서 기본값 설정
-    if not excluded_artwork_ids:
-    # 기본적으로 조회할 ID 리스트 (필요시 변경 가능)
-        excluded_artwork_ids = [ 5, 6, 7, 8]
-
-    # artwork_ids가 리스트가 아니거나 비어있는 경우 에러 반환
-    if not isinstance(excluded_artwork_ids, list) or len(excluded_artwork_ids) == 0:
-        return Response({'error': 'A valid list of artwork IDs is required.'}, status=status.HTTP_400_BAD_REQUEST)
 
     # 사용자 조회
     user = get_object_or_404(User, pk=user_pk)
