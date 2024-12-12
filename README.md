@@ -1,13 +1,11 @@
 
 
-# installation
+# Installation
 
-$ git clone https://github.com/your-repo/your-project.git
+$ git clone https://github.com/Wild-Gaori/backend.git
 $ cd backend
 
 # requirements
 
 
-# backend
-
-How to run
+# How to run
