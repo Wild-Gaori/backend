@@ -1,6 +1,6 @@
 
 
-## How to run
+## How to build
 1. Install</br>
 $ git clone https://github.com/Wild-Gaori/backend.git</br>
 $ cd backend
