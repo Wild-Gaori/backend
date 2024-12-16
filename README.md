@@ -2,8 +2,10 @@
 
 ## How to build
 1. 저장소 클론</br>
-$ git clone https://github.com/Wild-Gaori/backend.git</br>
-$ cd backend
+```bash
+ git clone https://github.com/Wild-Gaori/backend.git</br>
+ cd backend
+```
 
 2. 장고 프로젝트 실행을 위해 필요한 패키지 설치 using</br>
 ```bash
