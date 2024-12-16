@@ -27,7 +27,7 @@ sudo apt-get install python3
 sudo apt-get install python3-pip
 ```
 
-3. 소스코드 클론</br>
+3. 소스 코드 클론</br>
 
 ```bash
 git clone https://github.com/Wild-Gaori/backend.git</br>
@@ -51,22 +51,21 @@ pip install -r requirements.txt
 ## 🤖How to install
 
 1. 환경변수 설정 </br>
-OpenAI API Key 생성 후, 루트 디렉토리에 `.env` 파일에 저장
+OpenAI API Key 생성 후, 루트 디렉토리의 `.env` 파일에 저장합니다.
 
 ```bash
 OPENAI_API_KEY=PASTE_YOUR_API_KEY
 ```
 
-2. 데이터베이스 업데이트, 정적파일 수집
+2. 데이터베이스 업데이트 후, 정적파일을 서버에 수집
 
 ```bash
 python manage.py migrate
 python manage.py collectstatic
 ```
 
-3. uwsgi 설치</br>
+3. uwsgi 설치 후, uwsgi.ini 파일 생성</br>
 uwsgi : Django 애플리케이션과 WSGI(Web Server Gateway Interface)를 통해 연결되는 애플리케이션 서버입니다.</br>
-uwsgi 설치 후, uwsgi.ini 파일을 생성합니다.
 
 ```bash
 pip install uwsgi
@@ -88,20 +87,17 @@ socket=/home/ubuntu/backend/uwsgi.sock
 chmod-socket=666
 ```
 
-4. nginx 설치</br>
+4. nginx 설치 후, nginx.conf, default 파일의 내용 편집</br>
 nginx : HTTP 요청을 받아 애플리케이션 서버(uWSGI)로 전달하고 정적 파일 요청을 처리하는 리버스 프록시 서버입니다.</br>
-nginx 설치 후, nginx.conf, default 파일 내용을 편집합니다
 
 ```bash
 sudo apt-get install nginx
 sudo vi /etc/nginx/nginx.conf
 ```
-nginx.conf 파일 내용 추가 삽입
+nginx.conf 파일에 아래 내용 추가 삽입
 ```bash
 user ubuntu;
-.
-.
-.
+...
 http {
  upstream django {
    server unix:/home/ubuntu/backend/uwsgi.sock;       
@@ -112,27 +108,23 @@ default 파일 생성
 ```bash
 sudo vi /etc/nginx/sites-enabled/default
 ```
-default 파일 내용 삭제
+default 파일에서 아래 내용 삭제
 ```bash
 location {
     try_files $url $url/ =404;
 }
 ```
-default 파일 내용 추가 삽입
+default 파일에 아래 내용 추가 삽입
 ```bash
 location {
         include /etc/nginx/uwsgi_params;
                 uwsgi_pass django;
 }
 location /static/ {
-
         alias /home/ubuntu/backend/staticfiles/;
-
 }
 location /media/ {
-
         alias /home/ubuntu/backend/media/;
-
 }
 ```
 
@@ -143,12 +135,23 @@ python manage.py runserver 0.0.0.0:8000
 sudo service nginx restart
 ```
 
-
-
-  
 ## How to test
-- 프론트엔드 리포지토리: [QnArt-backend](https://github.com/Wild-Gaori/backend)
-- 
+
+1. 프론트엔드,백엔드가 통합된 apk 테스트 :</br>
+  - 프론트엔드 README 참고: [QnArt-frontend](https://github.com/Wild-Gaori/frontend)
+    
+2. 백엔드 테스트 :</br>
+로컬 서버에서 실행 후, 아래의 샘플 데이터로 테스트를 진행합니다.
+   
+```bash
+python manage.py runserver 0.0.0.0:8000
+```
+
+### About Sample Data
+  
+각 기능의 url로 접속해 예시 입력값으로 테스트합니다.</br>
+[API 명세서](https://github.com/Wild-Gaori/frontend)
+
 ## Stack
 <img src="https://img.shields.io/badge/python-3776AB?style=for-the-badge&logo=python&logoColor=white">
 <img src="https://img.shields.io/badge/django-092E20?style=for-the-badge&logo=django&logoColor=white">
