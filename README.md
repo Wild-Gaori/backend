@@ -81,7 +81,6 @@ python manage.py collectstatic
 ```
 
 3. uwsgi 설치 후, uwsgi.ini 파일 생성</br>
-uwsgi : Django 애플리케이션과 WSGI(Web Server Gateway Interface)를 통해 연결되는 애플리케이션 서버입니다.</br>
 
 ```bash
 pip install uwsgi
@@ -104,13 +103,12 @@ chmod-socket=666
 ```
 
 4. nginx 설치 후, nginx.conf, default 파일의 내용 편집</br>
-nginx : HTTP 요청을 받아 애플리케이션 서버(uWSGI)로 전달하고 정적 파일 요청을 처리하는 리버스 프록시 서버입니다.</br>
 
 ```bash
 sudo apt-get install nginx
 sudo vi /etc/nginx/nginx.conf
 ```
-nginx.conf 파일에 아래 내용 추가 삽입
+nginx.conf - 아래 내용 추가 삽입
 ```bash
 user ubuntu;
 ...
@@ -124,13 +122,13 @@ default 파일 생성
 ```bash
 sudo vi /etc/nginx/sites-enabled/default
 ```
-default 파일에서 아래 내용 삭제
+default - 아래 내용 삭제
 ```bash
 location {
     try_files $url $url/ =404;
 }
 ```
-default 파일에 아래 내용 추가 삽입
+default - 아래 내용 추가 삽입
 ```bash
 location {
         include /etc/nginx/uwsgi_params;
@@ -144,7 +142,7 @@ location /media/ {
 }
 ```
 
-5. 서버 실행
+5. 서버 실행 후 재시작
 
 ```bash
 python manage.py runserver 0.0.0.0:8000
@@ -153,25 +151,24 @@ sudo service nginx restart
 
 ## 📜How to test
 
-- 프론트엔드,백엔드가 통합된 apk 테스트 : [QnArt-frontend](https://github.com/Wild-Gaori/frontend) README 참고
+1. 프론트엔드,백엔드가 통합된 apk 테스트 : [QnArt-frontend](https://github.com/Wild-Gaori/frontend) README 참고
     
-- 백엔드 테스트 : 로컬 서버에서 실행 후, </br>
-   [API 명세서](https://hushed-sardine-663.notion.site/951413190ccb4976a5d74707ea56c233?v=48fdce11fcc94a1b8af216018b539e62) : 각 기능의 url로 접속해 예시 입력값으로 테스트합니다.</br>
-```bash
-python manage.py runserver 0.0.0.0:8000
-```
+2. 백엔드 테스트 : 로컬 서버에서 실행 후, 
+   [API 명세서](https://hushed-sardine-663.notion.site/951413190ccb4976a5d74707ea56c233?v=48fdce11fcc94a1b8af216018b539e62)의 기능별 url로 접속해 예시 입력값으로 테스트합니다.
 
 ### About Sample Data
 
-- 이미지 파일 : [QnArt-Image](https://github.com/Wild-Gaori/Image)
-- 이미지, 작가, 도슨트 정보 sql파일 :  [QnArt-DB](https://github.com/Wild-Gaori/DB)
+- **데이터베이스**: mySQL Database를 사용합니다. 
+- [QnArt-Image](https://github.com/Wild-Gaori/Image) : 이미지 파일
+- [QnArt-DB](https://github.com/Wild-Gaori/DB) : 이미지, 작가, 도슨트 정보 sql파일
 
 ## Stack
 <img src="https://img.shields.io/badge/python-3776AB?style=for-the-badge&logo=python&logoColor=white">
 <img src="https://img.shields.io/badge/django-092E20?style=for-the-badge&logo=django&logoColor=white">
 <img src="https://img.shields.io/badge/amazonaws-232F3E?style=for-the-badge&logo=amazonaws&logoColor=white">
-<img src="https://img.shields.io/badge/MySQL-4479A1?style=flat-square&logo=MySQL&logoColor=white"/></a> &nbsp 
+<img src="https://img.shields.io/badge/MySQL-4479A1?style=flat-square&logo=MySQL&logoColor=white"/></a> &nbsp
 
 ## 🌐Used Open Source
+이 프로젝트는 다음과 같은 오픈소스 라이브러리를 사용합니다:
 - https://openai.com/
 - https://www.langchain.com/langchain
