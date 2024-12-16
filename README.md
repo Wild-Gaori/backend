@@ -1,10 +1,9 @@
 ## 🖥️About This Repository
 이 리포지토리에는 QnArt 앱의 Django 기반 백엔드 소스 코드를 포함합니다. 리포지토리 내 주요 컴포넌트의 역할은 다음과 같습니다:
-- **`account/`**: 
-- **`docent/`**: 
-- **`gallery/`**: 
-- **`imagegen/`**: 
-- **`masterpiece/`**: 
+- **`account/`**: 로그인, 회원 가입, 사용자 정보 관리
+- **`docent/`**: 도슨트 정보 반환/변경
+- **`imagegen/`**: 사용자의 프롬프트로 DALL-E 그림 창작
+- **`masterpiece/`**: 오늘의 명화 카드 생성, 도슨트와의 감상 대화 생성/저장
 - 
 ## How to build
 1. 저장소 클론</br>
