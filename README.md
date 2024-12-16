@@ -10,20 +10,21 @@
 ## 🔨How to build
 1. 저장소 클론</br>
 ```bash
- git clone https://github.com/Wild-Gaori/backend.git</br>
+git clone https://github.com/Wild-Gaori/backend.git</br>
  cd backend
 ```
 
-2. 프로젝트 실행을 위해 필요한 패키지 설치 using</br>
+2. 프로젝트 실행을 위해 필요한 패키지 설치</br>
 ```bash
-   pip install -r requirements.txt
+pip install -r requirements.txt
 ```
 
-3. OpenAI API Key</br>
+3. OpenAI API Key 생성</br>
 Create a .env file in the root directory and set OPENAI_API_KEY variable: </br>
 ```bash
 OPENAI_API_KEY=PASTE_YOUR_API_KEY
 ```
+
 4. Access the app in your web browser at local host : http://localhost:8000/
 ```bash
 python.py runserver
