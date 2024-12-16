@@ -28,29 +28,29 @@ QnArt는 주입식 설명 위주의 수동적인 미술작품 감상, 어려운 
 ## 🔨How to build
 
 1. Ubuntu 서버 접속</br>
-AWS에서 ec2 인스턴스를 생성한 후, 프로젝트를 실행할 서버에 SSH로 접속합니다.
+AWS에서 EC2 인스턴스를 생성한 후, 아래 명령어를 통해 서버에 접속합니다:
 
 ```bash
 ssh -i "your-key-pair.pem" ubuntu@ec2-your-public-IPv4-DNS.ap-northeast-2.compute.amazonaws.com
 ```
 
-2. Python, 필수 패키지 설치</br>
+2. Python 및 필수 패키지 설치</br>
+다음 명령어를 실행하여 Python과 필수 패키지를 설치합니다:
 
 ```bash
 sudo apt-get update
-sudo apt-get install build-essential
-sudo apt-get install python3
-sudo apt-get install python3-pip
+sudo apt-get install build-essential python3 python3-pip
 ```
 
 3. 소스 코드 클론</br>
+프로젝트 소스 코드를 클론한 후 해당 디렉토리로 이동합니다:
 
 ```bash
 git clone https://github.com/Wild-Gaori/backend.git</br>
- cd backend
+cd backend
 ```
 
-4. 가상환경 설치 및 실행</br>
+4. 가상환경 생성 및 활성화</br>
 
 ```bash
 sudo apt-get install virtualenv
@@ -67,26 +67,26 @@ pip install -r requirements.txt
 ## 🤖How to install
 
 1. 환경변수 설정 </br>
-OpenAI API Key 생성 후, 루트 디렉토리의 `.env` 파일에 저장합니다.
+OpenAI API Key를 생성한 후, 루트 디렉토리에 .env 파일을 생성하여 다음과 같이 설정합니다:
 
 ```bash
 OPENAI_API_KEY=PASTE_YOUR_API_KEY
 ```
 
-2. 데이터베이스 업데이트 후, 정적파일을 서버에 수집
+2. 데이터베이스 업데이트 및 정적파일 수집
 
 ```bash
 python manage.py migrate
 python manage.py collectstatic
 ```
 
-3. uwsgi 설치 후, uwsgi.ini 파일 생성</br>
+3. uwsgi 설치 및 설정</br>
 
 ```bash
 pip install uwsgi
 vi uwsgi.ini
 ```
-uwsgi.ini 파일 내용
+- uWSGI 설정 파일 예시:
 ```bash
 [uwsgi]
 chdir=/home/ubuntu/backend
@@ -102,13 +102,13 @@ socket=/home/ubuntu/backend/uwsgi.sock
 chmod-socket=666
 ```
 
-4. nginx 설치 후, nginx.conf, default 파일의 내용 편집</br>
+4. nginx 설치 및 설정
 
 ```bash
 sudo apt-get install nginx
 sudo vi /etc/nginx/nginx.conf
 ```
-nginx.conf - 아래 내용 추가 삽입
+- nginx.conf - 아래 내용 추가 삽입
 ```bash
 user ubuntu;
 ...
@@ -118,17 +118,17 @@ http {
  }
 }
 ```
-default 파일 생성
+- default 파일 생성
 ```bash
 sudo vi /etc/nginx/sites-enabled/default
 ```
-default - 아래 내용 삭제
+- 아래 내용 삭제
 ```bash
 location {
     try_files $url $url/ =404;
 }
 ```
-default - 아래 내용 추가 삽입
+- 아래 내용 추가 삽입
 ```bash
 location {
         include /etc/nginx/uwsgi_params;
@@ -151,18 +151,19 @@ sudo service nginx restart
 
 ## 📜How to test
 
-1. 프론트엔드,백엔드가 통합된 apk 테스트 : [QnArt-frontend](https://github.com/Wild-Gaori/frontend) README 참고
+1. APK 테스트</br>
+프론트엔드와 백엔드가 통합된 APK 테스트는 [QnArt-frontend](https://github.com/Wild-Gaori/frontend)의 README를 참고해주세요.
     
-2. 백엔드 테스트 : 로컬 서버에서 실행 후, 
-   [API 명세서](https://hushed-sardine-663.notion.site/951413190ccb4976a5d74707ea56c233?v=48fdce11fcc94a1b8af216018b539e62)의 기능별 url로 접속해 예시 입력값으로 테스트합니다.
+2. 백엔드 테스트 </br>
+로컬 서버에서 실행한 후, [API 명세서](https://hushed-sardine-663.notion.site/951413190ccb4976a5d74707ea56c233?v=48fdce11fcc94a1b8af216018b539e62)에 명시된 기능별 URL로 접속하여 테스트를 진행합니다.
 
-### About Sample Data
+### 📊About Sample Data
 
-- **데이터베이스**: mySQL Database를 사용합니다. 
+**데이터베이스**: mySQL Database를 사용합니다. 
 - [QnArt-Image](https://github.com/Wild-Gaori/Image) : 이미지 파일
 - [QnArt-DB](https://github.com/Wild-Gaori/DB) : 이미지, 작가, 도슨트 정보 sql파일
 
-## Stack
+## 🛠️Stack
 <img src="https://img.shields.io/badge/python-3776AB?style=for-the-badge&logo=python&logoColor=white">
 <img src="https://img.shields.io/badge/django-092E20?style=for-the-badge&logo=django&logoColor=white">
 <img src="https://img.shields.io/badge/amazonaws-232F3E?style=for-the-badge&logo=amazonaws&logoColor=white">
