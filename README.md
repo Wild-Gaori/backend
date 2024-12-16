@@ -1,26 +1,31 @@
 ## 🖥️About This Repository
+
 이 리포지토리에는 QnArt 앱의 Django 기반 백엔드 소스 코드를 포함합니다. 이 리포지토리는 account, docent, imagegen, masterpiece 등 여러 앱을 포함하고 있습니다:
 
 #### 주요 APP의 역할
+
 - **`account/`**: 로그인, 회원 가입, 사용자 정보 관리
 - **`docent/`**: 도슨트 정보 반환/변경
 - **`imagegen/`**: 사용자의 프롬프트로 DALL-E 그림 창작
 - **`masterpiece/`**: 오늘의 명화 카드 생성, 도슨트와의 감상 대화 생성/저장
 
 ## 🔨How to build
+
 1. 저장소 클론</br>
+
 ```bash
 git clone https://github.com/Wild-Gaori/backend.git</br>
  cd backend
 ```
 
-2. 프로젝트 실행을 위해 필요한 패키지 설치</br>
+2. 프로젝트 실행을 위해 필요한 Python 패키지 설치</br>
+
 ```bash
 pip install -r requirements.txt
 ```
 
-3. OpenAI API Key 생성</br>
-Create a .env file in the root directory and set OPENAI_API_KEY variable: </br>
+3. OpenAI API Key 생성 후, 루트 디렉토리에 `.env` 파일에 저장</br>
+
 ```bash
 OPENAI_API_KEY=PASTE_YOUR_API_KEY
 ```
