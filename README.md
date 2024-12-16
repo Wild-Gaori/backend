@@ -153,7 +153,7 @@ sudo service nginx restart
     
 2. 백엔드 테스트 </br>
 로컬 서버에서 실행한 후, [API 명세서](https://hushed-sardine-663.notion.site/951413190ccb4976a5d74707ea56c233?v=48fdce11fcc94a1b8af216018b539e62)에 명시된 기능별 URL로 접속하여 예시 입력값으로 테스트를 진행합니다.
-- 테스트 계정: ID: test3 / PW: 1111 / user_pk: 31  </br>
+- 테스트 계정: username: test3 / password: 1111 / user_pk: 31  </br>
 ```bash
 python manage.py runserver 0.0.0.0:8000
 ```
