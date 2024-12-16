@@ -1,5 +1,11 @@
-
-
+## 🖥️About This Repository
+이 리포지토리에는 QnArt 앱의 Django 기반 백엔드 소스 코드를 포함합니다. 리포지토리 내 주요 컴포넌트의 역할은 다음과 같습니다:
+- **`account/`**: 
+- **`docent/`**: 
+- **`gallery/`**: 
+- **`imagegen/`**: 
+- **`masterpiece/`**: 
+- 
 ## How to build
 1. 저장소 클론</br>
 ```bash
