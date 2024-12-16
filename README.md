@@ -122,13 +122,13 @@ http {
 ```bash
 sudo vi /etc/nginx/sites-enabled/default
 ```
-- 아래 내용 삭제
+- default - 아래 내용 삭제
 ```bash
 location {
     try_files $url $url/ =404;
 }
 ```
-- 아래 내용 추가 삽입
+- default - 아래 내용 추가 삽입
 ```bash
 location {
         include /etc/nginx/uwsgi_params;
