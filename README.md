@@ -16,7 +16,7 @@ QnArt는 주입식 설명 위주의 수동적인 미술작품 감상, 어려운 
 
 ## 🖥️About This Repository
 
-이 리포지토리에는 QnArt 앱의 Django 기반 백엔드 소스 코드를 포함합니다. 이 리포지토리는 account, docent, imagegen, masterpiece 등 여러 앱을 포함하고 있습니다:
+이 리포지토리는 QnArt 앱의 Django 기반 백엔드 소스 코드를 포함합니다. 이 리포지토리는 account, docent, imagegen, masterpiece 등 여러 앱을 포함하고 있습니다:
 
 #### 주요 APP의 역할
 
