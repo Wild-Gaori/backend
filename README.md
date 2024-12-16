@@ -1,6 +1,6 @@
 
 
-## 
+## How to build
 1. 저장소 클론</br>
 $ git clone https://github.com/Wild-Gaori/backend.git</br>
 $ cd backend
