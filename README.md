@@ -152,7 +152,7 @@ sudo service nginx restart
 프론트엔드와 백엔드가 통합된 APK 테스트는 [QnArt-frontend](https://github.com/Wild-Gaori/frontend)의 README를 참고해주세요.
     
 2. 백엔드 테스트 </br>
-로컬 서버에서 실행한 후, [API 명세서](https://hushed-sardine-663.notion.site/951413190ccb4976a5d74707ea56c233?v=48fdce11fcc94a1b8af216018b539e62)에 명시된 기능별 URL로 접속하여 테스트를 진행합니다.
+로컬 서버에서 실행한 후, [API 명세서](https://hushed-sardine-663.notion.site/951413190ccb4976a5d74707ea56c233?v=48fdce11fcc94a1b8af216018b539e62)에 명시된 기능별 URL로 접속하여 예시 입력값으로 테스트를 진행합니다.
 ```bash
 python manage.py runserver 0.0.0.0:8000
 ```
@@ -162,6 +162,7 @@ python manage.py runserver 0.0.0.0:8000
 **데이터베이스**: mySQL Database를 사용합니다. 
 - [QnArt-Image](https://github.com/Wild-Gaori/Image) : 이미지 파일
 - [QnArt-DB](https://github.com/Wild-Gaori/DB) : 이미지, 작가, 도슨트 정보 sql파일
+![QnArt_DB2](https://github.com/user-attachments/assets/0efc1b74-af4d-40c0-8736-2524742c1383)
 
 ## 🛠️Stack
 <img src="https://img.shields.io/badge/python-3776AB?style=for-the-badge&logo=python&logoColor=white">
