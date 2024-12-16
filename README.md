@@ -1,13 +1,13 @@
 
 
 ## How to build
-1. Install</br>
+1. 저장소 클론</br>
 $ git clone https://github.com/Wild-Gaori/backend.git</br>
 $ cd backend
 
-2. Install the required dependencies using</br>
+2. 장고 프로젝트 실행을 위해 필요한 패키지 설치 using</br>
 ```bash
-   pip install requirements.txt
+   pip install -r requirements.txt
 ```
 
 3. OpenAI API Key</br>
