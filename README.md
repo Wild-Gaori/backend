@@ -135,12 +135,11 @@ python manage.py runserver 0.0.0.0:8000
 sudo service nginx restart
 ```
 
-## How to test
+## 📜How to test
 
-1. 프론트엔드,백엔드가 통합된 apk 테스트 :</br>
-  - 프론트엔드 README 참고: [QnArt-frontend](https://github.com/Wild-Gaori/frontend)
+- 프론트엔드,백엔드가 통합된 apk 테스트 : 프론트엔드 README 참고: [QnArt-frontend](https://github.com/Wild-Gaori/frontend)
     
-2. 백엔드 테스트 :</br>
+- 백엔드 테스트 :</br>
 로컬 서버에서 실행 후, 아래의 샘플 데이터로 테스트를 진행합니다.
    
 ```bash
@@ -149,8 +148,8 @@ python manage.py runserver 0.0.0.0:8000
 
 ### About Sample Data
   
-각 기능의 url로 접속해 예시 입력값으로 테스트합니다.</br>
-[API 명세서](https://github.com/Wild-Gaori/frontend)
+[API 명세서](https://github.com/Wild-Gaori/frontend) : 각 기능의 url로 접속해 예시 입력값으로 테스트합니다.</br>
+
 
 ## Stack
 <img src="https://img.shields.io/badge/python-3776AB?style=for-the-badge&logo=python&logoColor=white">
