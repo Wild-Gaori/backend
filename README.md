@@ -107,6 +107,7 @@ chmod-socket=666
 ```bash
 sudo apt-get install nginx
 sudo vi /etc/nginx/nginx.conf
+sudo vi /etc/nginx/sites-enabled/default
 ```
 - nginx.conf - 아래 내용 추가 삽입
 ```bash
@@ -117,10 +118,6 @@ http {
    server unix:/home/ubuntu/backend/uwsgi.sock;       
  }
 }
-```
-- default 파일 생성
-```bash
-sudo vi /etc/nginx/sites-enabled/default
 ```
 - default - 아래 내용 삭제
 ```bash
