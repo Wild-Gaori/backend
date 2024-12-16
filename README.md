@@ -160,8 +160,8 @@ python manage.py runserver 0.0.0.0:8000
 ## 📊Used Data
 
 **데이터베이스**: mySQL Database를 사용합니다. 
-- [QnArt-Image](https://github.com/Wild-Gaori/Image) : 이미지 png 파일
-- [QnArt-DB](https://github.com/Wild-Gaori/DB) : 이미지, 작가, 도슨트 정보 sql파일
+- [QnArt-Image](https://github.com/Wild-Gaori/Image) : 명화 작품 png 파일
+- [QnArt-DB](https://github.com/Wild-Gaori/DB) : 명화 작품, 작가, 도슨트 정보 sql파일
 ![QnArt_DB2](https://github.com/user-attachments/assets/0efc1b74-af4d-40c0-8736-2524742c1383)
 
 ## 🛠️Stack
