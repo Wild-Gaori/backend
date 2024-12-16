@@ -11,7 +11,7 @@
 
 ## 🔨How to build
 
-1. Ubuntu 서버 접속
+1. Ubuntu 서버 접속</br>
 AWS에서 ec2 인스턴스를 생성한 후, 프로젝트를 실행할 서버에 SSH로 접속합니다.
 
 ```bash
@@ -64,8 +64,8 @@ python manage.py migrate
 python manage.py collectstatic
 ```
 
-3. uwsgi 설치
-uwsgi : Django 애플리케이션과 WSGI(Web Server Gateway Interface)를 통해 연결되는 애플리케이션 서버입니다.
+3. uwsgi 설치</br>
+uwsgi : Django 애플리케이션과 WSGI(Web Server Gateway Interface)를 통해 연결되는 애플리케이션 서버입니다.</br>
 uwsgi 설치 후, uwsgi.ini 파일을 생성합니다.
 
 ```bash
@@ -88,8 +88,8 @@ socket=/home/ubuntu/backend/uwsgi.sock
 chmod-socket=666
 ```
 
-4. nginx 설치
-nginx : HTTP 요청을 받아 애플리케이션 서버(uWSGI)로 전달하고 정적 파일 요청을 처리하는 리버스 프록시 서버입니다.
+4. nginx 설치</br>
+nginx : HTTP 요청을 받아 애플리케이션 서버(uWSGI)로 전달하고 정적 파일 요청을 처리하는 리버스 프록시 서버입니다.</br>
 nginx 설치 후, nginx.conf, default 파일 내용을 편집합니다
 
 ```bash
