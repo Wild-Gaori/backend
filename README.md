@@ -157,7 +157,7 @@ sudo service nginx restart
 python manage.py runserver 0.0.0.0:8000
 ```
 
-## 📊About Sample Data
+## 📊Used Data
 
 **데이터베이스**: mySQL Database를 사용합니다. 
 - [QnArt-Image](https://github.com/Wild-Gaori/Image) : 이미지 png 파일
