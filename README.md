@@ -46,7 +46,7 @@ sudo apt-get install build-essential python3 python3-pip
 프로젝트 소스 코드를 클론한 후 해당 디렉토리로 이동합니다:
 
 ```bash
-git clone https://github.com/Wild-Gaori/backend.git</br>
+git clone https://github.com/Wild-Gaori/backend.git
 cd backend
 ```
 
